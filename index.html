@@ -1,0 +1,322 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Save in Dollars</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F7F5F0;
+    --paper: #FFFFFF;
+    --ink: #16211C;
+    --green: #0B3D2E;
+    --green-soft: #12503C;
+    --gold: #C9A227;
+    --teal: #2E7D6B;
+    --line: #D8D2C4;
+    --muted: #6B7268;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--bg);
+    color: var(--ink);
+    font-family: 'IBM Plex Sans', sans-serif;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  /* Header */
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+  .brand { display: flex; align-items: center; gap: 10px; }
+  .brand-mark {
+    width: 34px; height: 34px; border-radius: 50%;
+    border: 1.5px solid var(--green);
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; color: var(--green);
+  }
+  .brand-name { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; letter-spacing: 0.01em; }
+  .lang-toggle { font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 6px 12px; border-radius: 20px; background: var(--paper); }
+
+  /* Hero seal */
+  .hero { text-align: center; margin-bottom: 44px; }
+  .eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); font-weight: 500; margin-bottom: 18px; }
+  .seal {
+    width: 220px; height: 220px; border-radius: 50%;
+    margin: 0 auto 20px;
+    background: radial-gradient(circle at 50% 40%, var(--green-soft), var(--green) 75%);
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    position: relative;
+    box-shadow: 0 12px 32px rgba(11,61,46,0.25);
+  }
+  .seal::before {
+    content: "";
+    position: absolute; inset: 10px;
+    border-radius: 50%;
+    border: 1px dashed rgba(201,162,39,0.55);
+  }
+  .seal .amount { font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 500; color: #FBFAF6; }
+  .seal .amount span { font-size: 16px; color: var(--gold); vertical-align: super; }
+  .seal .label { font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(251,250,246,0.7); margin-top: 6px; }
+  .sub-value { font-size: 13px; color: var(--muted); }
+  .sub-value b { color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
+
+  /* Card */
+  .card {
+    background: var(--paper);
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+  .card h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; margin-bottom: 4px; }
+  .card .hint { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  /* Convert form */
+  .convert-row { display: flex; gap: 10px; align-items: stretch; }
+  .field { flex: 1; }
+  .field label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+  .field input {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 15px;
+    background: var(--bg); color: var(--ink);
+  }
+  .field input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
+  .arrow { display: flex; align-items: flex-end; padding-bottom: 12px; color: var(--gold); font-size: 18px; }
+  .rate-note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  button.primary {
+    width: 100%; margin-top: 18px;
+    background: var(--green); color: #FBFAF6; border: none;
+    padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 500;
+    font-family: 'IBM Plex Sans', sans-serif; cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  button.primary:hover { background: var(--green-soft); }
+  button.primary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+
+  /* Chart */
+  .chart-wrap { position: relative; }
+  svg { width: 100%; height: auto; display: block; }
+  .legend { display: flex; gap: 18px; margin-top: 14px; font-size: 12px; color: var(--muted); }
+  .legend span { display: inline-flex; align-items: center; gap: 6px; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+
+  footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 30px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header>
+    <div class="brand">
+      <div class="brand-mark">$</div>
+      <div class="brand-name">Save in Dollars</div>
+    </div>
+    <button class="lang-toggle" id="connectBtn" style="cursor:pointer;">Connect Wallet</button>
+  </header>
+
+  <div class="hero">
+    <div class="eyebrow" id="statusLine">Not connected</div>
+    <div class="seal">
+      <div class="amount"><span>$</span><span id="balanceAmount">0.00</span></div>
+      <div class="label">USDC Balance</div>
+    </div>
+    <div class="sub-value">Equivalent to <b id="pkrEquivalent">Rs 0</b> at today's rate</div>
+  </div>
+
+  <div class="card">
+    <h2>Convert PKR → USDC</h2>
+    <div class="hint">Move your savings into a stable digital dollar, instantly.</div>
+    <div class="convert-row">
+      <div class="field">
+        <label>You send</label>
+        <input type="number" id="pkrInput" placeholder="0" value="10000" />
+        <div class="rate-note">PKR</div>
+      </div>
+      <div class="arrow">→</div>
+      <div class="field">
+        <label>You receive</label>
+        <input type="text" id="usdcOutput" readonly />
+        <div class="rate-note">USDC</div>
+      </div>
+    </div>
+    <div class="rate-note" id="rateLine">1 USD ≈ Rs 280</div>
+    <button class="primary" id="convertBtn">Convert &amp; Save</button>
+  </div>
+
+  <div class="card">
+    <h2>Rupee vs. Digital Dollar</h2>
+    <div class="hint">What Rs 100,000 would be worth today if saved a year ago</div>
+    <div class="chart-wrap">
+      <svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMid meet">
+        <line x1="0" y1="55" x2="640" y2="55" stroke="#E7E2D6" stroke-width="1"/>
+        <line x1="0" y1="110" x2="640" y2="110" stroke="#E7E2D6" stroke-width="1"/>
+        <line x1="0" y1="165" x2="640" y2="165" stroke="#E7E2D6" stroke-width="1"/>
+        <!-- PKR losing value -->
+        <polyline fill="none" stroke="#B8532E" stroke-width="2.5"
+          points="0,60 106,78 213,95 320,112 426,135 533,150 640,168" />
+        <!-- USDC flat -->
+        <polyline fill="none" stroke="#2E7D6B" stroke-width="2.5"
+          points="0,58 106,58 213,57 320,58 426,57 533,58 640,58" />
+        <circle cx="640" cy="168" r="4" fill="#B8532E" />
+        <circle cx="640" cy="58" r="4" fill="#2E7D6B" />
+      </svg>
+    </div>
+    <div class="legend">
+      <span><i class="dot" style="background:#2E7D6B"></i>USDC — holds value</span>
+      <span><i class="dot" style="background:#B8532E"></i>PKR — loses value to inflation</span>
+    </div>
+  </div>
+
+  <footer>Save in Dollars — prototype UI, connected to Arc testnet</footer>
+
+  <div id="toast" style="
+    position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
+    background: var(--green); color: #FBFAF6; padding: 14px 22px; border-radius: 10px;
+    font-size: 14px; font-weight: 500; opacity: 0; transition: all 0.25s ease;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.2); pointer-events: none; z-index: 100; max-width: 90%; text-align: center;
+  "></div>
+</div>
+
+<script>
+  const RATE = 280; // mock PKR per USD, replace with live rate later
+  const pkrInput = document.getElementById('pkrInput');
+  const usdcOutput = document.getElementById('usdcOutput');
+
+  function updateConversion() {
+    const pkr = parseFloat(pkrInput.value) || 0;
+    const usdc = (pkr / RATE).toFixed(2);
+    usdcOutput.value = usdc;
+  }
+  pkrInput.addEventListener('input', updateConversion);
+  updateConversion();
+
+  // ---- Toast helper ----
+  const toast = document.getElementById('toast');
+  function showToast(message, isError) {
+    toast.textContent = message;
+    toast.style.background = isError ? '#B8532E' : 'var(--green)';
+    toast.style.opacity = '1';
+    toast.style.transform = 'translateX(-50%) translateY(0)';
+    clearTimeout(showToast._t);
+    showToast._t = setTimeout(() => {
+      toast.style.opacity = '0';
+      toast.style.transform = 'translateX(-50%) translateY(20px)';
+    }, 3200);
+  }
+
+  let connectedAddress = null;
+
+  document.getElementById('convertBtn').addEventListener('click', async () => {
+    if (!connectedAddress) {
+      showToast('Connect your wallet first', true);
+      return;
+    }
+    const pkr = parseFloat(pkrInput.value) || 0;
+    const usdcAmount = pkr / RATE;
+    if (usdcAmount <= 0) {
+      showToast('Enter an amount to convert', true);
+      return;
+    }
+
+    const btn = document.getElementById('convertBtn');
+    const originalText = btn.textContent;
+    btn.textContent = 'Confirm in wallet…';
+    btn.disabled = true;
+
+    try {
+      // Demo: sends the converted USDC amount to yourself on Arc Testnet,
+      // simulating moving funds into your "savings" — replace with a real
+      // savings contract address once one exists.
+      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e18)).toString(16);
+      const txHash = await window.ethereum.request({
+        method: 'eth_sendTransaction',
+        params: [{
+          from: connectedAddress,
+          to: connectedAddress,
+          value: valueWei
+        }]
+      });
+      showToast('✅ Converted ' + pkr.toLocaleString('en-US') + ' PKR → ' + usdcAmount.toFixed(2) + ' USDC');
+      setTimeout(() => refreshBalance(connectedAddress), 2000); // give testnet a moment to confirm
+    } catch (err) {
+      console.error(err);
+      showToast('Transaction cancelled or failed', true);
+    } finally {
+      btn.textContent = originalText;
+      btn.disabled = false;
+    }
+  });
+
+  // ---- Arc Testnet wallet connect ----
+  const ARC_TESTNET = {
+    chainId: '0x4CEF52', // 5042002 in hex
+    chainName: 'Arc Testnet',
+    nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
+    rpcUrls: ['https://rpc.testnet.arc.network'],
+    blockExplorerUrls: []
+  };
+
+  const connectBtn = document.getElementById('connectBtn');
+  const statusLine = document.getElementById('statusLine');
+  const balanceAmount = document.getElementById('balanceAmount');
+  const pkrEquivalent = document.getElementById('pkrEquivalent');
+
+  function formatUsd(n) {
+    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  }
+
+  async function refreshBalance(address) {
+    const balHex = await window.ethereum.request({
+      method: 'eth_getBalance',
+      params: [address, 'latest']
+    });
+    const wei = BigInt(balHex);
+    const usdc = Number(wei) / 1e18; // Arc: USDC is native gas token, 18 decimals
+    balanceAmount.textContent = formatUsd(usdc);
+    pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * RATE).toLocaleString('en-US');
+  }
+
+  async function connectWallet() {
+    if (!window.ethereum) {
+      statusLine.textContent = 'No wallet found — install MetaMask';
+      return;
+    }
+    try {
+      connectBtn.textContent = 'Connecting…';
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+
+      try {
+        await window.ethereum.request({
+          method: 'wallet_switchEthereumChain',
+          params: [{ chainId: ARC_TESTNET.chainId }]
+        });
+      } catch (switchErr) {
+        // Chain not added yet — add it
+        if (switchErr.code === 4902) {
+          await window.ethereum.request({
+            method: 'wallet_addEthereumChain',
+            params: [ARC_TESTNET]
+          });
+        } else {
+          throw switchErr;
+        }
+      }
+
+      const address = accounts[0];
+      connectedAddress = address;
+      statusLine.textContent = address.slice(0, 6) + '…' + address.slice(-4) + ' · Arc Testnet';
+      connectBtn.textContent = 'Connected';
+      await refreshBalance(address);
+    } catch (err) {
+      statusLine.textContent = 'Connection failed — try again';
+      connectBtn.textContent = 'Connect Wallet';
+      console.error(err);
+    }
+  }
+
+  connectBtn.addEventListener('click', connectWallet);
+</script>
+</body>
+</html>
