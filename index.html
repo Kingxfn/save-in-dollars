@@ -17,6 +17,7 @@
     --teal: #2E7D6B;
     --line: #D8D2C4;
     --muted: #6B7268;
+    --red: #B8532E;
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
@@ -28,7 +29,7 @@
   .wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 80px; }
 
   /* Header */
-  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 40px; }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-mark {
     width: 34px; height: 34px; border-radius: 50%;
@@ -37,10 +38,26 @@
     font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; color: var(--green);
   }
   .brand-name { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; letter-spacing: 0.01em; }
-  .lang-toggle { font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 6px 12px; border-radius: 20px; background: var(--paper); }
+  .lang-toggle { font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 6px 12px; border-radius: 20px; background: var(--paper); cursor: pointer; }
+
+  /* Devaluation alert */
+  .alert-banner {
+    display: none;
+    align-items: center; justify-content: space-between; gap: 10px;
+    background: #FBEFE8; border: 1px solid #E7BFA8; color: var(--red);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; font-size: 13px;
+  }
+  .alert-banner button {
+    background: var(--red); color: #fff; border: none; border-radius: 6px;
+    padding: 6px 10px; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap;
+  }
+  .alert-dismiss {
+    background: none !important; color: var(--red) !important; font-size: 16px !important;
+    padding: 0 4px !important; line-height: 1;
+  }
 
   /* Hero seal */
-  .hero { text-align: center; margin-bottom: 44px; }
+  .hero { text-align: center; margin-bottom: 24px; }
   .eyebrow { font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--teal); font-weight: 500; margin-bottom: 18px; }
   .seal {
     width: 220px; height: 220px; border-radius: 50%;
@@ -62,6 +79,18 @@
   .sub-value { font-size: 13px; color: var(--muted); }
   .sub-value b { color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-weight: 500; }
 
+  /* Rate ticker */
+  .rate-ticker {
+    display: inline-flex; align-items: center; gap: 8px; margin: 14px auto 0;
+    background: var(--paper); border: 1px solid var(--line); border-radius: 20px;
+    padding: 8px 16px; font-family: 'IBM Plex Mono', monospace; font-size: 13px;
+  }
+  .rate-ticker .rt-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--teal); animation: pulse 1.6s infinite; }
+  @keyframes pulse { 0%,100% { opacity: 1; } 50% { opacity: 0.3; } }
+  .rt-delta { font-size: 11px; }
+  .rt-up { color: var(--red); }
+  .rt-down { color: var(--teal); }
+
   /* Card */
   .card {
     background: var(--paper);
@@ -72,6 +101,18 @@
   }
   .card h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; margin-bottom: 4px; }
   .card .hint { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+
+  /* Trust card */
+  .trust-card { background: #F1F6F3; border: 1px solid #CFE3D8; }
+  .trust-points { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
+  .trust-point { display: flex; gap: 10px; align-items: flex-start; }
+  .trust-icon {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--green);
+    color: #fff; flex-shrink: 0; display: flex; align-items: center; justify-content: center;
+    font-size: 13px; font-weight: 600;
+  }
+  .trust-point p { font-size: 13px; color: var(--ink); }
+  .trust-point p b { color: var(--green-soft); }
 
   /* Convert form */
   .convert-row { display: flex; gap: 10px; align-items: stretch; }
@@ -85,6 +126,12 @@
   .field input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
   .arrow { display: flex; align-items: flex-end; padding-bottom: 12px; color: var(--gold); font-size: 18px; }
   .rate-note { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .fee-note {
+    display: flex; justify-content: space-between; font-size: 12px; color: var(--muted);
+    margin-top: 10px; padding-top: 10px; border-top: 1px dashed var(--line);
+  }
+  .fee-note b { color: var(--ink); }
+  .fee-badge { color: var(--teal); font-weight: 500; }
   button.primary {
     width: 100%; margin-top: 18px;
     background: var(--green); color: #FBFAF6; border: none;
@@ -94,6 +141,7 @@
   }
   button.primary:hover { background: var(--green-soft); }
   button.primary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+  button.primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
   /* Chart */
   .chart-wrap { position: relative; }
@@ -151,6 +199,76 @@
     transition: all 0.15s ease;
   }
   button.secondary:hover { background: var(--teal); color: #FBFAF6; }
+
+  /* Toggle switch (auto-save) */
+  .toggle-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .toggle-row .tr-label { font-size: 14px; font-weight: 500; }
+  .toggle-row .tr-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+  .switch { position: relative; width: 44px; height: 26px; flex-shrink: 0; }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; cursor: pointer; inset: 0; background: var(--line);
+    border-radius: 26px; transition: 0.2s;
+  }
+  .slider::before {
+    content: ""; position: absolute; height: 20px; width: 20px; left: 3px; bottom: 3px;
+    background: #fff; border-radius: 50%; transition: 0.2s;
+  }
+  .switch input:checked + .slider { background: var(--teal); }
+  .switch input:checked + .slider::before { transform: translateX(18px); }
+  .auto-save-detail { display: none; }
+  .auto-save-detail.show { display: block; }
+  .auto-save-row { display: flex; gap: 10px; margin-bottom: 14px; }
+  .next-run {
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 10px 14px; font-size: 13px; color: var(--muted); margin-top: 4px;
+  }
+  .next-run b { color: var(--green-soft); }
+
+  /* Referral */
+  .referral-code-box {
+    display: flex; align-items: center; justify-content: space-between; gap: 10px;
+    background: var(--bg); border: 1px dashed var(--gold); border-radius: 8px;
+    padding: 12px 14px; margin-bottom: 14px;
+  }
+  .referral-code-box .code { font-family: 'IBM Plex Mono', monospace; font-size: 16px; font-weight: 500; letter-spacing: 0.05em; }
+  .copy-btn {
+    background: var(--gold); color: var(--ink); border: none; border-radius: 6px;
+    padding: 8px 12px; font-size: 12px; font-weight: 600; cursor: pointer;
+  }
+  .referral-stats { display: flex; gap: 16px; }
+  .ref-stat { flex: 1; background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 12px; text-align: center; }
+  .ref-stat .num { font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 500; color: var(--green-soft); }
+  .ref-stat .lbl { font-size: 11px; color: var(--muted); margin-top: 2px; }
+
+  /* KYC modal */
+  .modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(11,33,28,0.55);
+    z-index: 200; align-items: center; justify-content: center; padding: 20px;
+  }
+  .modal-overlay.show { display: flex; }
+  .modal-box {
+    background: var(--paper); border-radius: 14px; padding: 28px; max-width: 420px; width: 100%;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+  }
+  .modal-box h2 { font-family: 'Fraunces', serif; font-size: 20px; margin-bottom: 6px; }
+  .modal-box .hint { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
+  .modal-box .field { margin-bottom: 14px; }
+  .modal-box .field input {
+    width: 100%; border: 1px solid var(--line); border-radius: 8px; padding: 12px 14px;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 14px; background: var(--bg); color: var(--ink);
+  }
+  .modal-actions { display: flex; gap: 10px; margin-top: 18px; }
+  .modal-actions button { flex: 1; }
+  .modal-skip {
+    background: none; border: 1px solid var(--line); color: var(--muted);
+    padding: 14px; border-radius: 8px; font-size: 14px; cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif;
+  }
+  .kyc-badge {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--teal);
+    background: #EAF4F1; border-radius: 20px; padding: 4px 10px; margin-top: 10px;
+  }
 </style>
 </head>
 <body>
@@ -159,34 +277,68 @@
   <header>
     <div class="brand">
       <div class="brand-mark">$</div>
-      <div class="brand-name">Save in Dollars</div>
+      <div class="brand-name" data-i18n="brandName">Save in Dollars</div>
     </div>
-    <button class="lang-toggle" id="connectBtn" style="cursor:pointer;">Connect Wallet</button>
+    <button class="lang-toggle" id="langToggle">اردو</button>
   </header>
 
+  <div class="alert-banner" id="devalAlert">
+    <span data-i18n="devalMsg">⚠️ Rupee has weakened today — good time to convert.</span>
+    <div style="display:flex; gap:6px; align-items:center;">
+      <button id="devalConvertBtn" data-i18n="devalCta">Convert now</button>
+      <button class="alert-dismiss" id="devalDismiss">✕</button>
+    </div>
+  </div>
+
   <div class="hero">
-    <div class="eyebrow" id="statusLine">Not connected</div>
+    <div class="eyebrow" id="statusLine" data-i18n="notConnected">Not connected</div>
+    <button class="lang-toggle" id="connectBtn" style="cursor:pointer; margin-bottom:18px;" data-i18n="connectWallet">Connect Wallet</button>
     <div class="seal">
       <div class="amount"><span>$</span><span id="balanceAmount">0.00</span></div>
-      <div class="label">USDC Balance</div>
+      <div class="label" data-i18n="usdcBalance">USDC Balance</div>
     </div>
-    <div class="sub-value">Equivalent to <b id="pkrEquivalent">Rs 0</b> at today's rate</div>
+    <div class="sub-value"><span data-i18n="equivTo">Equivalent to</span> <b id="pkrEquivalent">Rs 0</b> <span data-i18n="atRate">at today's rate</span></div>
+    <div class="rate-ticker">
+      <span class="rt-dot"></span>
+      <span id="rateTickerText">1 USD ≈ Rs 280.00</span>
+      <span class="rt-delta" id="rateDelta"></span>
+    </div>
+  </div>
+
+  <div class="card trust-card">
+    <h2 data-i18n="trustTitle">Your money is safe</h2>
+    <div class="hint" data-i18n="trustHint">A simple explanation of where your savings actually go.</div>
+    <div class="trust-points">
+      <div class="trust-point">
+        <div class="trust-icon">$</div>
+        <p data-i18n="trust1"><b>USDC</b> is a digital dollar — each one is always worth exactly $1, backed 1-to-1 by real US dollar reserves.</p>
+      </div>
+      <div class="trust-point">
+        <div class="trust-icon">🔒</div>
+        <p data-i18n="trust2">Your savings live in <b>your own wallet</b> — not our bank account. Only you hold the keys.</p>
+      </div>
+      <div class="trust-point">
+        <div class="trust-icon">↺</div>
+        <p data-i18n="trust3">You can withdraw back to <b>PKR anytime</b> — there's no lock-in period.</p>
+      </div>
+    </div>
+    <div class="kyc-badge" id="kycBadge">🪪 <span data-i18n="kycNotDone">Identity not verified — tap to verify</span></div>
   </div>
 
   <div class="card">
     <span class="dw-badge">Testnet Demo</span>
-    <h2>Deposit &amp; Withdraw</h2>
-    <div class="hint">Move money between your mobile wallet/bank and your USDC savings.</div>
+    <h2 data-i18n="dwTitle">Deposit &amp; Withdraw</h2>
+    <div class="hint" data-i18n="dwHint">Move money between your mobile wallet/bank and your USDC savings.</div>
 
     <div class="dw-tabs">
-      <button class="dw-tab active" data-tab="deposit" id="dwTabDeposit">Deposit</button>
-      <button class="dw-tab" data-tab="withdraw" id="dwTabWithdraw">Withdraw</button>
+      <button class="dw-tab active" data-tab="deposit" id="dwTabDeposit" data-i18n="depositTab">Deposit</button>
+      <button class="dw-tab" data-tab="withdraw" id="dwTabWithdraw" data-i18n="withdrawTab">Withdraw</button>
     </div>
 
     <div class="dw-methods">
       <button class="method-btn active" data-method="easypaisa">Easypaisa</button>
       <button class="method-btn" data-method="jazzcash">JazzCash</button>
-      <button class="method-btn" data-method="bank">Bank Transfer</button>
+      <button class="method-btn" data-method="bank" data-i18n="bankTransfer">Bank Transfer</button>
     </div>
 
     <div class="field" style="margin-top:16px;">
@@ -199,58 +351,172 @@
   </div>
 
   <div class="card">
-    <h2>Convert PKR → USDC</h2>
-    <div class="hint">Move your savings into a stable digital dollar, instantly.</div>
+    <div class="toggle-row">
+      <div>
+        <div class="tr-label" data-i18n="autoSaveTitle">Auto-Save</div>
+        <div class="tr-sub" data-i18n="autoSaveHint">Automatically convert PKR to USDC every month</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="autoSaveToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="auto-save-detail" id="autoSaveDetail">
+      <div class="auto-save-row">
+        <div class="field">
+          <label data-i18n="autoSaveAmount">Amount (PKR / month)</label>
+          <input type="number" id="autoSaveAmount" placeholder="5000" value="5000" />
+        </div>
+        <div class="field">
+          <label data-i18n="autoSaveDay">Day of month</label>
+          <select id="autoSaveDay"></select>
+        </div>
+      </div>
+      <button class="primary" id="autoSaveSaveBtn" data-i18n="autoSaveSave">Confirm Auto-Save</button>
+      <div class="next-run" id="autoSaveNextRun" style="display:none;"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="convertTitle">Convert PKR → USDC</h2>
+    <div class="hint" data-i18n="convertHint">Move your savings into a stable digital dollar, instantly.</div>
     <div class="convert-row">
       <div class="field">
-        <label>You send</label>
+        <label data-i18n="youSend">You send</label>
         <input type="number" id="pkrInput" placeholder="0" value="10000" />
         <div class="rate-note">PKR</div>
       </div>
       <div class="arrow">→</div>
       <div class="field">
-        <label>You receive</label>
+        <label data-i18n="youReceive">You receive</label>
         <input type="text" id="usdcOutput" readonly />
         <div class="rate-note">USDC</div>
       </div>
     </div>
     <div class="rate-note" id="rateLine">1 USD ≈ Rs 280</div>
-    <button class="primary" id="convertBtn">Convert &amp; Save</button>
+    <div class="fee-note">
+      <span data-i18n="feeLabel">Fee</span>
+      <span><b id="feeAmount">Rs 0</b> <span class="fee-badge" data-i18n="noHidden">· no hidden charges (0.5% flat)</span></span>
+    </div>
+    <button class="primary" id="convertBtn" data-i18n="convertBtnTxt">Convert &amp; Save</button>
   </div>
 
   <div class="card">
-    <h2>Saving Goals</h2>
-    <div class="hint">Split your USDC savings into goals — track progress toward each one.</div>
+    <h2 data-i18n="goalsTitle">Saving Goals</h2>
+    <div class="hint" data-i18n="goalsHint">Split your USDC savings into goals — track progress toward each one.</div>
     <div id="goalsList" style="display:flex; flex-direction:column; gap:14px;"></div>
     <div style="display:flex; gap:10px; margin-top:16px;">
       <input type="text" id="goalNameInput" placeholder="Goal name (e.g. Emergency Fund)" style="flex:1.4; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; background:var(--bg); color:var(--ink);" />
       <input type="number" id="goalTargetInput" placeholder="Target USDC" style="flex:1; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--bg); color:var(--ink);" />
     </div>
-    <button class="primary" id="addGoalBtn" style="margin-top:10px;">Add Goal</button>
+    <button class="primary" id="addGoalBtn" style="margin-top:10px;" data-i18n="addGoal">Add Goal</button>
   </div>
 
   <div class="card">
     <span class="dw-badge">Testnet Demo</span>
-    <h2>Pay Utility Bills</h2>
-    <div class="hint">Electricity, gas, and water bills — pay any provider across Pakistan straight from your USDC savings.</div>
+    <h2 data-i18n="remitTitle">Send Money from Abroad</h2>
+    <div class="hint" data-i18n="remitHint">Overseas Pakistanis can send USD straight into a family member's savings — no bank delays.</div>
+    <div class="field" style="margin-bottom:14px;">
+      <label data-i18n="remitCountry">Sending from</label>
+      <select id="remitCountry">
+        <option>United States</option>
+        <option>United Kingdom</option>
+        <option>United Arab Emirates</option>
+        <option>Saudi Arabia</option>
+        <option>Canada</option>
+        <option>Australia</option>
+      </select>
+    </div>
+    <div class="convert-row">
+      <div class="field">
+        <label data-i18n="remitSend">You send (USD)</label>
+        <input type="number" id="remitUsdInput" placeholder="0" value="100" />
+      </div>
+      <div class="arrow">→</div>
+      <div class="field">
+        <label data-i18n="remitReceive">Recipient gets (USDC)</label>
+        <input type="text" id="remitUsdcOutput" readonly />
+      </div>
+    </div>
+    <div class="field" style="margin-top:14px;">
+      <label data-i18n="remitRecipient">Recipient wallet / phone</label>
+      <input type="text" id="remitRecipientInput" placeholder="03xx-xxxxxxx or wallet address" />
+    </div>
+    <div class="fee-note">
+      <span data-i18n="feeLabel">Fee</span>
+      <span><b id="remitFee">$1.00</b> <span class="fee-badge" data-i18n="remitFeeNote">· flat $1, far below bank wire fees</span></span>
+    </div>
+    <button class="secondary" id="remitSendBtn" data-i18n="remitBtnTxt">Send Remittance</button>
+  </div>
+
+  <div class="card">
+    <span class="dw-badge">Testnet Demo</span>
+    <h2 data-i18n="topupTitle">Mobile Top-Up</h2>
+    <div class="hint" data-i18n="topupHint">Top up any mobile number directly from your USDC savings.</div>
+    <div class="field" style="margin-bottom:14px;">
+      <label data-i18n="topupOperator">Operator</label>
+      <select id="topupOperator">
+        <option>Jazz</option>
+        <option>Telenor</option>
+        <option>Zong</option>
+        <option>Ufone</option>
+        <option>SCOM</option>
+      </select>
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <label data-i18n="topupNumber">Mobile Number</label>
+      <input type="text" id="topupNumberInput" placeholder="03xx-xxxxxxx" />
+    </div>
+    <div style="display:flex; gap:8px; margin-bottom:16px;" id="topupAmounts">
+      <button class="method-btn" data-amt="100">Rs 100</button>
+      <button class="method-btn" data-amt="300">Rs 300</button>
+      <button class="method-btn" data-amt="500">Rs 500</button>
+      <button class="method-btn" data-amt="1000">Rs 1000</button>
+    </div>
+    <button class="secondary" id="topupBtn" data-i18n="topupBtnTxt">Top Up Now</button>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="referralTitle">Invite Friends, Earn USDC</h2>
+    <div class="hint" data-i18n="referralHint">Share your code — you and your friend each get $1 USDC when they make their first deposit.</div>
+    <div class="referral-code-box">
+      <span class="code" id="referralCode">SID-0000</span>
+      <button class="copy-btn" id="copyReferralBtn" data-i18n="copyCode">Copy</button>
+    </div>
+    <div class="referral-stats">
+      <div class="ref-stat">
+        <div class="num" id="referralCount">0</div>
+        <div class="lbl" data-i18n="friendsInvited">Friends Invited</div>
+      </div>
+      <div class="ref-stat">
+        <div class="num" id="referralEarned">$0</div>
+        <div class="lbl" data-i18n="bonusEarned">Bonus Earned</div>
+      </div>
+    </div>
+    <button class="primary" id="simulateReferralBtn" style="margin-top:14px;" data-i18n="simulateReferral">Simulate a Friend Joining (Demo)</button>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="providerTitle">Pay Utility Bills</h2>
+    <div class="hint" data-i18n="providerHint">Electricity, gas, and water bills — pay any provider across Pakistan straight from your USDC savings.</div>
 
     <div class="dw-tabs" id="billCategoryTabs">
-      <button class="dw-tab active" data-category="electricity">Electricity</button>
-      <button class="dw-tab" data-category="gas">Gas</button>
-      <button class="dw-tab" data-category="water">Water</button>
+      <button class="dw-tab active" data-category="electricity" data-i18n="electricityTab">Electricity</button>
+      <button class="dw-tab" data-category="gas" data-i18n="gasTab">Gas</button>
+      <button class="dw-tab" data-category="water" data-i18n="waterTab">Water</button>
     </div>
 
     <div class="field" style="margin-bottom:14px;">
-      <label>Provider</label>
+      <label data-i18n="providerLabel">Provider</label>
       <select id="billProviderSelect"></select>
     </div>
 
     <div class="field" style="margin-bottom:16px;">
-      <label>Consumer / Reference Number</label>
+      <label data-i18n="consumerLabel">Consumer / Reference Number</label>
       <input type="text" id="billConsumerInput" placeholder="e.g. 03-1234-5678901" />
     </div>
 
-    <button class="secondary" id="billFetchBtn">Fetch Bill</button>
+    <button class="secondary" id="billFetchBtn" data-i18n="fetchBill">Fetch Bill</button>
 
     <div id="billResult" style="display:none; margin-top:16px; padding:14px; background:var(--bg); border:1px solid var(--line); border-radius:8px;">
       <div style="display:flex; justify-content:space-between; align-items:flex-start;">
@@ -260,19 +526,19 @@
         </div>
         <div style="font-size:11px; color:var(--muted);" id="billResultDue"></div>
       </div>
-      <button class="primary" id="billPayBtn" style="margin-top:14px;">Pay Bill</button>
+      <button class="primary" id="billPayBtn" style="margin-top:14px;" data-i18n="payBill">Pay Bill</button>
     </div>
   </div>
 
   <div class="card">
-    <h2>Bills Paid This Month</h2>
-    <div class="hint">A running record of your utility payments, saved on this device.</div>
+    <h2 data-i18n="billsPaidTitle">Bills Paid This Month</h2>
+    <div class="hint" data-i18n="billsPaidHint">A running record of your utility payments, saved on this device.</div>
     <div id="billsPaidList" style="display:flex; flex-direction:column; gap:10px;"></div>
   </div>
 
   <div class="card">
-    <h2>Rupee vs. Digital Dollar</h2>
-    <div class="hint">What Rs 100,000 would be worth today if saved a year ago</div>
+    <h2 data-i18n="chartTitle">Rupee vs. Digital Dollar</h2>
+    <div class="hint" data-i18n="chartHint">What Rs 100,000 would be worth today if saved a year ago</div>
     <div class="chart-wrap">
       <svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMid meet">
         <line x1="0" y1="55" x2="640" y2="55" stroke="#E7E2D6" stroke-width="1"/>
@@ -289,20 +555,20 @@
       </svg>
     </div>
     <div class="legend">
-      <span><i class="dot" style="background:#2E7D6B"></i>USDC — holds value</span>
-      <span><i class="dot" style="background:#B8532E"></i>PKR — loses value to inflation</span>
+      <span><i class="dot" style="background:#2E7D6B"></i><span data-i18n="legendUsdc">USDC — holds value</span></span>
+      <span><i class="dot" style="background:#B8532E"></i><span data-i18n="legendPkr">PKR — loses value to inflation</span></span>
     </div>
   </div>
 
   <div class="card">
-    <h2>Transaction History</h2>
-    <div class="hint">Every conversion you've made, saved on this device.</div>
+    <h2 data-i18n="historyTitle">Transaction History</h2>
+    <div class="hint" data-i18n="historyHint">Every conversion you've made, saved on this device.</div>
     <div id="historyList" style="display:flex; flex-direction:column; gap:10px;">
-      <div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;" id="historyEmpty">No conversions yet — try one above.</div>
+      <div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;" id="historyEmpty" data-i18n="historyEmptyTxt">No conversions yet — try one above.</div>
     </div>
   </div>
 
-  <footer>Save in Dollars — prototype UI, connected to Arc testnet</footer>
+  <footer data-i18n="footerTxt">Save in Dollars — prototype UI, connected to Arc testnet</footer>
 
   <div id="toast" style="
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -312,34 +578,197 @@
   "></div>
 </div>
 
+<!-- KYC Modal -->
+<div class="modal-overlay" id="kycModal">
+  <div class="modal-box">
+    <h2 data-i18n="kycModalTitle">Quick Identity Check</h2>
+    <div class="hint" data-i18n="kycModalHint">Just 3 details — required by regulation to keep your money safe. Takes 30 seconds.</div>
+    <div class="field">
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="kycNameLabel">Full Name</label>
+      <input type="text" id="kycName" placeholder="e.g. Ayesha Khan" />
+    </div>
+    <div class="field">
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="kycCnicLabel">CNIC Number</label>
+      <input type="text" id="kycCnic" placeholder="xxxxx-xxxxxxx-x" maxlength="15" />
+    </div>
+    <div class="field">
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="kycPhoneLabel">Mobile Number</label>
+      <input type="text" id="kycPhone" placeholder="03xx-xxxxxxx" />
+    </div>
+    <div class="modal-actions">
+      <button class="modal-skip" id="kycSkipBtn" data-i18n="kycSkip">Later</button>
+      <button class="primary" id="kycSubmitBtn" style="margin-top:0;" data-i18n="kycSubmit">Verify Me</button>
+    </div>
+  </div>
+</div>
+
 <script>
-  const RATE = 280; // mock PKR per USD, replace with live rate later
+  /* ---------------- i18n ---------------- */
+  const translations = {
+    en: {
+      brandName: "Save in Dollars", devalMsg: "⚠️ Rupee has weakened today — good time to convert.",
+      devalCta: "Convert now", notConnected: "Not connected", connectWallet: "Connect Wallet",
+      usdcBalance: "USDC Balance", equivTo: "Equivalent to", atRate: "at today's rate",
+      trustTitle: "Your money is safe", trustHint: "A simple explanation of where your savings actually go.",
+      trust1: "<b>USDC</b> is a digital dollar — each one is always worth exactly $1, backed 1-to-1 by real US dollar reserves.",
+      trust2: "Your savings live in <b>your own wallet</b> — not our bank account. Only you hold the keys.",
+      trust3: "You can withdraw back to <b>PKR anytime</b> — there's no lock-in period.",
+      kycNotDone: "Identity not verified — tap to verify", kycDone: "Identity verified",
+      dwTitle: "Deposit &amp; Withdraw", dwHint: "Move money between your mobile wallet/bank and your USDC savings.",
+      depositTab: "Deposit", withdrawTab: "Withdraw", bankTransfer: "Bank Transfer",
+      autoSaveTitle: "Auto-Save", autoSaveHint: "Automatically convert PKR to USDC every month",
+      autoSaveAmount: "Amount (PKR / month)", autoSaveDay: "Day of month", autoSaveSave: "Confirm Auto-Save",
+      convertTitle: "Convert PKR → USDC", convertHint: "Move your savings into a stable digital dollar, instantly.",
+      youSend: "You send", youReceive: "You receive", feeLabel: "Fee", noHidden: "· no hidden charges (0.5% flat)",
+      convertBtnTxt: "Convert &amp; Save",
+      goalsTitle: "Saving Goals", goalsHint: "Split your USDC savings into goals — track progress toward each one.",
+      addGoal: "Add Goal",
+      remitTitle: "Send Money from Abroad", remitHint: "Overseas Pakistanis can send USD straight into a family member's savings — no bank delays.",
+      remitCountry: "Sending from", remitSend: "You send (USD)", remitReceive: "Recipient gets (USDC)",
+      remitRecipient: "Recipient wallet / phone", remitFeeNote: "· flat $1, far below bank wire fees", remitBtnTxt: "Send Remittance",
+      topupTitle: "Mobile Top-Up", topupHint: "Top up any mobile number directly from your USDC savings.",
+      topupOperator: "Operator", topupNumber: "Mobile Number", topupBtnTxt: "Top Up Now",
+      referralTitle: "Invite Friends, Earn USDC", referralHint: "Share your code — you and your friend each get $1 USDC when they make their first deposit.",
+      copyCode: "Copy", friendsInvited: "Friends Invited", bonusEarned: "Bonus Earned", simulateReferral: "Simulate a Friend Joining (Demo)",
+      providerTitle: "Pay Utility Bills", providerHint: "Electricity, gas, and water bills — pay any provider across Pakistan straight from your USDC savings.",
+      electricityTab: "Electricity", gasTab: "Gas", waterTab: "Water", providerLabel: "Provider",
+      consumerLabel: "Consumer / Reference Number", fetchBill: "Fetch Bill", payBill: "Pay Bill",
+      billsPaidTitle: "Bills Paid This Month", billsPaidHint: "A running record of your utility payments, saved on this device.",
+      chartTitle: "Rupee vs. Digital Dollar", chartHint: "What Rs 100,000 would be worth today if saved a year ago",
+      legendUsdc: "USDC — holds value", legendPkr: "PKR — loses value to inflation",
+      historyTitle: "Transaction History", historyHint: "Every conversion you've made, saved on this device.",
+      historyEmptyTxt: "No conversions yet — try one above.",
+      footerTxt: "Save in Dollars — prototype UI, connected to Arc testnet",
+      kycModalTitle: "Quick Identity Check", kycModalHint: "Just 3 details — required by regulation to keep your money safe. Takes 30 seconds.",
+      kycNameLabel: "Full Name", kycCnicLabel: "CNIC Number", kycPhoneLabel: "Mobile Number",
+      kycSkip: "Later", kycSubmit: "Verify Me"
+    },
+    ur: {
+      brandName: "سیو اِن ڈالرز", devalMsg: "⚠️ روپے کی قدر آج کم ہوئی ہے — ابھی کنورٹ کرنے کا اچھا وقت ہے۔",
+      devalCta: "ابھی کنورٹ کریں", notConnected: "منسلک نہیں", connectWallet: "والیٹ جوڑیں",
+      usdcBalance: "یو ایس ڈی سی بیلنس", equivTo: "برابر ہے", atRate: "آج کی شرح پر",
+      trustTitle: "آپ کا پیسہ محفوظ ہے", trustHint: "سادہ الفاظ میں سمجھیں کہ آپ کی بچت کہاں جاتی ہے۔",
+      trust1: "<b>یو ایس ڈی سی</b> ایک ڈیجیٹل ڈالر ہے — ہر ایک کی قیمت ہمیشہ $1 کے برابر ہوتی ہے، اصل امریکی ڈالر ذخائر سے مکمل طور پر محفوظ۔",
+      trust2: "آپ کی بچت <b>آپ کے اپنے والیٹ</b> میں رہتی ہے — ہمارے بینک اکاؤنٹ میں نہیں۔ صرف آپ کے پاس چابیاں ہیں۔",
+      trust3: "آپ کسی بھی وقت <b>پی کے آر میں واپس</b> نکلوا سکتے ہیں — کوئی لاک ان نہیں۔",
+      kycNotDone: "شناخت تصدیق نہیں ہوئی — تصدیق کے لیے دبائیں", kycDone: "شناخت تصدیق شدہ",
+      dwTitle: "جمع اور نکلوائیں", dwHint: "اپنے موبائل والیٹ/بینک اور یو ایس ڈی سی بچت کے درمیان رقم منتقل کریں۔",
+      depositTab: "جمع کریں", withdrawTab: "نکلوائیں", bankTransfer: "بینک ٹرانسفر",
+      autoSaveTitle: "خودکار بچت", autoSaveHint: "ہر مہینے خودکار طور پر پی کے آر کو یو ایس ڈی سی میں تبدیل کریں",
+      autoSaveAmount: "رقم (پی کے آر / ماہانہ)", autoSaveDay: "مہینے کا دن", autoSaveSave: "خودکار بچت کی تصدیق کریں",
+      convertTitle: "پی کے آر → یو ایس ڈی سی کنورٹ کریں", convertHint: "اپنی بچت کو فوری طور پر مستحکم ڈیجیٹل ڈالر میں تبدیل کریں۔",
+      youSend: "آپ بھیجیں", youReceive: "آپ کو ملے گا", feeLabel: "فیس", noHidden: "· کوئی پوشیدہ چارجز نہیں (0.5% فلیٹ)",
+      convertBtnTxt: "کنورٹ اور محفوظ کریں",
+      goalsTitle: "بچت کے اہداف", goalsHint: "اپنی یو ایس ڈی سی بچت کو اہداف میں تقسیم کریں۔",
+      addGoal: "ہدف شامل کریں",
+      remitTitle: "بیرون ملک سے رقم بھیجیں", remitHint: "بیرون ملک پاکستانی خاندان کے فرد کی بچت میں براہ راست ڈالر بھیج سکتے ہیں۔",
+      remitCountry: "کہاں سے بھیج رہے ہیں", remitSend: "آپ بھیجیں (USD)", remitReceive: "وصول کنندہ کو ملے گا (USDC)",
+      remitRecipient: "وصول کنندہ والیٹ / فون", remitFeeNote: "· فلیٹ $1، بینک وائر فیس سے کہیں کم", remitBtnTxt: "رقم بھیجیں",
+      topupTitle: "موبائل ٹاپ اپ", topupHint: "کسی بھی موبائل نمبر کو براہ راست اپنی یو ایس ڈی سی بچت سے ٹاپ اپ کریں۔",
+      topupOperator: "آپریٹر", topupNumber: "موبائل نمبر", topupBtnTxt: "ابھی ٹاپ اپ کریں",
+      referralTitle: "دوستوں کو مدعو کریں، یو ایس ڈی سی کمائیں", referralHint: "اپنا کوڈ شیئر کریں — پہلی جمع پر آپ اور آپ کے دوست دونوں کو $1 ملے گا۔",
+      copyCode: "کاپی کریں", friendsInvited: "مدعو دوست", bonusEarned: "کمایا گیا بونس", simulateReferral: "دوست کا شامل ہونا (ڈیمو)",
+      providerTitle: "یوٹیلیٹی بل ادا کریں", providerHint: "بجلی، گیس اور پانی کے بل — پاکستان بھر میں کسی بھی فراہم کنندہ کو یو ایس ڈی سی سے ادا کریں۔",
+      electricityTab: "بجلی", gasTab: "گیس", waterTab: "پانی", providerLabel: "فراہم کنندہ",
+      consumerLabel: "کنزیومر / حوالہ نمبر", fetchBill: "بل حاصل کریں", payBill: "بل ادا کریں",
+      billsPaidTitle: "اس مہینے ادا شدہ بل", billsPaidHint: "آپ کی یوٹیلیٹی ادائیگیوں کا ریکارڈ، اسی ڈیوائس پر محفوظ۔",
+      chartTitle: "روپیہ بمقابلہ ڈیجیٹل ڈالر", chartHint: "اگر ایک سال پہلے Rs 100,000 بچائے ہوتے تو آج کتنے ہوتے",
+      legendUsdc: "یو ایس ڈی سی — قدر برقرار", legendPkr: "پی کے آر — افراط زر سے قدر میں کمی",
+      historyTitle: "لین دین کی تاریخ", historyHint: "آپ کی ہر کنورژن، اسی ڈیوائس پر محفوظ۔",
+      historyEmptyTxt: "ابھی کوئی کنورژن نہیں — اوپر آزمائیں۔",
+      footerTxt: "سیو اِن ڈالرز — پروٹوٹائپ یو آئی، آرک ٹیسٹ نیٹ سے منسلک",
+      kycModalTitle: "فوری شناختی چیک", kycModalHint: "بس 3 تفصیلات — آپ کے پیسے کی حفاظت کے لیے ضابطے کے تحت لازمی۔ 30 سیکنڈ لگیں گے۔",
+      kycNameLabel: "پورا نام", kycCnicLabel: "شناختی کارڈ نمبر", kycPhoneLabel: "موبائل نمبر",
+      kycSkip: "بعد میں", kycSubmit: "میری تصدیق کریں"
+    }
+  };
+  let currentLang = localStorage.getItem('saveInDollars_lang') || 'en';
+
+  function applyTranslations() {
+    const dict = translations[currentLang];
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if (dict[key] !== undefined) el.innerHTML = dict[key];
+    });
+    document.documentElement.setAttribute('dir', currentLang === 'ur' ? 'rtl' : 'ltr');
+    document.getElementById('langToggle').textContent = currentLang === 'ur' ? 'English' : 'اردو';
+    updateKycBadge();
+    updateAutoSaveUI();
+  }
+
+  document.getElementById('langToggle').addEventListener('click', () => {
+    currentLang = currentLang === 'en' ? 'ur' : 'en';
+    localStorage.setItem('saveInDollars_lang', currentLang);
+    applyTranslations();
+  });
+
+  /* ---------------- Rate / conversion ---------------- */
+  let RATE = 280; // mock PKR per USD baseline
+  let liveRate = RATE;
   const pkrInput = document.getElementById('pkrInput');
   const usdcOutput = document.getElementById('usdcOutput');
+  const feeAmount = document.getElementById('feeAmount');
+  const FEE_PCT = 0.005;
 
   function updateConversion() {
     const pkr = parseFloat(pkrInput.value) || 0;
-    const usdc = (pkr / RATE).toFixed(2);
+    const fee = pkr * FEE_PCT;
+    const usdc = ((pkr - fee) / liveRate).toFixed(2);
     usdcOutput.value = usdc;
+    feeAmount.textContent = 'Rs ' + fee.toFixed(0);
   }
   pkrInput.addEventListener('input', updateConversion);
+
+  function updateRateDisplays() {
+    document.getElementById('rateLine').textContent = '1 USD ≈ Rs ' + liveRate.toFixed(2);
+    document.getElementById('rateTickerText').textContent = '1 USD ≈ Rs ' + liveRate.toFixed(2);
+  }
+
+  // Simulate a slowly drifting live rate + occasional devaluation alert
+  let prevRate = RATE;
+  setInterval(() => {
+    prevRate = liveRate;
+    const drift = (Math.random() - 0.42) * 0.6; // slight upward (devaluation) bias
+    liveRate = Math.max(270, Math.min(295, liveRate + drift));
+    const delta = liveRate - prevRate;
+    const deltaEl = document.getElementById('rateDelta');
+    if (Math.abs(delta) > 0.02) {
+      deltaEl.textContent = (delta > 0 ? '▲ ' : '▼ ') + Math.abs(delta).toFixed(2);
+      deltaEl.className = 'rt-delta ' + (delta > 0 ? 'rt-up' : 'rt-down');
+    }
+    updateRateDisplays();
+    updateConversion();
+    updateRemitConversion();
+    pkrEquivalent.textContent = 'Rs ' + Math.round(getCurrentBalance() * liveRate).toLocaleString('en-US');
+    // Devaluation alert if rate has risen notably vs session start
+    if (liveRate - RATE > 3 && document.getElementById('devalAlert').dataset.dismissed !== 'true') {
+      document.getElementById('devalAlert').style.display = 'flex';
+    }
+  }, 4000);
+
+  updateRateDisplays();
   updateConversion();
 
-  // ---- Transaction history (saved on this device via localStorage) ----
+  document.getElementById('devalDismiss').addEventListener('click', () => {
+    document.getElementById('devalAlert').style.display = 'none';
+    document.getElementById('devalAlert').dataset.dismissed = 'true';
+  });
+  document.getElementById('devalConvertBtn').addEventListener('click', () => {
+    document.getElementById('devalAlert').style.display = 'none';
+    document.querySelector('#convertBtn').closest('.card').scrollIntoView({ behavior: 'smooth' });
+  });
+
+  /* ---------------- Transaction history ---------------- */
   const HISTORY_KEY = 'saveInDollars_history';
 
   function getHistory() {
-    try {
-      return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
-    } catch (e) {
-      return [];
-    }
+    try { return JSON.parse(localStorage.getItem(HISTORY_KEY)) || []; } catch (e) { return []; }
   }
 
   function addHistoryEntry(pkr, usdc, label) {
     const history = getHistory();
     history.unshift({ pkr, usdc, label: label || null, date: new Date().toISOString() });
-    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20))); // keep last 20
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20)));
     renderHistory();
   }
 
@@ -347,7 +776,7 @@
     const history = getHistory();
     const list = document.getElementById('historyList');
     if (history.length === 0) {
-      list.innerHTML = '<div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;">No activity yet — try converting or depositing above.</div>';
+      list.innerHTML = `<div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;" data-i18n="historyEmptyTxt">${translations[currentLang].historyEmptyTxt}</div>`;
       return;
     }
     list.innerHTML = history.map(entry => {
@@ -367,10 +796,9 @@
       `;
     }).join('');
   }
-
   renderHistory();
 
-  // ---- Toast helper ----
+  /* ---------------- Toast ---------------- */
   const toast = document.getElementById('toast');
   function showToast(message, isError) {
     toast.textContent = message;
@@ -387,16 +815,11 @@
   let connectedAddress = null;
 
   document.getElementById('convertBtn').addEventListener('click', async () => {
-    if (!connectedAddress) {
-      showToast('Connect your wallet first', true);
-      return;
-    }
+    if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
     const pkr = parseFloat(pkrInput.value) || 0;
-    const usdcAmount = pkr / RATE;
-    if (usdcAmount <= 0) {
-      showToast('Enter an amount to convert', true);
-      return;
-    }
+    const fee = pkr * FEE_PCT;
+    const usdcAmount = (pkr - fee) / liveRate;
+    if (usdcAmount <= 0) { showToast('Enter an amount to convert', true); return; }
 
     const btn = document.getElementById('convertBtn');
     const originalText = btn.textContent;
@@ -404,21 +827,14 @@
     btn.disabled = true;
 
     try {
-      // Demo: sends the converted USDC amount to yourself on Arc Testnet,
-      // simulating moving funds into your "savings" — replace with a real
-      // savings contract address once one exists.
       const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e18)).toString(16);
-      const txHash = await window.ethereum.request({
+      await window.ethereum.request({
         method: 'eth_sendTransaction',
-        params: [{
-          from: connectedAddress,
-          to: connectedAddress,
-          value: valueWei
-        }]
+        params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
       });
       showToast('✅ Converted ' + pkr.toLocaleString('en-US') + ' PKR → ' + usdcAmount.toFixed(2) + ' USDC');
       addHistoryEntry(pkr, usdcAmount);
-      setTimeout(() => refreshBalance(connectedAddress), 2000); // give testnet a moment to confirm
+      setTimeout(() => refreshBalance(connectedAddress), 2000);
     } catch (err) {
       console.error(err);
       showToast('Transaction cancelled or failed', true);
@@ -428,13 +844,11 @@
     }
   });
 
-  // ---- Arc Testnet wallet connect ----
+  /* ---------------- Wallet connect ---------------- */
   const ARC_TESTNET = {
-    chainId: '0x4CEF52', // 5042002 in hex
-    chainName: 'Arc Testnet',
+    chainId: '0x4CEF52', chainName: 'Arc Testnet',
     nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
-    rpcUrls: ['https://rpc.testnet.arc.network'],
-    blockExplorerUrls: []
+    rpcUrls: ['https://rpc.testnet.arc.network'], blockExplorerUrls: []
   };
 
   const connectBtn = document.getElementById('connectBtn');
@@ -442,62 +856,44 @@
   const balanceAmount = document.getElementById('balanceAmount');
   const pkrEquivalent = document.getElementById('pkrEquivalent');
 
-  function formatUsd(n) {
-    return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
-  }
+  function formatUsd(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
   async function refreshBalance(address) {
-    const balHex = await window.ethereum.request({
-      method: 'eth_getBalance',
-      params: [address, 'latest']
-    });
+    const balHex = await window.ethereum.request({ method: 'eth_getBalance', params: [address, 'latest'] });
     const wei = BigInt(balHex);
-    const usdc = Number(wei) / 1e18; // Arc: USDC is native gas token, 18 decimals
+    const usdc = Number(wei) / 1e18;
     balanceAmount.textContent = formatUsd(usdc);
-    pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * RATE).toLocaleString('en-US');
+    pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
   }
 
   async function connectWallet() {
-    if (!window.ethereum) {
-      statusLine.textContent = 'No wallet found — install MetaMask';
-      return;
-    }
+    if (!window.ethereum) { statusLine.textContent = 'No wallet found — install MetaMask'; return; }
     try {
       connectBtn.textContent = 'Connecting…';
       const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
-
       try {
-        await window.ethereum.request({
-          method: 'wallet_switchEthereumChain',
-          params: [{ chainId: ARC_TESTNET.chainId }]
-        });
+        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: ARC_TESTNET.chainId }] });
       } catch (switchErr) {
-        // Chain not added yet — add it
         if (switchErr.code === 4902) {
-          await window.ethereum.request({
-            method: 'wallet_addEthereumChain',
-            params: [ARC_TESTNET]
-          });
-        } else {
-          throw switchErr;
-        }
+          await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [ARC_TESTNET] });
+        } else { throw switchErr; }
       }
-
       const address = accounts[0];
       connectedAddress = address;
       statusLine.textContent = address.slice(0, 6) + '…' + address.slice(-4) + ' · Arc Testnet';
       connectBtn.textContent = 'Connected';
       await refreshBalance(address);
+      setupReferralCode(address);
+      maybeShowKyc();
     } catch (err) {
       statusLine.textContent = 'Connection failed — try again';
       connectBtn.textContent = 'Connect Wallet';
       console.error(err);
     }
   }
-
   connectBtn.addEventListener('click', connectWallet);
 
-  // ---- Deposit / Withdraw simulation (testnet demo, no real money moves) ----
+  /* ---------------- Deposit / Withdraw ---------------- */
   const methodLabels = { easypaisa: 'Easypaisa', jazzcash: 'JazzCash', bank: 'Bank Transfer' };
   let dwTab = 'deposit';
   let dwMethod = 'easypaisa';
@@ -508,55 +904,30 @@
   const dwAmountInput = document.getElementById('dwAmountInput');
   const dwSubmitBtn = document.getElementById('dwSubmitBtn');
   const dwNote = document.getElementById('dwNote');
-  const methodBtns = document.querySelectorAll('.method-btn');
+  const methodBtns = document.querySelectorAll('.method-btn[data-method]');
 
   function updateDwUI() {
     dwAmountLabel.textContent = dwTab === 'deposit' ? 'Amount (PKR)' : 'Amount (USDC)';
-    dwAmountInput.placeholder = '0';
     dwSubmitBtn.textContent = (dwTab === 'deposit' ? 'Deposit via ' : 'Withdraw via ') + methodLabels[dwMethod];
     dwNote.textContent = dwTab === 'deposit'
       ? 'Simulated on Arc testnet — no real money moves yet.'
       : 'Simulated withdrawal — funds are not actually sent to your ' + methodLabels[dwMethod] + ' account yet.';
   }
 
-  dwTabDeposit.addEventListener('click', () => {
-    dwTab = 'deposit';
-    dwTabDeposit.classList.add('active');
-    dwTabWithdraw.classList.remove('active');
-    updateDwUI();
-  });
-  dwTabWithdraw.addEventListener('click', () => {
-    dwTab = 'withdraw';
-    dwTabWithdraw.classList.add('active');
-    dwTabDeposit.classList.remove('active');
-    updateDwUI();
-  });
+  dwTabDeposit.addEventListener('click', () => { dwTab = 'deposit'; dwTabDeposit.classList.add('active'); dwTabWithdraw.classList.remove('active'); updateDwUI(); });
+  dwTabWithdraw.addEventListener('click', () => { dwTab = 'withdraw'; dwTabWithdraw.classList.add('active'); dwTabDeposit.classList.remove('active'); updateDwUI(); });
+  methodBtns.forEach(btn => btn.addEventListener('click', () => { methodBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); dwMethod = btn.dataset.method; updateDwUI(); }));
 
-  methodBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-      methodBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      dwMethod = btn.dataset.method;
-      updateDwUI();
-    });
-  });
-
-  function getCurrentBalance() {
-    return parseFloat(balanceAmount.textContent.replace(/,/g, '')) || 0;
-  }
-
+  function getCurrentBalance() { return parseFloat(balanceAmount.textContent.replace(/,/g, '')) || 0; }
   function setDisplayedBalance(usdc) {
     balanceAmount.textContent = formatUsd(usdc);
-    pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * RATE).toLocaleString('en-US');
+    pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
   }
 
   dwSubmitBtn.addEventListener('click', () => {
+    if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
     const amount = parseFloat(dwAmountInput.value) || 0;
-    if (amount <= 0) {
-      showToast('Enter an amount first', true);
-      return;
-    }
-
+    if (amount <= 0) { showToast('Enter an amount first', true); return; }
     const methodName = methodLabels[dwMethod];
     const originalText = dwSubmitBtn.textContent;
     dwSubmitBtn.disabled = true;
@@ -564,7 +935,7 @@
 
     setTimeout(() => {
       if (dwTab === 'deposit') {
-        const usdcGained = amount / RATE;
+        const usdcGained = amount / liveRate;
         setDisplayedBalance(getCurrentBalance() + usdcGained);
         addHistoryEntry(amount, usdcGained, 'Deposit via ' + methodName);
         showToast('✅ Deposited Rs ' + amount.toLocaleString('en-US') + ' via ' + methodName);
@@ -575,7 +946,7 @@
           showToast('Insufficient USDC balance', true);
         } else {
           setDisplayedBalance(currentBalance - amount);
-          const pkrOut = amount * RATE;
+          const pkrOut = amount * liveRate;
           addHistoryEntry(pkrOut, amount, 'Withdraw via ' + methodName);
           showToast('✅ Withdrew Rs ' + Math.round(pkrOut).toLocaleString('en-US') + ' via ' + methodName);
           dwAmountInput.value = '';
@@ -585,10 +956,241 @@
       dwSubmitBtn.textContent = originalText;
     }, 1600);
   });
-
   updateDwUI();
 
-  // ---- Bill Payments (electricity, gas, water — testnet demo) ----
+  /* ---------------- Auto-Save ---------------- */
+  const AUTOSAVE_KEY = 'saveInDollars_autosave';
+  const autoSaveToggle = document.getElementById('autoSaveToggle');
+  const autoSaveDetail = document.getElementById('autoSaveDetail');
+  const autoSaveDay = document.getElementById('autoSaveDay');
+  const autoSaveAmount = document.getElementById('autoSaveAmount');
+  const autoSaveNextRun = document.getElementById('autoSaveNextRun');
+
+  for (let d = 1; d <= 28; d++) {
+    const opt = document.createElement('option');
+    opt.value = d; opt.textContent = d;
+    autoSaveDay.appendChild(opt);
+  }
+
+  function getAutoSaveConfig() {
+    try { return JSON.parse(localStorage.getItem(AUTOSAVE_KEY)); } catch (e) { return null; }
+  }
+
+  function nextRunDate(day) {
+    const now = new Date();
+    let next = new Date(now.getFullYear(), now.getMonth(), day);
+    if (next <= now) next = new Date(now.getFullYear(), now.getMonth() + 1, day);
+    return next;
+  }
+
+  function updateAutoSaveUI() {
+    const cfg = getAutoSaveConfig();
+    if (cfg && cfg.enabled) {
+      autoSaveToggle.checked = true;
+      autoSaveDetail.classList.add('show');
+      autoSaveAmount.value = cfg.amount;
+      autoSaveDay.value = cfg.day;
+      const nd = nextRunDate(cfg.day);
+      autoSaveNextRun.style.display = 'block';
+      autoSaveNextRun.innerHTML = (currentLang === 'ur' ? 'اگلی خودکار بچت: ' : 'Next auto-save: ') +
+        '<b>' + nd.toLocaleDateString('en-US', { month: 'long', day: 'numeric' }) + '</b> · Rs ' + Number(cfg.amount).toLocaleString('en-US');
+    } else {
+      autoSaveToggle.checked = false;
+      autoSaveDetail.classList.remove('show');
+      autoSaveNextRun.style.display = 'none';
+    }
+  }
+
+  autoSaveToggle.addEventListener('change', () => {
+    if (autoSaveToggle.checked) {
+      autoSaveDetail.classList.add('show');
+    } else {
+      autoSaveDetail.classList.remove('show');
+      localStorage.removeItem(AUTOSAVE_KEY);
+      autoSaveNextRun.style.display = 'none';
+      showToast('Auto-save turned off');
+    }
+  });
+
+  document.getElementById('autoSaveSaveBtn').addEventListener('click', () => {
+    const amount = parseFloat(autoSaveAmount.value) || 0;
+    const day = parseInt(autoSaveDay.value) || 1;
+    if (amount <= 0) { showToast('Enter a valid monthly amount', true); return; }
+    localStorage.setItem(AUTOSAVE_KEY, JSON.stringify({ enabled: true, amount, day }));
+    updateAutoSaveUI();
+    showToast('✅ Auto-save scheduled — Rs ' + amount.toLocaleString('en-US') + ' every month');
+  });
+  updateAutoSaveUI();
+
+  /* ---------------- Referral ---------------- */
+  const REFERRAL_KEY = 'saveInDollars_referral';
+  function setupReferralCode(address) {
+    let ref = JSON.parse(localStorage.getItem(REFERRAL_KEY) || 'null');
+    if (!ref) {
+      const code = 'SID-' + (address ? address.slice(2, 6).toUpperCase() : Math.floor(1000 + Math.random() * 9000));
+      ref = { code, invited: 0, earned: 0 };
+      localStorage.setItem(REFERRAL_KEY, JSON.stringify(ref));
+    }
+    renderReferral(ref);
+  }
+  function renderReferral(ref) {
+    document.getElementById('referralCode').textContent = ref.code;
+    document.getElementById('referralCount').textContent = ref.invited;
+    document.getElementById('referralEarned').textContent = '$' + ref.earned;
+  }
+  // Show a placeholder code even before connecting
+  renderReferral({ code: 'SID-' + Math.floor(1000 + Math.random() * 9000), invited: 0, earned: 0 });
+
+  document.getElementById('copyReferralBtn').addEventListener('click', () => {
+    const code = document.getElementById('referralCode').textContent;
+    navigator.clipboard?.writeText(code).then(() => showToast('Referral code copied: ' + code))
+      .catch(() => showToast(code));
+  });
+
+  document.getElementById('simulateReferralBtn').addEventListener('click', () => {
+    let ref = JSON.parse(localStorage.getItem(REFERRAL_KEY) || 'null') || { code: document.getElementById('referralCode').textContent, invited: 0, earned: 0 };
+    ref.invited += 1;
+    ref.earned += 1;
+    localStorage.setItem(REFERRAL_KEY, JSON.stringify(ref));
+    renderReferral(ref);
+    if (connectedAddress) {
+      setDisplayedBalance(getCurrentBalance() + 1);
+      addHistoryEntry(0, 1, 'Referral Bonus');
+    }
+    showToast('🎉 A friend joined with your code — $1 USDC bonus added!');
+  });
+
+  /* ---------------- KYC Modal ---------------- */
+  const KYC_KEY = 'saveInDollars_kyc';
+  const kycModal = document.getElementById('kycModal');
+  function getKyc() { try { return JSON.parse(localStorage.getItem(KYC_KEY)); } catch (e) { return null; } }
+  function updateKycBadge() {
+    const badge = document.getElementById('kycBadge');
+    const kyc = getKyc();
+    if (kyc) {
+      badge.innerHTML = '✅ <span>' + translations[currentLang].kycDone + '</span>';
+    } else {
+      badge.innerHTML = '🪪 <span>' + translations[currentLang].kycNotDone + '</span>';
+    }
+  }
+  document.getElementById('kycBadge').addEventListener('click', () => { kycModal.classList.add('show'); });
+  function maybeShowKyc() {
+    if (!getKyc()) kycModal.classList.add('show');
+  }
+  document.getElementById('kycSkipBtn').addEventListener('click', () => kycModal.classList.remove('show'));
+  document.getElementById('kycSubmitBtn').addEventListener('click', () => {
+    const name = document.getElementById('kycName').value.trim();
+    const cnic = document.getElementById('kycCnic').value.trim();
+    const phone = document.getElementById('kycPhone').value.trim();
+    if (!name || !cnic || !phone) { showToast('Please fill all 3 fields', true); return; }
+    localStorage.setItem(KYC_KEY, JSON.stringify({ name, cnic, phone, date: new Date().toISOString() }));
+    kycModal.classList.remove('show');
+    updateKycBadge();
+    showToast('✅ Identity verified — thank you, ' + name.split(' ')[0] + '!');
+  });
+  updateKycBadge();
+
+  /* ---------------- Remittance ---------------- */
+  const remitUsdInput = document.getElementById('remitUsdInput');
+  const remitUsdcOutput = document.getElementById('remitUsdcOutput');
+  function updateRemitConversion() {
+    const usd = parseFloat(remitUsdInput.value) || 0;
+    const fee = 1;
+    remitUsdcOutput.value = Math.max(0, usd - fee).toFixed(2);
+  }
+  remitUsdInput.addEventListener('input', updateRemitConversion);
+  updateRemitConversion();
+
+  document.getElementById('remitSendBtn').addEventListener('click', () => {
+    const usd = parseFloat(remitUsdInput.value) || 0;
+    const recipient = document.getElementById('remitRecipientInput').value.trim();
+    if (usd <= 1) { showToast('Enter an amount above $1', true); return; }
+    if (!recipient) { showToast('Enter a recipient wallet or phone number', true); return; }
+    const btn = document.getElementById('remitSendBtn');
+    const original = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Sending…';
+    setTimeout(() => {
+      const usdcAmount = usd - 1;
+      if (connectedAddress) {
+        setDisplayedBalance(getCurrentBalance() + usdcAmount);
+        addHistoryEntry(0, usdcAmount, 'Remittance from ' + document.getElementById('remitCountry').value);
+      }
+      showToast('✅ Sent $' + usd.toFixed(2) + ' → ' + recipient + ' received ' + usdcAmount.toFixed(2) + ' USDC');
+      document.getElementById('remitRecipientInput').value = '';
+      btn.disabled = false; btn.textContent = original;
+    }, 1600);
+  });
+
+  /* ---------------- Mobile Top-Up ---------------- */
+  let topupSelectedAmt = null;
+  document.querySelectorAll('#topupAmounts .method-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('#topupAmounts .method-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      topupSelectedAmt = parseFloat(btn.dataset.amt);
+    });
+  });
+  document.getElementById('topupBtn').addEventListener('click', () => {
+    if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
+    const number = document.getElementById('topupNumberInput').value.trim();
+    if (!number) { showToast('Enter a mobile number', true); return; }
+    if (!topupSelectedAmt) { showToast('Choose a top-up amount', true); return; }
+    const operator = document.getElementById('topupOperator').value;
+    const usdcCost = topupSelectedAmt / liveRate;
+    if (usdcCost > getCurrentBalance()) { showToast('Insufficient USDC balance', true); return; }
+    const btn = document.getElementById('topupBtn');
+    const original = btn.textContent;
+    btn.disabled = true; btn.textContent = 'Processing…';
+    setTimeout(() => {
+      setDisplayedBalance(getCurrentBalance() - usdcCost);
+      addHistoryEntry(topupSelectedAmt, usdcCost, 'Top-Up ' + operator + ' ' + number);
+      showToast('✅ Topped up Rs ' + topupSelectedAmt + ' to ' + number + ' (' + operator + ')');
+      document.getElementById('topupNumberInput').value = '';
+      btn.disabled = false; btn.textContent = original;
+    }, 1400);
+  });
+
+  /* ---------------- Saving Goals ---------------- */
+  const GOALS_KEY = 'saveInDollars_goals';
+  function getGoals() { try { return JSON.parse(localStorage.getItem(GOALS_KEY)) || []; } catch (e) { return []; } }
+  function saveGoals(goals) { localStorage.setItem(GOALS_KEY, JSON.stringify(goals)); }
+  function renderGoals() {
+    const goals = getGoals();
+    const list = document.getElementById('goalsList');
+    if (goals.length === 0) {
+      list.innerHTML = '<div style="font-size:13px; color:var(--muted); text-align:center; padding:12px 0;">No goals yet — add one below.</div>';
+      return;
+    }
+    list.innerHTML = goals.map((g, i) => {
+      const pct = Math.min(100, (g.saved / g.target) * 100).toFixed(0);
+      return `
+        <div>
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+            <span style="font-weight:500;">${g.name}</span>
+            <span style="font-family:'IBM Plex Mono',monospace; color:var(--muted);">${g.saved.toFixed(2)} / ${g.target.toFixed(2)} USDC</span>
+          </div>
+          <div style="background:var(--bg); border:1px solid var(--line); border-radius:20px; height:10px; overflow:hidden;">
+            <div style="width:${pct}%; height:100%; background:var(--teal);"></div>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  document.getElementById('addGoalBtn').addEventListener('click', () => {
+    const name = document.getElementById('goalNameInput').value.trim();
+    const target = parseFloat(document.getElementById('goalTargetInput').value) || 0;
+    if (!name || target <= 0) { showToast('Enter a goal name and target', true); return; }
+    const goals = getGoals();
+    goals.push({ name, target, saved: 0 });
+    saveGoals(goals);
+    renderGoals();
+    document.getElementById('goalNameInput').value = '';
+    document.getElementById('goalTargetInput').value = '';
+    showToast('🎯 Goal added: ' + name);
+  });
+  renderGoals();
+
+  /* ---------------- Bill Payments ---------------- */
   const BILL_PROVIDERS = {
     electricity: ['K-Electric (Karachi)', 'LESCO (Lahore)', 'GEPCO (Gujranwala)', 'FESCO (Faisalabad)', 'MEPCO (Multan)', 'IESCO (Islamabad)', 'PESCO (Peshawar)', 'HESCO (Hyderabad)', 'SEPCO (Sukkur)', 'QESCO (Quetta)', 'TESCO (Tribal Areas)'],
     gas: ['SSGC (Sindh & Balochistan)', 'SNGPL (Punjab & KPK)'],
@@ -611,8 +1213,7 @@
   const billsPaidList = document.getElementById('billsPaidList');
 
   function populateProviders() {
-    billProviderSelect.innerHTML = BILL_PROVIDERS[billCategory]
-      .map(p => `<option value="${p}">${p}</option>`).join('');
+    billProviderSelect.innerHTML = BILL_PROVIDERS[billCategory].map(p => `<option value="${p}">${p}</option>`).join('');
   }
   populateProviders();
 
@@ -629,10 +1230,7 @@
 
   billFetchBtn.addEventListener('click', () => {
     const consumer = billConsumerInput.value.trim();
-    if (!consumer) {
-      showToast('Enter your consumer number first', true);
-      return;
-    }
+    if (!consumer) { showToast('Enter your consumer number first', true); return; }
     const [min, max] = BILL_RANGES[billCategory];
     const amount = Math.round((min + Math.random() * (max - min)) / 10) * 10;
     const provider = billProviderSelect.value;
@@ -647,17 +1245,16 @@
 
   billPayBtn.addEventListener('click', () => {
     if (!currentBill) return;
+    if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
     const originalText = billPayBtn.textContent;
     billPayBtn.disabled = true;
     billPayBtn.textContent = 'Processing…';
-
     setTimeout(() => {
-      const usdcAmount = currentBill.amount / RATE;
+      const usdcAmount = currentBill.amount / liveRate;
       const currentBalance = getCurrentBalance();
       if (usdcAmount > currentBalance) {
         showToast('Insufficient USDC balance to pay this bill', true);
-        billPayBtn.disabled = false;
-        billPayBtn.textContent = originalText;
+        billPayBtn.disabled = false; billPayBtn.textContent = originalText;
         return;
       }
       setDisplayedBalance(currentBalance - usdcAmount);
@@ -667,35 +1264,22 @@
       billResult.style.display = 'none';
       billConsumerInput.value = '';
       currentBill = null;
-      billPayBtn.disabled = false;
-      billPayBtn.textContent = originalText;
+      billPayBtn.disabled = false; billPayBtn.textContent = originalText;
     }, 1600);
   });
 
   const BILLS_KEY = 'saveInDollars_bills';
-
-  function getBillsPaid() {
-    try {
-      return JSON.parse(localStorage.getItem(BILLS_KEY)) || [];
-    } catch (e) {
-      return [];
-    }
-  }
-
+  function getBillsPaid() { try { return JSON.parse(localStorage.getItem(BILLS_KEY)) || []; } catch (e) { return []; } }
   function saveBillPaid(bill) {
     const bills = getBillsPaid();
     bills.unshift(Object.assign({}, bill, { date: new Date().toISOString() }));
     localStorage.setItem(BILLS_KEY, JSON.stringify(bills.slice(0, 50)));
     renderBillsPaid();
   }
-
   function renderBillsPaid() {
     const bills = getBillsPaid();
     const now = new Date();
-    const thisMonthBills = bills.filter(b => {
-      const d = new Date(b.date);
-      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
-    });
+    const thisMonthBills = bills.filter(b => { const d = new Date(b.date); return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear(); });
     if (thisMonthBills.length === 0) {
       billsPaidList.innerHTML = '<div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;">No bills paid yet this month.</div>';
       return;
@@ -714,8 +1298,10 @@
       `;
     }).join('');
   }
-
   renderBillsPaid();
+
+  /* ---------------- Init ---------------- */
+  applyTranslations();
 </script>
 </body>
 </html>
