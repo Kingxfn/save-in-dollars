@@ -269,6 +269,107 @@
     display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--teal);
     background: #EAF4F1; border-radius: 20px; padding: 4px 10px; margin-top: 10px;
   }
+
+  /* PIN lock */
+  .pin-overlay {
+    display: none; position: fixed; inset: 0; background: var(--green);
+    z-index: 300; align-items: center; justify-content: center; flex-direction: column;
+  }
+  .pin-overlay.show { display: flex; }
+  .pin-overlay .brand-mark { border-color: #FBFAF6; color: #FBFAF6; margin-bottom: 18px; width: 44px; height: 44px; font-size: 20px; }
+  .pin-overlay h2 { font-family: 'Fraunces', serif; color: #FBFAF6; font-size: 18px; margin-bottom: 6px; }
+  .pin-overlay p { color: rgba(251,250,246,0.7); font-size: 13px; margin-bottom: 22px; }
+  .pin-dots { display: flex; gap: 14px; margin-bottom: 26px; }
+  .pin-dot { width: 14px; height: 14px; border-radius: 50%; border: 1.5px solid rgba(251,250,246,0.5); }
+  .pin-dot.filled { background: var(--gold); border-color: var(--gold); }
+  .pin-keypad { display: grid; grid-template-columns: repeat(3, 64px); gap: 12px; }
+  .pin-key {
+    width: 64px; height: 64px; border-radius: 50%; border: 1px solid rgba(251,250,246,0.3);
+    background: rgba(251,250,246,0.08); color: #FBFAF6; font-size: 20px; font-family: 'IBM Plex Mono', monospace;
+    cursor: pointer;
+  }
+  .pin-key:active { background: rgba(251,250,246,0.2); }
+  .pin-error { color: #FFB199; font-size: 12px; margin-top: 14px; height: 14px; }
+  .pin-skip { margin-top: 22px; background: none; border: none; color: rgba(251,250,246,0.6); font-size: 12px; text-decoration: underline; cursor: pointer; }
+
+  /* WhatsApp float button */
+  .whatsapp-float {
+    position: fixed; bottom: 24px; right: 20px; z-index: 90;
+    width: 54px; height: 54px; border-radius: 50%; background: #25D366;
+    display: flex; align-items: center; justify-content: center; color: #fff; font-size: 26px;
+    box-shadow: 0 8px 20px rgba(37,211,102,0.4); text-decoration: none; border: none; cursor: pointer;
+  }
+
+  /* Yield badge */
+  .yield-badge {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gold);
+    background: rgba(201,162,39,0.12); border-radius: 20px; padding: 5px 12px; margin-top: 10px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+
+  /* How it works */
+  .hiw-steps { display: flex; flex-direction: column; gap: 14px; }
+  .hiw-step { display: flex; gap: 12px; align-items: flex-start; }
+  .hiw-num {
+    width: 26px; height: 26px; border-radius: 50%; background: var(--gold); color: var(--ink);
+    flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 600; font-size: 13px;
+  }
+  .hiw-step p { font-size: 13px; color: var(--ink); }
+  .hiw-step p b { color: var(--green-soft); }
+
+  /* Round-up */
+  .roundup-summary {
+    display: flex; justify-content: space-between; align-items: center;
+    background: var(--bg); border: 1px solid var(--line); border-radius: 8px;
+    padding: 12px 14px; margin-top: 14px; font-size: 13px;
+  }
+  .roundup-summary b { font-family: 'IBM Plex Mono', monospace; color: var(--green-soft); }
+
+  /* Family group savings */
+  .group-member-row { display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid var(--line); font-size: 13px; }
+  .group-member-row:last-child { border-bottom: none; }
+  .group-member-row .gm-amt { font-family: 'IBM Plex Mono', monospace; color: var(--teal); font-weight: 500; }
+  .group-add-row { display: flex; gap: 8px; margin-top: 14px; }
+  .group-add-row input {
+    border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; font-size: 13px;
+    font-family: 'IBM Plex Sans', sans-serif; background: var(--bg); color: var(--ink);
+  }
+  .group-add-row input:first-child { flex: 1.4; }
+  .group-add-row input:last-child { flex: 1; font-family: 'IBM Plex Mono', monospace; }
+
+  /* Badges */
+  .badges-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(90px, 1fr)); gap: 12px; }
+  .badge-item {
+    display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center;
+    padding: 14px 8px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line);
+    opacity: 0.35; filter: grayscale(1);
+  }
+  .badge-item.unlocked { opacity: 1; filter: none; background: #F1F6F3; border-color: #CFE3D8; }
+  .badge-item .b-icon { font-size: 26px; }
+  .badge-item .b-label { font-size: 11px; color: var(--muted); }
+
+  /* Rate alert */
+  .rate-alert-row { display: flex; gap: 8px; align-items: flex-end; margin-top: 14px; }
+  .rate-alert-row .field { flex: 1; }
+  .rate-alert-active {
+    display: none; align-items: center; justify-content: space-between;
+    background: #F1F6F3; border: 1px solid #CFE3D8; border-radius: 8px;
+    padding: 10px 14px; margin-top: 12px; font-size: 13px;
+  }
+  .rate-alert-active.show { display: flex; }
+  .rate-alert-active button { background: none; border: none; color: var(--red); font-size: 12px; cursor: pointer; }
+
+  /* QR modal */
+  .qr-box { text-align: center; }
+  .qr-box img { border-radius: 10px; border: 1px solid var(--line); margin-bottom: 14px; }
+
+  /* Reminder nudge */
+  .nudge-banner {
+    display: none; align-items: center; justify-content: space-between; gap: 10px;
+    background: #FBF5E6; border: 1px solid #EAD9A0; color: #8A6D1D;
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; font-size: 13px;
+  }
+  .nudge-banner.show { display: flex; }
 </style>
 </head>
 <body>
@@ -281,6 +382,11 @@
     </div>
     <button class="lang-toggle" id="langToggle">اردو</button>
   </header>
+
+  <div class="nudge-banner" id="nudgeBanner">
+    <span data-i18n="nudgeMsg">💤 Aap ne is mahine kuch save nahi kiya abhi tak.</span>
+    <button class="alert-dismiss" id="nudgeDismiss" style="background:none; color:#8A6D1D; font-size:16px; border:none; cursor:pointer;">✕</button>
+  </div>
 
   <div class="alert-banner" id="devalAlert">
     <span data-i18n="devalMsg">⚠️ Rupee has weakened today — good time to convert.</span>
@@ -302,6 +408,42 @@
       <span class="rt-dot"></span>
       <span id="rateTickerText">1 USD ≈ Rs 280.00</span>
       <span class="rt-delta" id="rateDelta"></span>
+    </div>
+    <div class="yield-badge" id="yieldBadge">📈 <span data-i18n="yieldTxt">Earning ~4% APY · +$0.00 so far</span></div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="alertTitle">Rate Alert</h2>
+    <div class="hint" data-i18n="alertHint">Set your own target rate — we'll notify you when it's hit.</div>
+    <div class="rate-alert-row">
+      <div class="field">
+        <label data-i18n="alertWhen">Notify me when 1 USD reaches</label>
+        <input type="number" id="rateAlertInput" placeholder="285" />
+      </div>
+      <button class="primary" style="margin-top:0; width:auto; padding:12px 18px;" id="rateAlertSetBtn" data-i18n="alertSet">Set</button>
+    </div>
+    <div class="rate-alert-active" id="rateAlertActive">
+      <span id="rateAlertActiveText"></span>
+      <button id="rateAlertClearBtn" data-i18n="alertClear">Remove</button>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="hiwTitle">How It Works</h2>
+    <div class="hint" data-i18n="hiwHint">Three simple steps — no crypto knowledge needed.</div>
+    <div class="hiw-steps">
+      <div class="hiw-step">
+        <div class="hiw-num">1</div>
+        <p data-i18n="hiw1">Deposit rupees using <b>Easypaisa, JazzCash, or bank transfer</b> — just like sending money to a friend.</p>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">2</div>
+        <p data-i18n="hiw2">We convert it into <b>USDC</b>, a digital dollar that always equals $1 — so inflation can't eat into it.</p>
+      </div>
+      <div class="hiw-step">
+        <div class="hiw-num">3</div>
+        <p data-i18n="hiw3">Withdraw back to rupees, pay bills, or send money <b>anytime you want</b> — no waiting, no lock-in.</p>
+      </div>
     </div>
   </div>
 
@@ -375,6 +517,54 @@
       <button class="primary" id="autoSaveSaveBtn" data-i18n="autoSaveSave">Confirm Auto-Save</button>
       <div class="next-run" id="autoSaveNextRun" style="display:none;"></div>
     </div>
+  </div>
+
+  <div class="card">
+    <div class="toggle-row">
+      <div>
+        <div class="tr-label" data-i18n="roundupTitle">Round-Up Savings</div>
+        <div class="tr-sub" data-i18n="roundupHint">Round up everyday spends to the nearest Rs 50/100 and save the change</div>
+      </div>
+      <label class="switch">
+        <input type="checkbox" id="roundupToggle" />
+        <span class="slider"></span>
+      </label>
+    </div>
+    <div class="roundup-summary">
+      <span data-i18n="roundupSaved">Saved from round-ups so far</span>
+      <b id="roundupTotal">0.00 USDC</b>
+    </div>
+    <button class="secondary" id="simulatePurchaseBtn" style="margin-top:14px;" data-i18n="simulatePurchase">Simulate a Purchase (Demo)</button>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="groupTitle">Family / Group Savings</h2>
+    <div class="hint" data-i18n="groupHint">Like a digital committee (BC) — everyone contributes toward one shared goal.</div>
+    <div id="groupMembersList"></div>
+    <div class="roundup-summary" style="margin-top:14px;">
+      <span data-i18n="groupTotal">Total contributed</span>
+      <b id="groupTotalAmt">0.00 USDC</b>
+    </div>
+    <div class="group-add-row">
+      <input type="text" id="groupMemberName" placeholder="Member name" />
+      <input type="number" id="groupMemberAmt" placeholder="USDC" />
+    </div>
+    <button class="primary" id="groupAddBtn" style="margin-top:10px;" data-i18n="groupAdd">Add Contribution</button>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="qrTitle">Pay / Receive via QR</h2>
+    <div class="hint" data-i18n="qrHint">Scan to send USDC directly to another Save in Dollars user.</div>
+    <div class="qr-box">
+      <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=save-in-dollars-demo" width="180" height="180" alt="QR code" />
+      <div class="rate-note" id="qrAddressLine" data-i18n="qrConnectFirst">Connect your wallet to generate your receive code</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2 data-i18n="badgesTitle">Milestones</h2>
+    <div class="hint" data-i18n="badgesHint">Little wins along the way to your first $100 saved.</div>
+    <div class="badges-grid" id="badgesGrid"></div>
   </div>
 
   <div class="card">
@@ -566,6 +756,7 @@
     <div id="historyList" style="display:flex; flex-direction:column; gap:10px;">
       <div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;" id="historyEmpty" data-i18n="historyEmptyTxt">No conversions yet — try one above.</div>
     </div>
+    <button class="secondary" id="exportCsvBtn" style="margin-top:16px;" data-i18n="exportCsv">Export Statement (CSV)</button>
   </div>
 
   <footer data-i18n="footerTxt">Save in Dollars — prototype UI, connected to Arc testnet</footer>
@@ -577,6 +768,27 @@
     box-shadow: 0 8px 24px rgba(0,0,0,0.2); pointer-events: none; z-index: 100; max-width: 90%; text-align: center;
   "></div>
 </div>
+
+<!-- PIN Lock -->
+<div class="pin-overlay" id="pinOverlay">
+  <div class="brand-mark">$</div>
+  <h2 id="pinTitle" data-i18n="pinSetTitle">Set a PIN to protect your savings</h2>
+  <p id="pinSubtitle" data-i18n="pinSetSubtitle">4-digit PIN, used only on this device</p>
+  <div class="pin-dots" id="pinDots">
+    <div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div><div class="pin-dot"></div>
+  </div>
+  <div class="pin-keypad" id="pinKeypad">
+    <button class="pin-key" data-k="1">1</button><button class="pin-key" data-k="2">2</button><button class="pin-key" data-k="3">3</button>
+    <button class="pin-key" data-k="4">4</button><button class="pin-key" data-k="5">5</button><button class="pin-key" data-k="6">6</button>
+    <button class="pin-key" data-k="7">7</button><button class="pin-key" data-k="8">8</button><button class="pin-key" data-k="9">9</button>
+    <button class="pin-key" data-k="clear">⌫</button><button class="pin-key" data-k="0">0</button><button class="pin-key" data-k="ok">✓</button>
+  </div>
+  <div class="pin-error" id="pinError"></div>
+  <button class="pin-skip" id="pinSkipBtn" data-i18n="pinSkip">Skip for now</button>
+</div>
+
+<!-- WhatsApp support -->
+<a class="whatsapp-float" id="whatsappBtn" href="https://wa.me/923000000000?text=Hi%2C%20I%20need%20help%20with%20Save%20in%20Dollars" target="_blank" rel="noopener" title="WhatsApp Support">💬</a>
 
 <!-- KYC Modal -->
 <div class="modal-overlay" id="kycModal">
@@ -641,7 +853,25 @@
       footerTxt: "Save in Dollars — prototype UI, connected to Arc testnet",
       kycModalTitle: "Quick Identity Check", kycModalHint: "Just 3 details — required by regulation to keep your money safe. Takes 30 seconds.",
       kycNameLabel: "Full Name", kycCnicLabel: "CNIC Number", kycPhoneLabel: "Mobile Number",
-      kycSkip: "Later", kycSubmit: "Verify Me"
+      kycSkip: "Later", kycSubmit: "Verify Me",
+      nudgeMsg: "💤 You haven't saved anything this month yet.",
+      yieldTxt: "Earning ~4% APY", alertTitle: "Rate Alert", alertHint: "Set your own target rate — we'll notify you when it's hit.",
+      alertWhen: "Notify me when 1 USD reaches", alertSet: "Set", alertClear: "Remove",
+      hiwTitle: "How It Works", hiwHint: "Three simple steps — no crypto knowledge needed.",
+      hiw1: "Deposit rupees using <b>Easypaisa, JazzCash, or bank transfer</b> — just like sending money to a friend.",
+      hiw2: "We convert it into <b>USDC</b>, a digital dollar that always equals $1 — so inflation can't eat into it.",
+      hiw3: "Withdraw back to rupees, pay bills, or send money <b>anytime you want</b> — no waiting, no lock-in.",
+      roundupTitle: "Round-Up Savings", roundupHint: "Round up everyday spends to the nearest Rs 50/100 and save the change",
+      roundupSaved: "Saved from round-ups so far", simulatePurchase: "Simulate a Purchase (Demo)",
+      groupTitle: "Family / Group Savings", groupHint: "Like a digital committee (BC) — everyone contributes toward one shared goal.",
+      groupTotal: "Total contributed", groupAdd: "Add Contribution",
+      qrTitle: "Pay / Receive via QR", qrHint: "Scan to send USDC directly to another Save in Dollars user.",
+      qrConnectFirst: "Connect your wallet to generate your receive code",
+      badgesTitle: "Milestones", badgesHint: "Little wins along the way to your first $100 saved.",
+      exportCsv: "Export Statement (CSV)",
+      pinSetTitle: "Set a PIN to protect your savings", pinSetSubtitle: "4-digit PIN, used only on this device",
+      pinEnterTitle: "Enter your PIN", pinEnterSubtitle: "Welcome back", pinSkip: "Skip for now",
+      pinMismatch: "PINs didn't match, try again", pinWrong: "Wrong PIN, try again"
     },
     ur: {
       brandName: "سیو اِن ڈالرز", devalMsg: "⚠️ روپے کی قدر آج کم ہوئی ہے — ابھی کنورٹ کرنے کا اچھا وقت ہے۔",
@@ -679,7 +909,25 @@
       footerTxt: "سیو اِن ڈالرز — پروٹوٹائپ یو آئی، آرک ٹیسٹ نیٹ سے منسلک",
       kycModalTitle: "فوری شناختی چیک", kycModalHint: "بس 3 تفصیلات — آپ کے پیسے کی حفاظت کے لیے ضابطے کے تحت لازمی۔ 30 سیکنڈ لگیں گے۔",
       kycNameLabel: "پورا نام", kycCnicLabel: "شناختی کارڈ نمبر", kycPhoneLabel: "موبائل نمبر",
-      kycSkip: "بعد میں", kycSubmit: "میری تصدیق کریں"
+      kycSkip: "بعد میں", kycSubmit: "میری تصدیق کریں",
+      nudgeMsg: "💤 آپ نے اس مہینے ابھی تک کچھ نہیں بچایا۔",
+      yieldTxt: "تقریباً 4% سالانہ منافع", alertTitle: "ریٹ الرٹ", alertHint: "اپنی مرضی کی شرح مقرر کریں — پہنچنے پر ہم آپ کو بتائیں گے۔",
+      alertWhen: "مجھے بتائیں جب 1 USD اس تک پہنچے", alertSet: "سیٹ کریں", alertClear: "ہٹائیں",
+      hiwTitle: "یہ کیسے کام کرتا ہے", hiwHint: "تین آسان اقدامات — کرپٹو کی سمجھ کی ضرورت نہیں۔",
+      hiw1: "<b>ایزی پیسہ، جاز کیش یا بینک ٹرانسفر</b> سے روپے جمع کریں — بالکل دوست کو پیسے بھیجنے جیسا۔",
+      hiw2: "ہم اسے <b>یو ایس ڈی سی</b> میں تبدیل کرتے ہیں، ایک ڈیجیٹل ڈالر جو ہمیشہ $1 کے برابر رہتا ہے۔",
+      hiw3: "کسی بھی وقت روپوں میں واپس نکلوائیں، بل ادا کریں یا رقم بھیجیں — کوئی انتظار نہیں۔",
+      roundupTitle: "راؤنڈ اپ بچت", roundupHint: "روزمرہ خرچ کو قریب ترین Rs 50/100 تک راؤنڈ کریں اور فرق بچائیں",
+      roundupSaved: "راؤنڈ اپ سے اب تک بچت", simulatePurchase: "خریداری کی مثال (ڈیمو)",
+      groupTitle: "خاندانی / گروپ بچت", groupHint: "ڈیجیٹل کمیٹی کی طرح — سب مل کر ایک ہدف کی طرف حصہ ڈالیں۔",
+      groupTotal: "کل حصہ", groupAdd: "حصہ شامل کریں",
+      qrTitle: "کیو آر سے ادائیگی / وصولی", qrHint: "کسی دوسرے صارف کو براہ راست یو ایس ڈی سی بھیجنے کے لیے اسکین کریں۔",
+      qrConnectFirst: "اپنا وصولی کوڈ بنانے کے لیے والیٹ جوڑیں",
+      badgesTitle: "سنگ میل", badgesHint: "آپ کے پہلے $100 تک چھوٹی چھوٹی کامیابیاں۔",
+      exportCsv: "اسٹیٹمنٹ ایکسپورٹ کریں (CSV)",
+      pinSetTitle: "اپنی بچت کی حفاظت کے لیے پن سیٹ کریں", pinSetSubtitle: "4 ہندسوں کا پن، صرف اسی ڈیوائس پر",
+      pinEnterTitle: "اپنا پن درج کریں", pinEnterSubtitle: "خوش آمدید", pinSkip: "ابھی کے لیے چھوڑیں",
+      pinMismatch: "پن مماثل نہیں تھے، دوبارہ کوشش کریں", pinWrong: "غلط پن، دوبارہ کوشش کریں"
     }
   };
   let currentLang = localStorage.getItem('saveInDollars_lang') || 'en';
@@ -770,6 +1018,8 @@
     history.unshift({ pkr, usdc, label: label || null, date: new Date().toISOString() });
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20)));
     renderHistory();
+    if (typeof checkBadges === 'function') checkBadges();
+    document.getElementById('nudgeBanner')?.classList.remove('show');
   }
 
   function renderHistory() {
@@ -885,6 +1135,7 @@
       await refreshBalance(address);
       setupReferralCode(address);
       maybeShowKyc();
+      updateQrForAddress(address);
     } catch (err) {
       statusLine.textContent = 'Connection failed — try again';
       connectBtn.textContent = 'Connect Wallet';
@@ -1299,6 +1550,265 @@
     }).join('');
   }
   renderBillsPaid();
+
+  /* ---------------- PIN Lock ---------------- */
+  const PIN_KEY = 'saveInDollars_pin';
+  const pinOverlay = document.getElementById('pinOverlay');
+  const pinDots = document.querySelectorAll('.pin-dot');
+  const pinError = document.getElementById('pinError');
+  let pinBuffer = '';
+  let pinStage = null; // 'set-first' | 'set-confirm' | 'enter'
+  let pinFirstEntry = '';
+
+  function renderPinDots() {
+    pinDots.forEach((d, i) => d.classList.toggle('filled', i < pinBuffer.length));
+  }
+  function startPinFlow() {
+    const saved = localStorage.getItem(PIN_KEY);
+    if (saved) {
+      pinStage = 'enter';
+      document.getElementById('pinTitle').textContent = translations[currentLang].pinEnterTitle;
+      document.getElementById('pinSubtitle').textContent = translations[currentLang].pinEnterSubtitle;
+    } else {
+      pinStage = 'set-first';
+      document.getElementById('pinTitle').textContent = translations[currentLang].pinSetTitle;
+      document.getElementById('pinSubtitle').textContent = translations[currentLang].pinSetSubtitle;
+    }
+    pinBuffer = ''; renderPinDots(); pinError.textContent = '';
+    pinOverlay.classList.add('show');
+  }
+  document.getElementById('pinKeypad').addEventListener('click', (e) => {
+    const btn = e.target.closest('.pin-key');
+    if (!btn) return;
+    const k = btn.dataset.k;
+    if (k === 'clear') { pinBuffer = pinBuffer.slice(0, -1); renderPinDots(); return; }
+    if (k === 'ok') { submitPin(); return; }
+    if (pinBuffer.length < 4) { pinBuffer += k; renderPinDots(); }
+    if (pinBuffer.length === 4) setTimeout(submitPin, 150);
+  });
+  function submitPin() {
+    if (pinBuffer.length !== 4) return;
+    if (pinStage === 'set-first') {
+      pinFirstEntry = pinBuffer;
+      pinStage = 'set-confirm';
+      pinBuffer = ''; renderPinDots();
+      document.getElementById('pinSubtitle').textContent = currentLang === 'ur' ? 'دوبارہ درج کریں' : 'Enter it again to confirm';
+    } else if (pinStage === 'set-confirm') {
+      if (pinBuffer === pinFirstEntry) {
+        localStorage.setItem(PIN_KEY, pinBuffer);
+        pinOverlay.classList.remove('show');
+        showToast('🔒 PIN set successfully');
+      } else {
+        pinError.textContent = translations[currentLang].pinMismatch;
+        pinStage = 'set-first'; pinBuffer = ''; renderPinDots();
+        document.getElementById('pinSubtitle').textContent = translations[currentLang].pinSetSubtitle;
+      }
+    } else if (pinStage === 'enter') {
+      const saved = localStorage.getItem(PIN_KEY);
+      if (pinBuffer === saved) {
+        pinOverlay.classList.remove('show');
+      } else {
+        pinError.textContent = translations[currentLang].pinWrong;
+        pinBuffer = ''; renderPinDots();
+      }
+    }
+  }
+  document.getElementById('pinSkipBtn').addEventListener('click', () => pinOverlay.classList.remove('show'));
+  startPinFlow();
+
+  /* ---------------- Yield display ---------------- */
+  function updateYieldBadge() {
+    const bal = getCurrentBalance();
+    const est = bal * 0.04 / 12; // rough monthly estimate at 4% APY
+    document.getElementById('yieldBadge').innerHTML = '📈 <span>' +
+      (currentLang === 'ur' ? 'تقریباً 4% سالانہ منافع' : 'Earning ~4% APY') +
+      ' · +$' + est.toFixed(2) + (currentLang === 'ur' ? ' اس مہینے' : ' this month') + '</span>';
+  }
+  setInterval(updateYieldBadge, 5000);
+  updateYieldBadge();
+
+  /* ---------------- Round-up savings ---------------- */
+  const ROUNDUP_KEY = 'saveInDollars_roundup';
+  const ROUNDUP_ON_KEY = 'saveInDollars_roundup_on';
+  function getRoundupTotal() { return parseFloat(localStorage.getItem(ROUNDUP_KEY)) || 0; }
+  function renderRoundup() {
+    document.getElementById('roundupTotal').textContent = getRoundupTotal().toFixed(2) + ' USDC';
+    document.getElementById('roundupToggle').checked = localStorage.getItem(ROUNDUP_ON_KEY) === 'true';
+  }
+  document.getElementById('roundupToggle').addEventListener('change', (e) => {
+    localStorage.setItem(ROUNDUP_ON_KEY, e.target.checked);
+    showToast(e.target.checked ? 'Round-up savings turned on' : 'Round-up savings turned off');
+  });
+  document.getElementById('simulatePurchaseBtn').addEventListener('click', () => {
+    if (localStorage.getItem(ROUNDUP_ON_KEY) !== 'true') { showToast('Turn on Round-Up Savings first', true); return; }
+    const spend = Math.round((50 + Math.random() * 950) / 10) * 10;
+    const roundedTo = Math.ceil(spend / 50) * 50;
+    const change = roundedTo - spend;
+    const usdcChange = change / liveRate;
+    const newTotal = getRoundupTotal() + usdcChange;
+    localStorage.setItem(ROUNDUP_KEY, newTotal.toFixed(4));
+    renderRoundup();
+    if (connectedAddress) {
+      setDisplayedBalance(getCurrentBalance() + usdcChange);
+      addHistoryEntry(0, usdcChange, 'Round-Up Savings');
+    }
+    showToast('🛍️ Spent Rs ' + spend + ' → rounded to Rs ' + roundedTo + ' → Rs ' + change + ' saved');
+    checkBadges();
+  });
+  renderRoundup();
+
+  /* ---------------- Family / Group savings ---------------- */
+  const GROUP_KEY = 'saveInDollars_group';
+  function getGroupMembers() { try { return JSON.parse(localStorage.getItem(GROUP_KEY)) || []; } catch (e) { return []; } }
+  function renderGroup() {
+    const members = getGroupMembers();
+    const list = document.getElementById('groupMembersList');
+    const total = members.reduce((s, m) => s + m.amt, 0);
+    document.getElementById('groupTotalAmt').textContent = total.toFixed(2) + ' USDC';
+    if (members.length === 0) {
+      list.innerHTML = '<div style="font-size:13px; color:var(--muted); text-align:center; padding:10px 0;">No contributions yet.</div>';
+      return;
+    }
+    list.innerHTML = members.map(m => `
+      <div class="group-member-row">
+        <span>${m.name}</span>
+        <span class="gm-amt">${m.amt.toFixed(2)} USDC</span>
+      </div>
+    `).join('');
+  }
+  document.getElementById('groupAddBtn').addEventListener('click', () => {
+    const name = document.getElementById('groupMemberName').value.trim();
+    const amt = parseFloat(document.getElementById('groupMemberAmt').value) || 0;
+    if (!name || amt <= 0) { showToast('Enter member name and amount', true); return; }
+    const members = getGroupMembers();
+    members.push({ name, amt });
+    localStorage.setItem(GROUP_KEY, JSON.stringify(members));
+    renderGroup();
+    document.getElementById('groupMemberName').value = '';
+    document.getElementById('groupMemberAmt').value = '';
+    showToast('👨‍👩‍👧 ' + name + ' contributed ' + amt.toFixed(2) + ' USDC');
+  });
+  renderGroup();
+
+  /* ---------------- Badges / Milestones ---------------- */
+  const BADGES = [
+    { id: 'first', icon: '🌱', label: 'First Save', threshold: 0.01 },
+    { id: 'ten', icon: '💵', label: '$10 Saved', threshold: 10 },
+    { id: 'fifty', icon: '🏆', label: '$50 Saved', threshold: 50 },
+    { id: 'hundred', icon: '💎', label: '$100 Saved', threshold: 100 }
+  ];
+  function totalSavedFromHistory() {
+    return getHistory().filter(h => h.usdc > 0).reduce((s, h) => s + h.usdc, 0);
+  }
+  function renderBadges() {
+    const total = totalSavedFromHistory();
+    const grid = document.getElementById('badgesGrid');
+    grid.innerHTML = BADGES.map(b => `
+      <div class="badge-item ${total >= b.threshold ? 'unlocked' : ''}">
+        <div class="b-icon">${b.icon}</div>
+        <div class="b-label">${b.label}</div>
+      </div>
+    `).join('');
+  }
+  function checkBadges() {
+    const total = totalSavedFromHistory();
+    const unlockedKey = 'saveInDollars_badges_seen';
+    let seen = JSON.parse(localStorage.getItem(unlockedKey) || '[]');
+    BADGES.forEach(b => {
+      if (total >= b.threshold && !seen.includes(b.id)) {
+        seen.push(b.id);
+        showToast('🎉 Milestone unlocked: ' + b.label + '!');
+      }
+    });
+    localStorage.setItem(unlockedKey, JSON.stringify(seen));
+    renderBadges();
+  }
+  checkBadges();
+
+  /* ---------------- Rate alert ---------------- */
+  const RATE_ALERT_KEY = 'saveInDollars_rate_alert';
+  function renderRateAlert() {
+    const target = parseFloat(localStorage.getItem(RATE_ALERT_KEY));
+    const box = document.getElementById('rateAlertActive');
+    if (target) {
+      box.classList.add('show');
+      document.getElementById('rateAlertActiveText').textContent =
+        (currentLang === 'ur' ? 'الرٹ سیٹ ہے: ' : 'Alert set for Rs ') + target.toFixed(2);
+    } else {
+      box.classList.remove('show');
+    }
+  }
+  document.getElementById('rateAlertSetBtn').addEventListener('click', () => {
+    const val = parseFloat(document.getElementById('rateAlertInput').value);
+    if (!val || val <= 0) { showToast('Enter a target rate', true); return; }
+    localStorage.setItem(RATE_ALERT_KEY, val);
+    localStorage.removeItem('saveInDollars_rate_alert_fired');
+    renderRateAlert();
+    showToast('🔔 Alert set for Rs ' + val.toFixed(2));
+  });
+  document.getElementById('rateAlertClearBtn').addEventListener('click', () => {
+    localStorage.removeItem(RATE_ALERT_KEY);
+    localStorage.removeItem('saveInDollars_rate_alert_fired');
+    renderRateAlert();
+  });
+  renderRateAlert();
+  setInterval(() => {
+    const target = parseFloat(localStorage.getItem(RATE_ALERT_KEY));
+    if (target && liveRate >= target && localStorage.getItem('saveInDollars_rate_alert_fired') !== 'true') {
+      showToast('🔔 Rate alert! 1 USD has reached Rs ' + liveRate.toFixed(2));
+      localStorage.setItem('saveInDollars_rate_alert_fired', 'true');
+    }
+  }, 4200);
+
+  /* ---------------- QR pay/receive ---------------- */
+  function updateQrForAddress(address) {
+    const img = document.getElementById('qrImage');
+    const label = document.getElementById('qrAddressLine');
+    if (address) {
+      img.src = 'https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=' + encodeURIComponent(address);
+      label.textContent = address.slice(0, 8) + '…' + address.slice(-6);
+    }
+  }
+
+  /* ---------------- Reminder nudge ---------------- */
+  function checkNudge() {
+    const history = getHistory();
+    const now = new Date();
+    const recentThisMonth = history.some(h => {
+      const d = new Date(h.date);
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear();
+    });
+    if (!recentThisMonth && history.length > 0 && localStorage.getItem('saveInDollars_nudge_dismissed') !== 'true') {
+      document.getElementById('nudgeBanner').classList.add('show');
+    }
+  }
+  document.getElementById('nudgeDismiss').addEventListener('click', () => {
+    document.getElementById('nudgeBanner').classList.remove('show');
+    localStorage.setItem('saveInDollars_nudge_dismissed', 'true');
+  });
+  checkNudge();
+
+  /* ---------------- Export statement CSV ---------------- */
+  document.getElementById('exportCsvBtn').addEventListener('click', () => {
+    const history = getHistory();
+    if (history.length === 0) { showToast('No transactions to export yet', true); return; }
+    let csv = 'Date,Description,PKR Amount,USDC Amount\n';
+    history.forEach(h => {
+      const d = new Date(h.date).toLocaleString('en-US');
+      const desc = (h.label || 'Conversion').replace(/,/g, ' ');
+      csv += `"${d}","${desc}",${h.pkr.toFixed(2)},${h.usdc.toFixed(2)}\n`;
+    });
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = 'save-in-dollars-statement.csv';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast('📄 Statement downloaded');
+  });
 
   /* ---------------- Init ---------------- */
   applyTranslations();
