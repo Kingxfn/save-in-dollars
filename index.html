@@ -8,28 +8,75 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #F7F5F0;
-    --paper: #FFFFFF;
-    --ink: #16211C;
-    --green: #0B3D2E;
-    --green-soft: #12503C;
-    --gold: #C9A227;
-    --teal: #2E7D6B;
-    --line: #D8D2C4;
-    --muted: #6B7268;
-    --red: #B8532E;
+    --bg: #0A0E14;
+    --paper: #121826;
+    --paper2: #171F30;
+    --ink: #E7ECF3;
+    --green: #00C875;
+    --green-soft: #00A863;
+    --gold: #F4C430;
+    --teal: #2FE8C6;
+    --line: #262F42;
+    --muted: #8A93A8;
+    --red: #FF6B6B;
   }
+  html[data-theme="light"] {
+    --bg: #F5F7FA;
+    --paper: #FFFFFF;
+    --paper2: #EEF2F6;
+    --ink: #131A24;
+    --green: #049459;
+    --green-soft: #037A49;
+    --gold: #B8860B;
+    --teal: #0E8F79;
+    --line: #DCE2EA;
+    --muted: #5B6472;
+    --red: #C13E3E;
+  }
+  html[data-theme="light"] body {
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(4,148,89,0.06), transparent 60%), var(--bg);
+  }
+  html[data-theme="light"] .pin-overlay { background: #0F1620; }
+  html[data-theme="light"] .seal { box-shadow: 0 12px 32px rgba(4,148,89,0.22); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
-    background: var(--bg);
+    background:
+      radial-gradient(1200px 600px at 50% -10%, rgba(0,200,117,0.08), transparent 60%),
+      var(--bg);
     color: var(--ink);
     font-family: 'IBM Plex Sans', sans-serif;
     line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
   }
   .wrap { max-width: 720px; margin: 0 auto; padding: 32px 20px 80px; }
 
   /* Header */
-  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; }
+  header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 18px; }
+
+  /* Top tabs */
+  .top-tabs {
+    position: sticky; top: 0; z-index: 80;
+    display: flex; gap: 2px; margin: 0 -20px 22px; padding: 10px 20px 0;
+    background: linear-gradient(var(--bg) 78%, transparent);
+    overflow-x: auto; scrollbar-width: none;
+  }
+  .top-tabs::-webkit-scrollbar { display: none; }
+  .top-tab {
+    flex: 0 0 auto; white-space: nowrap;
+    background: none; border: none; cursor: pointer;
+    font-family: 'IBM Plex Sans', sans-serif; font-size: 13px; font-weight: 500;
+    color: var(--muted); padding: 10px 14px 12px; position: relative;
+    transition: color 0.15s ease;
+  }
+  .top-tab::after {
+    content: ""; position: absolute; left: 10px; right: 10px; bottom: 0; height: 2px;
+    background: transparent; border-radius: 2px; transition: background 0.15s ease;
+  }
+  .top-tab:hover { color: var(--ink); }
+  .top-tab.active { color: var(--teal); }
+  .top-tab.active::after { background: var(--teal); }
+  .tab-panel { display: none; }
+  .tab-panel.active-tab { display: block; }
   .brand { display: flex; align-items: center; gap: 10px; }
   .brand-mark {
     width: 34px; height: 34px; border-radius: 50%;
@@ -39,12 +86,18 @@
   }
   .brand-name { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; letter-spacing: 0.01em; }
   .lang-toggle { font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 6px 12px; border-radius: 20px; background: var(--paper); cursor: pointer; }
+  .theme-toggle {
+    font-size: 14px; color: var(--muted); border: 1px solid var(--line); width: 30px; height: 30px;
+    border-radius: 50%; background: var(--paper); cursor: pointer; display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s ease;
+  }
+  .theme-toggle:hover { color: var(--teal); border-color: var(--teal); }
 
   /* Devaluation alert */
   .alert-banner {
     display: none;
     align-items: center; justify-content: space-between; gap: 10px;
-    background: #FBEFE8; border: 1px solid #E7BFA8; color: var(--red);
+    background: rgba(255,107,107,0.10); border: 1px solid rgba(255,107,107,0.3); color: var(--red);
     border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; font-size: 13px;
   }
   .alert-banner button {
@@ -65,7 +118,7 @@
     background: radial-gradient(circle at 50% 40%, var(--green-soft), var(--green) 75%);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     position: relative;
-    box-shadow: 0 12px 32px rgba(11,61,46,0.25);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5);
   }
   .seal::before {
     content: "";
@@ -103,7 +156,7 @@
   .card .hint { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
 
   /* Trust card */
-  .trust-card { background: #F1F6F3; border: 1px solid #CFE3D8; }
+  .trust-card { background: rgba(0,200,117,0.07); border: 1px solid rgba(0,200,117,0.25); }
   .trust-points { display: flex; flex-direction: column; gap: 12px; margin-top: 4px; }
   .trust-point { display: flex; gap: 10px; align-items: flex-start; }
   .trust-icon {
@@ -243,13 +296,13 @@
 
   /* KYC modal */
   .modal-overlay {
-    display: none; position: fixed; inset: 0; background: rgba(11,33,28,0.55);
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.65);
     z-index: 200; align-items: center; justify-content: center; padding: 20px;
   }
   .modal-overlay.show { display: flex; }
   .modal-box {
     background: var(--paper); border-radius: 14px; padding: 28px; max-width: 420px; width: 100%;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
+    box-shadow: 0 20px 50px rgba(0,0,0,0.55);
   }
   .modal-box h2 { font-family: 'Fraunces', serif; font-size: 20px; margin-bottom: 6px; }
   .modal-box .hint { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
@@ -267,12 +320,12 @@
   }
   .kyc-badge {
     display: inline-flex; align-items: center; gap: 6px; font-size: 11px; color: var(--teal);
-    background: #EAF4F1; border-radius: 20px; padding: 4px 10px; margin-top: 10px;
+    background: rgba(47,232,198,0.12); border-radius: 20px; padding: 4px 10px; margin-top: 10px;
   }
 
   /* PIN lock */
   .pin-overlay {
-    display: none; position: fixed; inset: 0; background: var(--green);
+    display: none; position: fixed; inset: 0; background: #060A10;
     z-index: 300; align-items: center; justify-content: center; flex-direction: column;
   }
   .pin-overlay.show { display: flex; }
@@ -300,10 +353,19 @@
     box-shadow: 0 8px 20px rgba(37,211,102,0.4); text-decoration: none; border: none; cursor: pointer;
   }
 
+  /* Network status chip */
+  .network-chip {
+    display: inline-flex; align-items: center; gap: 7px; margin-top: 10px;
+    font-size: 11px; color: var(--muted); letter-spacing: 0.02em;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .network-chip-sep { opacity: 0.5; }
+  .network-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(0,200,117,0.18); }
+
   /* Yield badge */
   .yield-badge {
     display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gold);
-    background: rgba(201,162,39,0.12); border-radius: 20px; padding: 5px 12px; margin-top: 10px;
+    background: rgba(244,196,48,0.12); border-radius: 20px; padding: 5px 12px; margin-top: 10px;
     font-family: 'IBM Plex Mono', monospace;
   }
 
@@ -344,7 +406,7 @@
     padding: 14px 8px; border-radius: 10px; background: var(--bg); border: 1px solid var(--line);
     opacity: 0.35; filter: grayscale(1);
   }
-  .badge-item.unlocked { opacity: 1; filter: none; background: #F1F6F3; border-color: #CFE3D8; }
+  .badge-item.unlocked { opacity: 1; filter: none; background: rgba(0,200,117,0.10); border-color: rgba(0,200,117,0.3); }
   .badge-item .b-icon { font-size: 26px; }
   .badge-item .b-label { font-size: 11px; color: var(--muted); }
 
@@ -353,7 +415,7 @@
   .rate-alert-row .field { flex: 1; }
   .rate-alert-active {
     display: none; align-items: center; justify-content: space-between;
-    background: #F1F6F3; border: 1px solid #CFE3D8; border-radius: 8px;
+    background: rgba(0,200,117,0.08); border: 1px solid rgba(0,200,117,0.25); border-radius: 8px;
     padding: 10px 14px; margin-top: 12px; font-size: 13px;
   }
   .rate-alert-active.show { display: flex; }
@@ -363,10 +425,31 @@
   .qr-box { text-align: center; }
   .qr-box img { border-radius: 10px; border: 1px solid var(--line); margin-bottom: 14px; }
 
+  /* Network & Contract card */
+  .network-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 11px 0; border-bottom: 1px dashed var(--line); font-size: 13px; color: var(--muted);
+  }
+  .network-row:last-of-type { border-bottom: none; }
+  .network-row b { color: var(--ink); font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 13px; display: inline-flex; align-items: center; gap: 6px; }
+  .mono-addr { letter-spacing: 0.02em; }
+  .net-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); display: inline-block; }
+  .status-ok { color: var(--green) !important; }
+  .explorer-link {
+    display: inline-block; margin-top: 14px; font-size: 13px; color: var(--teal);
+    text-decoration: none; border-bottom: 1px solid rgba(47,232,198,0.4);
+  }
+  .explorer-link:hover { border-bottom-color: var(--teal); }
+
+  /* Legal / risk disclosure links */
+  .legal-links { display: flex; gap: 18px; margin-top: 16px; flex-wrap: wrap; }
+  .legal-links a { font-size: 12px; color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+  .legal-links a:hover { color: var(--teal); }
+
   /* Reminder nudge */
   .nudge-banner {
     display: none; align-items: center; justify-content: space-between; gap: 10px;
-    background: #FBF5E6; border: 1px solid #EAD9A0; color: #8A6D1D;
+    background: rgba(244,196,48,0.10); border: 1px solid rgba(244,196,48,0.3); color: var(--gold);
     border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; font-size: 13px;
   }
   .nudge-banner.show { display: flex; }
@@ -380,12 +463,23 @@
       <div class="brand-mark">$</div>
       <div class="brand-name" data-i18n="brandName">Save in Dollars</div>
     </div>
-    <button class="lang-toggle" id="langToggle">اردو</button>
+    <div style="display:flex; align-items:center; gap:8px;">
+      <button class="theme-toggle" id="themeToggle" title="Toggle theme">☾</button>
+      <button class="lang-toggle" id="langToggle">اردو</button>
+    </div>
   </header>
+
+  <nav class="top-tabs" id="topTabs">
+    <button class="top-tab active" data-tabgroup="home" data-i18n="tabHome">Home</button>
+    <button class="top-tab" data-tabgroup="savings" data-i18n="tabSavings">Savings</button>
+    <button class="top-tab" data-tabgroup="pay" data-i18n="tabPay">Pay</button>
+    <button class="top-tab" data-tabgroup="history" data-i18n="tabHistory">History</button>
+    <button class="top-tab" data-tabgroup="profile" data-i18n="tabProfile">Profile</button>
+  </nav>
 
   <div class="nudge-banner" id="nudgeBanner">
     <span data-i18n="nudgeMsg">💤 Aap ne is mahine kuch save nahi kiya abhi tak.</span>
-    <button class="alert-dismiss" id="nudgeDismiss" style="background:none; color:#8A6D1D; font-size:16px; border:none; cursor:pointer;">✕</button>
+    <button class="alert-dismiss" id="nudgeDismiss" style="background:none; color:var(--gold); font-size:16px; border:none; cursor:pointer;">✕</button>
   </div>
 
   <div class="alert-banner" id="devalAlert">
@@ -396,7 +490,7 @@
     </div>
   </div>
 
-  <div class="hero">
+  <div class="hero tab-panel active-tab" data-tab="home">
     <div class="eyebrow" id="statusLine" data-i18n="notConnected">Not connected</div>
     <button class="lang-toggle" id="connectBtn" style="cursor:pointer; margin-bottom:18px;" data-i18n="connectWallet">Connect Wallet</button>
     <div class="seal">
@@ -410,9 +504,15 @@
       <span class="rt-delta" id="rateDelta"></span>
     </div>
     <div class="yield-badge" id="yieldBadge">📈 <span data-i18n="yieldTxt">Earning ~4% APY · +$0.00 so far</span></div>
+    <div class="network-chip">
+      <span class="network-dot"></span>
+      <span data-i18n="networkVal">Arc Testnet</span>
+      <span class="network-chip-sep">·</span>
+      <span data-i18n="statusVal">All systems operational</span>
+    </div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel active-tab" data-tab="home">
     <h2 data-i18n="alertTitle">Rate Alert</h2>
     <div class="hint" data-i18n="alertHint">Set your own target rate — we'll notify you when it's hit.</div>
     <div class="rate-alert-row">
@@ -428,7 +528,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel active-tab" data-tab="home">
     <h2 data-i18n="hiwTitle">How It Works</h2>
     <div class="hint" data-i18n="hiwHint">Three simple steps — no crypto knowledge needed.</div>
     <div class="hiw-steps">
@@ -447,7 +547,7 @@
     </div>
   </div>
 
-  <div class="card trust-card">
+  <div class="card trust-card tab-panel" data-tab="profile">
     <h2 data-i18n="trustTitle">Your money is safe</h2>
     <div class="hint" data-i18n="trustHint">A simple explanation of where your savings actually go.</div>
     <div class="trust-points">
@@ -467,7 +567,45 @@
     <div class="kyc-badge" id="kycBadge">🪪 <span data-i18n="kycNotDone">Identity not verified — tap to verify</span></div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="profile">
+    <h2 data-i18n="networkTitle">Network &amp; Contract</h2>
+    <div class="hint" data-i18n="networkHint">Full transparency on where your funds actually live on-chain.</div>
+    <div class="network-row">
+      <span data-i18n="networkLabel">Network</span>
+      <b><span class="net-dot"></span> <span data-i18n="networkVal">Arc Testnet</span></b>
+    </div>
+    <div class="network-row">
+      <span data-i18n="contractLabel">USDC Contract</span>
+      <b class="mono-addr">0x8f3a…c21e</b>
+    </div>
+    <div class="network-row">
+      <span data-i18n="statusLabel">System Status</span>
+      <b class="status-ok"><span class="net-dot"></span> <span data-i18n="statusVal">All systems operational</span></b>
+    </div>
+    <a href="#" class="explorer-link" id="explorerLink" data-i18n="explorerLink">View on Block Explorer ↗</a>
+  </div>
+
+  <div class="card tab-panel" data-tab="profile">
+    <h2 data-i18n="legalTitle">Terms &amp; Risk Disclosure</h2>
+    <div class="hint" data-i18n="legalHint">Please read before using real funds.</div>
+    <div class="trust-points">
+      <div class="trust-point">
+        <div class="trust-icon" style="background:var(--gold); color:var(--ink);">!</div>
+        <p data-i18n="legalPoint1">🧪 <b>Testnet only</b> — nothing here uses real money. Balances reset and carry no value.</p>
+      </div>
+      <div class="trust-point">
+        <div class="trust-icon" style="background:var(--red);">!</div>
+        <p data-i18n="legalPoint2">📉 Digital assets carry risk, including smart-contract and market risk, even when pegged to $1.</p>
+      </div>
+    </div>
+    <div class="legal-links">
+      <a href="#" data-i18n="legalTerms">Terms of Service</a>
+      <a href="#" data-i18n="legalPrivacy">Privacy Policy</a>
+      <a href="#" data-i18n="legalFaq">FAQ / Docs</a>
+    </div>
+  </div>
+
+  <div class="card tab-panel" data-tab="savings">
     <span class="dw-badge">Testnet Demo</span>
     <h2 data-i18n="dwTitle">Deposit &amp; Withdraw</h2>
     <div class="hint" data-i18n="dwHint">Move money between your mobile wallet/bank and your USDC savings.</div>
@@ -492,7 +630,7 @@
     <div class="rate-note" id="dwNote" style="margin-top:10px;">Simulated on Arc testnet — no real money moves yet.</div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="savings">
     <div class="toggle-row">
       <div>
         <div class="tr-label" data-i18n="autoSaveTitle">Auto-Save</div>
@@ -519,7 +657,7 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="savings">
     <div class="toggle-row">
       <div>
         <div class="tr-label" data-i18n="roundupTitle">Round-Up Savings</div>
@@ -537,7 +675,7 @@
     <button class="secondary" id="simulatePurchaseBtn" style="margin-top:14px;" data-i18n="simulatePurchase">Simulate a Purchase (Demo)</button>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="savings">
     <h2 data-i18n="groupTitle">Family / Group Savings</h2>
     <div class="hint" data-i18n="groupHint">Like a digital committee (BC) — everyone contributes toward one shared goal.</div>
     <div id="groupMembersList"></div>
@@ -552,7 +690,7 @@
     <button class="primary" id="groupAddBtn" style="margin-top:10px;" data-i18n="groupAdd">Add Contribution</button>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="pay">
     <h2 data-i18n="qrTitle">Pay / Receive via QR</h2>
     <div class="hint" data-i18n="qrHint">Scan to send USDC directly to another Save in Dollars user.</div>
     <div class="qr-box">
@@ -561,13 +699,13 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="savings">
     <h2 data-i18n="badgesTitle">Milestones</h2>
     <div class="hint" data-i18n="badgesHint">Little wins along the way to your first $100 saved.</div>
     <div class="badges-grid" id="badgesGrid"></div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="savings">
     <h2 data-i18n="convertTitle">Convert PKR → USDC</h2>
     <div class="hint" data-i18n="convertHint">Move your savings into a stable digital dollar, instantly.</div>
     <div class="convert-row">
@@ -591,7 +729,7 @@
     <button class="primary" id="convertBtn" data-i18n="convertBtnTxt">Convert &amp; Save</button>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="savings">
     <h2 data-i18n="goalsTitle">Saving Goals</h2>
     <div class="hint" data-i18n="goalsHint">Split your USDC savings into goals — track progress toward each one.</div>
     <div id="goalsList" style="display:flex; flex-direction:column; gap:14px;"></div>
@@ -602,7 +740,7 @@
     <button class="primary" id="addGoalBtn" style="margin-top:10px;" data-i18n="addGoal">Add Goal</button>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="pay">
     <span class="dw-badge">Testnet Demo</span>
     <h2 data-i18n="remitTitle">Send Money from Abroad</h2>
     <div class="hint" data-i18n="remitHint">Overseas Pakistanis can send USD straight into a family member's savings — no bank delays.</div>
@@ -639,7 +777,7 @@
     <button class="secondary" id="remitSendBtn" data-i18n="remitBtnTxt">Send Remittance</button>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="pay">
     <span class="dw-badge">Testnet Demo</span>
     <h2 data-i18n="topupTitle">Mobile Top-Up</h2>
     <div class="hint" data-i18n="topupHint">Top up any mobile number directly from your USDC savings.</div>
@@ -666,7 +804,45 @@
     <button class="secondary" id="topupBtn" data-i18n="topupBtnTxt">Top Up Now</button>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="pay">
+    <span class="dw-badge">Testnet Demo</span>
+    <h2 data-i18n="freelanceTitle">Get Paid by Foreign Clients</h2>
+    <div class="hint" data-i18n="freelanceHint">No Payoneer, no PayPal, no bank delays — generate a link, foreign client pays in USDC straight to your wallet.</div>
+
+    <div class="field" style="margin-bottom:14px;">
+      <label data-i18n="freelanceClientLabel">Client / Company Name</label>
+      <input type="text" id="freelanceClientInput" placeholder="e.g. Acme Studio, USA" />
+    </div>
+    <div class="convert-row">
+      <div class="field">
+        <label data-i18n="freelanceAmountLabel">Invoice Amount (USD)</label>
+        <input type="number" id="freelanceAmountInput" placeholder="0" value="250" />
+      </div>
+      <div class="arrow">→</div>
+      <div class="field">
+        <label data-i18n="freelanceReceiveLabel">You receive</label>
+        <input type="text" id="freelanceUsdcOutput" readonly />
+      </div>
+    </div>
+    <div class="fee-note">
+      <span data-i18n="feeLabel">Fee</span>
+      <span><b id="freelanceFee">$0.00</b> <span class="fee-badge" data-i18n="freelanceFeeNote">· ~0.5% flat, vs 3–5% on Payoneer/PayPal-style platforms</span></span>
+    </div>
+    <button class="primary" id="freelanceGenerateBtn" data-i18n="freelanceGenerate">Generate Payment Link</button>
+
+    <div id="freelanceLinkBox" style="display:none; margin-top:16px;">
+      <div class="referral-code-box">
+        <span class="code" id="freelanceLinkText" style="font-size:12px;">—</span>
+        <button class="copy-btn" id="freelanceCopyBtn" data-i18n="copyCode">Copy</button>
+      </div>
+      <div class="rate-note" data-i18n="freelanceLinkNote">Share this link with your client — when they pay, it lands directly in your USDC balance.</div>
+      <button class="secondary" id="freelanceSimulatePayBtn" style="margin-top:12px;" data-i18n="freelanceSimulate">Simulate Client Payment (Demo)</button>
+    </div>
+
+    <div id="freelanceReceivedList" style="margin-top:16px; display:flex; flex-direction:column; gap:10px;"></div>
+  </div>
+
+  <div class="card tab-panel" data-tab="profile">
     <h2 data-i18n="referralTitle">Invite Friends, Earn USDC</h2>
     <div class="hint" data-i18n="referralHint">Share your code — you and your friend each get $1 USDC when they make their first deposit.</div>
     <div class="referral-code-box">
@@ -686,7 +862,7 @@
     <button class="primary" id="simulateReferralBtn" style="margin-top:14px;" data-i18n="simulateReferral">Simulate a Friend Joining (Demo)</button>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="pay">
     <h2 data-i18n="providerTitle">Pay Utility Bills</h2>
     <div class="hint" data-i18n="providerHint">Electricity, gas, and water bills — pay any provider across Pakistan straight from your USDC savings.</div>
 
@@ -720,37 +896,37 @@
     </div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="pay">
     <h2 data-i18n="billsPaidTitle">Bills Paid This Month</h2>
     <div class="hint" data-i18n="billsPaidHint">A running record of your utility payments, saved on this device.</div>
     <div id="billsPaidList" style="display:flex; flex-direction:column; gap:10px;"></div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel active-tab" data-tab="home">
     <h2 data-i18n="chartTitle">Rupee vs. Digital Dollar</h2>
     <div class="hint" data-i18n="chartHint">What Rs 100,000 would be worth today if saved a year ago</div>
     <div class="chart-wrap">
       <svg viewBox="0 0 640 220" preserveAspectRatio="xMidYMid meet">
-        <line x1="0" y1="55" x2="640" y2="55" stroke="#E7E2D6" stroke-width="1"/>
-        <line x1="0" y1="110" x2="640" y2="110" stroke="#E7E2D6" stroke-width="1"/>
-        <line x1="0" y1="165" x2="640" y2="165" stroke="#E7E2D6" stroke-width="1"/>
+        <line x1="0" y1="55" x2="640" y2="55" style="stroke:var(--line)" stroke-width="1"/>
+        <line x1="0" y1="110" x2="640" y2="110" style="stroke:var(--line)" stroke-width="1"/>
+        <line x1="0" y1="165" x2="640" y2="165" style="stroke:var(--line)" stroke-width="1"/>
         <!-- PKR losing value -->
-        <polyline fill="none" stroke="#B8532E" stroke-width="2.5"
+        <polyline fill="none" style="stroke:var(--red)" stroke-width="2.5"
           points="0,60 106,78 213,95 320,112 426,135 533,150 640,168" />
         <!-- USDC flat -->
-        <polyline fill="none" stroke="#2E7D6B" stroke-width="2.5"
+        <polyline fill="none" style="stroke:var(--teal)" stroke-width="2.5"
           points="0,58 106,58 213,57 320,58 426,57 533,58 640,58" />
-        <circle cx="640" cy="168" r="4" fill="#B8532E" />
-        <circle cx="640" cy="58" r="4" fill="#2E7D6B" />
+        <circle cx="640" cy="168" r="4" style="fill:var(--red)" />
+        <circle cx="640" cy="58" r="4" style="fill:var(--teal)" />
       </svg>
     </div>
     <div class="legend">
-      <span><i class="dot" style="background:#2E7D6B"></i><span data-i18n="legendUsdc">USDC — holds value</span></span>
-      <span><i class="dot" style="background:#B8532E"></i><span data-i18n="legendPkr">PKR — loses value to inflation</span></span>
+      <span><i class="dot" style="background:var(--teal)"></i><span data-i18n="legendUsdc">USDC — holds value</span></span>
+      <span><i class="dot" style="background:var(--red)"></i><span data-i18n="legendPkr">PKR — loses value to inflation</span></span>
     </div>
   </div>
 
-  <div class="card">
+  <div class="card tab-panel" data-tab="history">
     <h2 data-i18n="historyTitle">Transaction History</h2>
     <div class="hint" data-i18n="historyHint">Every conversion you've made, saved on this device.</div>
     <div id="historyList" style="display:flex; flex-direction:column; gap:10px;">
@@ -815,6 +991,20 @@
 </div>
 
 <script>
+  /* ---------------- Theme (dark/light) ---------------- */
+  const THEME_KEY = 'saveInDollars_theme';
+  function applyTheme(theme) {
+    document.documentElement.setAttribute('data-theme', theme);
+    document.getElementById('themeToggle').textContent = theme === 'light' ? '☀' : '☾';
+  }
+  let currentTheme = localStorage.getItem(THEME_KEY) || 'dark';
+  applyTheme(currentTheme);
+  document.getElementById('themeToggle').addEventListener('click', () => {
+    currentTheme = currentTheme === 'dark' ? 'light' : 'dark';
+    localStorage.setItem(THEME_KEY, currentTheme);
+    applyTheme(currentTheme);
+  });
+
   /* ---------------- i18n ---------------- */
   const translations = {
     en: {
@@ -871,7 +1061,25 @@
       exportCsv: "Export Statement (CSV)",
       pinSetTitle: "Set a PIN to protect your savings", pinSetSubtitle: "4-digit PIN, used only on this device",
       pinEnterTitle: "Enter your PIN", pinEnterSubtitle: "Welcome back", pinSkip: "Skip for now",
-      pinMismatch: "PINs didn't match, try again", pinWrong: "Wrong PIN, try again"
+      pinMismatch: "PINs didn't match, try again", pinWrong: "Wrong PIN, try again",
+      tabHome: "Home", tabSavings: "Savings", tabPay: "Pay", tabHistory: "History", tabProfile: "Profile",
+      networkTitle: "Network & Contract", networkHint: "Full transparency on where your funds actually live on-chain.",
+      networkLabel: "Network", networkVal: "Arc Testnet", contractLabel: "USDC Contract",
+      explorerLink: "View on Block Explorer ↗", statusLabel: "System Status", statusVal: "All systems operational",
+      custodyTitle: "Non-Custodial by Design", custodyHint: "We never hold your funds — here's exactly what that means.",
+      custody1: "<b>Only you</b> control the private keys to your wallet. Save in Dollars cannot move your funds without your approval.",
+      custody2: "Smart contracts are used <b>as-is</b> on Arc Testnet — this is a demo environment for testing, not audited for mainnet.",
+      legalTitle: "Terms & Risk Disclosure", legalHint: "Please read before using real funds.",
+      legalPoint1: "🧪 <b>Testnet only</b> — nothing here uses real money. Balances reset and carry no value.",
+      legalPoint2: "📉 Digital assets carry risk, including smart-contract and market risk, even when pegged to $1.",
+      legalTerms: "Terms of Service", legalPrivacy: "Privacy Policy", legalFaq: "FAQ / Docs",
+      txPending: "Pending", txConfirming: "Confirming", txConfirmed: "Confirmed",
+      txStateTitle: "Transaction status",
+      freelanceTitle: "Get Paid by Foreign Clients", freelanceHint: "No Payoneer, no PayPal, no bank delays — generate a link, foreign client pays in USDC straight to your wallet.",
+      freelanceClientLabel: "Client / Company Name", freelanceAmountLabel: "Invoice Amount (USD)", freelanceReceiveLabel: "You receive",
+      freelanceFeeNote: "· ~0.5% flat, vs 3–5% on Payoneer/PayPal-style platforms",
+      freelanceGenerate: "Generate Payment Link", freelanceLinkNote: "Share this link with your client — when they pay, it lands directly in your USDC balance.",
+      freelanceSimulate: "Simulate Client Payment (Demo)", freelanceReceivedTitle: "Received from clients"
     },
     ur: {
       brandName: "سیو اِن ڈالرز", devalMsg: "⚠️ روپے کی قدر آج کم ہوئی ہے — ابھی کنورٹ کرنے کا اچھا وقت ہے۔",
@@ -927,7 +1135,25 @@
       exportCsv: "اسٹیٹمنٹ ایکسپورٹ کریں (CSV)",
       pinSetTitle: "اپنی بچت کی حفاظت کے لیے پن سیٹ کریں", pinSetSubtitle: "4 ہندسوں کا پن، صرف اسی ڈیوائس پر",
       pinEnterTitle: "اپنا پن درج کریں", pinEnterSubtitle: "خوش آمدید", pinSkip: "ابھی کے لیے چھوڑیں",
-      pinMismatch: "پن مماثل نہیں تھے، دوبارہ کوشش کریں", pinWrong: "غلط پن، دوبارہ کوشش کریں"
+      pinMismatch: "پن مماثل نہیں تھے، دوبارہ کوشش کریں", pinWrong: "غلط پن، دوبارہ کوشش کریں",
+      tabHome: "ہوم", tabSavings: "بچت", tabPay: "ادائیگی", tabHistory: "ہسٹری", tabProfile: "پروفائل",
+      networkTitle: "نیٹ ورک اور کنٹریکٹ", networkHint: "آپ کا پیسہ آن چین کہاں موجود ہے — مکمل شفافیت۔",
+      networkLabel: "نیٹ ورک", networkVal: "آرک ٹیسٹ نیٹ", contractLabel: "یو ایس ڈی سی کنٹریکٹ",
+      explorerLink: "بلاک ایکسپلورر پر دیکھیں ↗", statusLabel: "سسٹم اسٹیٹس", statusVal: "تمام سسٹمز فعال ہیں",
+      custodyTitle: "غیر امانتی ڈیزائن", custodyHint: "ہم کبھی آپ کا پیسہ نہیں رکھتے — یہاں اس کی مکمل وضاحت ہے۔",
+      custody1: "<b>صرف آپ</b> اپنے والیٹ کی پرائیویٹ کیز کو کنٹرول کرتے ہیں۔ Save in Dollars آپ کی اجازت کے بغیر رقم منتقل نہیں کر سکتا۔",
+      custody2: "اسمارٹ کنٹریکٹس آرک ٹیسٹ نیٹ پر <b>جیسے ہیں ویسے</b> استعمال ہوتے ہیں — یہ ٹیسٹنگ کے لیے ایک ڈیمو ماحول ہے، مین نیٹ کے لیے آڈٹ شدہ نہیں۔",
+      legalTitle: "شرائط اور خطرے کا اظہار", legalHint: "اصل رقم استعمال کرنے سے پہلے براہ کرم پڑھیں۔",
+      legalPoint1: "🧪 <b>صرف ٹیسٹ نیٹ</b> — یہاں کوئی اصل رقم استعمال نہیں ہوتی۔ بیلنس ری سیٹ ہو سکتا ہے اور اس کی کوئی قیمت نہیں۔",
+      legalPoint2: "📉 ڈیجیٹل اثاثوں میں خطرہ شامل ہے، بشمول اسمارٹ کنٹریکٹ اور مارکیٹ رسک، چاہے $1 سے منسلک ہوں۔",
+      legalTerms: "شرائط و ضوابط", legalPrivacy: "پرائیویسی پالیسی", legalFaq: "عمومی سوالات / دستاویزات",
+      txPending: "زیر التوا", txConfirming: "تصدیق ہو رہی ہے", txConfirmed: "تصدیق شدہ",
+      txStateTitle: "ٹرانزیکشن اسٹیٹس",
+      freelanceTitle: "غیر ملکی کلائنٹس سے ادائیگی وصول کریں", freelanceHint: "نہ Payoneer، نہ PayPal، نہ بینک تاخیر — لنک بنائیں، غیر ملکی کلائنٹ براہ راست آپ کے والیٹ میں USDC ادا کرے۔",
+      freelanceClientLabel: "کلائنٹ / کمپنی کا نام", freelanceAmountLabel: "انوائس رقم (USD)", freelanceReceiveLabel: "آپ کو ملے گا",
+      freelanceFeeNote: "· تقریباً 0.5% فلیٹ، بمقابلہ Payoneer/PayPal طرز کے پلیٹ فارمز پر 3–5%",
+      freelanceGenerate: "پیمنٹ لنک بنائیں", freelanceLinkNote: "یہ لنک اپنے کلائنٹ کو بھیجیں — ادائیگی کرتے ہی یہ براہ راست آپ کے USDC بیلنس میں آ جائے گی۔",
+      freelanceSimulate: "کلائنٹ کی ادائیگی سیمولیٹ کریں (ڈیمو)", freelanceReceivedTitle: "کلائنٹس سے موصول شدہ"
     }
   };
   let currentLang = localStorage.getItem('saveInDollars_lang') || 'en';
@@ -1041,7 +1267,7 @@
             <div class="h-amounts">${title}</div>
             <div class="h-date">${dateStr}</div>
           </div>
-          <div class="h-usdc" style="${isWithdraw ? 'color:#B8532E;' : ''}">${sign}${entry.usdc.toFixed(2)} USDC</div>
+          <div class="h-usdc" style="${isWithdraw ? 'color:var(--red);' : ''}">${sign}${entry.usdc.toFixed(2)} USDC</div>
         </div>
       `;
     }).join('');
@@ -1182,9 +1408,12 @@
     const methodName = methodLabels[dwMethod];
     const originalText = dwSubmitBtn.textContent;
     dwSubmitBtn.disabled = true;
-    dwSubmitBtn.textContent = 'Processing…';
+    dwSubmitBtn.textContent = translations[currentLang].txPending + '… ⏳';
+
+    setTimeout(() => { dwSubmitBtn.textContent = translations[currentLang].txConfirming + '… 🔄'; }, 550);
 
     setTimeout(() => {
+      dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
       if (dwTab === 'deposit') {
         const usdcGained = amount / liveRate;
         setDisplayedBalance(getCurrentBalance() + usdcGained);
@@ -1203,8 +1432,10 @@
           dwAmountInput.value = '';
         }
       }
-      dwSubmitBtn.disabled = false;
-      dwSubmitBtn.textContent = originalText;
+      setTimeout(() => {
+        dwSubmitBtn.disabled = false;
+        dwSubmitBtn.textContent = originalText;
+      }, 700);
     }, 1600);
   });
   updateDwUI();
@@ -1399,6 +1630,90 @@
       document.getElementById('topupNumberInput').value = '';
       btn.disabled = false; btn.textContent = original;
     }, 1400);
+  });
+
+  /* ---------------- Freelance / Cross-Border Payments ---------------- */
+  const FREELANCE_KEY = 'saveInDollars_freelance_received';
+  const freelanceAmountInput = document.getElementById('freelanceAmountInput');
+  const freelanceUsdcOutput = document.getElementById('freelanceUsdcOutput');
+  const freelanceFee = document.getElementById('freelanceFee');
+  const FREELANCE_FEE_PCT = 0.005;
+
+  function updateFreelanceConversion() {
+    const usd = parseFloat(freelanceAmountInput.value) || 0;
+    const fee = usd * FREELANCE_FEE_PCT;
+    freelanceUsdcOutput.value = Math.max(0, usd - fee).toFixed(2);
+    freelanceFee.textContent = '$' + fee.toFixed(2);
+  }
+  freelanceAmountInput.addEventListener('input', updateFreelanceConversion);
+  updateFreelanceConversion();
+
+  function getFreelanceReceived() { try { return JSON.parse(localStorage.getItem(FREELANCE_KEY)) || []; } catch (e) { return []; } }
+  function renderFreelanceReceived() {
+    const list = getFreelanceReceived();
+    const box = document.getElementById('freelanceReceivedList');
+    if (list.length === 0) { box.innerHTML = ''; return; }
+    box.innerHTML = '<div style="font-size:12px; color:var(--muted); margin-bottom:2px;">' +
+      (translations[currentLang].freelanceReceivedTitle) + '</div>' +
+      list.slice().reverse().map(p => `
+        <div class="history-row">
+          <div class="h-left">
+            <span class="h-amounts">${p.client}</span>
+            <span class="h-date">${new Date(p.date).toLocaleDateString()}</span>
+          </div>
+          <span class="h-usdc">+${p.usdc.toFixed(2)} USDC</span>
+        </div>
+      `).join('');
+  }
+  renderFreelanceReceived();
+
+  let freelancePendingInvoice = null;
+
+  document.getElementById('freelanceGenerateBtn').addEventListener('click', () => {
+    const client = document.getElementById('freelanceClientInput').value.trim();
+    const usd = parseFloat(freelanceAmountInput.value) || 0;
+    if (!client) { showToast('Enter a client / company name', true); return; }
+    if (usd <= 0) { showToast('Enter an invoice amount', true); return; }
+    const invoiceId = 'INV-' + Math.random().toString(36).slice(2, 8).toUpperCase();
+    freelancePendingInvoice = { client, usd, invoiceId };
+    document.getElementById('freelanceLinkText').textContent =
+      'saveindollars.app/pay/' + invoiceId;
+    document.getElementById('freelanceLinkBox').style.display = 'block';
+    showToast('🔗 Payment link generated — share it with ' + client);
+  });
+
+  document.getElementById('freelanceCopyBtn').addEventListener('click', () => {
+    const link = document.getElementById('freelanceLinkText').textContent;
+    navigator.clipboard?.writeText(link).then(() => showToast('Payment link copied'))
+      .catch(() => showToast(link));
+  });
+
+  document.getElementById('freelanceSimulatePayBtn').addEventListener('click', () => {
+    if (!freelancePendingInvoice) { showToast('Generate a payment link first', true); return; }
+    if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
+    const btn = document.getElementById('freelanceSimulatePayBtn');
+    const original = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = translations[currentLang].txPending + '… ⏳';
+    setTimeout(() => { btn.textContent = translations[currentLang].txConfirming + '… 🔄'; }, 500);
+    setTimeout(() => {
+      const { client, usd } = freelancePendingInvoice;
+      const fee = usd * FREELANCE_FEE_PCT;
+      const usdcAmount = usd - fee;
+      setDisplayedBalance(getCurrentBalance() + usdcAmount);
+      addHistoryEntry(0, usdcAmount, 'Client Payment — ' + client);
+      const list = getFreelanceReceived();
+      list.push({ client, usdc: usdcAmount, date: new Date().toISOString() });
+      localStorage.setItem(FREELANCE_KEY, JSON.stringify(list));
+      renderFreelanceReceived();
+      showToast('✅ ' + client + ' paid $' + usd.toFixed(2) + ' → ' + usdcAmount.toFixed(2) + ' USDC received');
+      document.getElementById('freelanceLinkBox').style.display = 'none';
+      document.getElementById('freelanceClientInput').value = '';
+      freelancePendingInvoice = null;
+      btn.disabled = false;
+      btn.textContent = original;
+      checkBadges();
+    }, 1600);
   });
 
   /* ---------------- Saving Goals ---------------- */
@@ -1808,6 +2123,26 @@
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
     showToast('📄 Statement downloaded');
+  });
+
+  /* ---------------- Explorer / legal links (demo placeholders) ---------------- */
+  document.getElementById('explorerLink').addEventListener('click', (e) => {
+    e.preventDefault();
+    showToast('🔗 Demo build — explorer link goes live at mainnet launch');
+  });
+  document.querySelectorAll('.legal-links a').forEach(a => a.addEventListener('click', (e) => {
+    e.preventDefault();
+    showToast('📄 Coming soon — this will open the full document');
+  }));
+
+  /* ---------------- Top tabs ---------------- */
+  document.getElementById('topTabs').addEventListener('click', (e) => {
+    const btn = e.target.closest('.top-tab');
+    if (!btn) return;
+    const tab = btn.dataset.tabgroup;
+    document.querySelectorAll('.top-tab').forEach(t => t.classList.toggle('active', t === btn));
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.toggle('active-tab', p.dataset.tab === tab));
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   });
 
   /* ---------------- Init ---------------- */
