@@ -103,6 +103,17 @@
   .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
 
   footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 30px; }
+
+  /* History */
+  .history-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; background: var(--bg); border-radius: 8px;
+    border: 1px solid var(--line);
+  }
+  .history-row .h-left { display: flex; flex-direction: column; gap: 2px; }
+  .history-row .h-amounts { font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 500; }
+  .history-row .h-date { font-size: 11px; color: var(--muted); }
+  .history-row .h-usdc { color: var(--teal); font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px; }
 </style>
 </head>
 <body>
@@ -169,6 +180,14 @@
     </div>
   </div>
 
+  <div class="card">
+    <h2>Transaction History</h2>
+    <div class="hint">Every conversion you've made, saved on this device.</div>
+    <div id="historyList" style="display:flex; flex-direction:column; gap:10px;">
+      <div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;" id="historyEmpty">No conversions yet — try one above.</div>
+    </div>
+  </div>
+
   <footer>Save in Dollars — prototype UI, connected to Arc testnet</footer>
 
   <div id="toast" style="
@@ -191,6 +210,49 @@
   }
   pkrInput.addEventListener('input', updateConversion);
   updateConversion();
+
+  // ---- Transaction history (saved on this device via localStorage) ----
+  const HISTORY_KEY = 'saveInDollars_history';
+
+  function getHistory() {
+    try {
+      return JSON.parse(localStorage.getItem(HISTORY_KEY)) || [];
+    } catch (e) {
+      return [];
+    }
+  }
+
+  function addHistoryEntry(pkr, usdc) {
+    const history = getHistory();
+    history.unshift({ pkr, usdc, date: new Date().toISOString() });
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20))); // keep last 20
+    renderHistory();
+  }
+
+  function renderHistory() {
+    const history = getHistory();
+    const list = document.getElementById('historyList');
+    const empty = document.getElementById('historyEmpty');
+    if (history.length === 0) {
+      list.innerHTML = '<div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;">No conversions yet — try one above.</div>';
+      return;
+    }
+    list.innerHTML = history.map(entry => {
+      const d = new Date(entry.date);
+      const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      return `
+        <div class="history-row">
+          <div class="h-left">
+            <div class="h-amounts">Rs ${entry.pkr.toLocaleString('en-US')} converted</div>
+            <div class="h-date">${dateStr}</div>
+          </div>
+          <div class="h-usdc">+${entry.usdc.toFixed(2)} USDC</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  renderHistory();
 
   // ---- Toast helper ----
   const toast = document.getElementById('toast');
@@ -239,6 +301,7 @@
         }]
       });
       showToast('✅ Converted ' + pkr.toLocaleString('en-US') + ' PKR → ' + usdcAmount.toFixed(2) + ' USDC');
+      addHistoryEntry(pkr, usdcAmount);
       setTimeout(() => refreshBalance(connectedAddress), 2000); // give testnet a moment to confirm
     } catch (err) {
       console.error(err);
