@@ -114,6 +114,27 @@
   .history-row .h-amounts { font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 500; }
   .history-row .h-date { font-size: 11px; color: var(--muted); }
   .history-row .h-usdc { color: var(--teal); font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px; }
+
+  /* Deposit / Withdraw */
+  .dw-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
+  .dw-tab {
+    flex: 1; padding: 10px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--bg); color: var(--muted); font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s ease;
+  }
+  .dw-tab.active { background: var(--green); color: #FBFAF6; border-color: var(--green); }
+  .dw-methods { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+  .method-btn {
+    flex: 1; min-width: 100px; padding: 12px 10px; border-radius: 8px; border: 1px solid var(--line);
+    background: var(--paper); color: var(--ink); font-family: 'IBM Plex Sans', sans-serif;
+    font-size: 13px; font-weight: 500; cursor: pointer; transition: all 0.15s ease;
+  }
+  .method-btn.active { border-color: var(--teal); box-shadow: 0 0 0 1.5px var(--teal) inset; color: var(--teal); }
+  .dw-badge {
+    display: inline-block; font-size: 10px; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--gold); border: 1px solid rgba(201,162,39,0.4); border-radius: 20px;
+    padding: 3px 9px; margin-bottom: 14px;
+  }
 </style>
 </head>
 <body>
@@ -137,6 +158,31 @@
   </div>
 
   <div class="card">
+    <span class="dw-badge">Testnet Demo</span>
+    <h2>Deposit &amp; Withdraw</h2>
+    <div class="hint">Move money between your mobile wallet/bank and your USDC savings.</div>
+
+    <div class="dw-tabs">
+      <button class="dw-tab active" data-tab="deposit" id="dwTabDeposit">Deposit</button>
+      <button class="dw-tab" data-tab="withdraw" id="dwTabWithdraw">Withdraw</button>
+    </div>
+
+    <div class="dw-methods">
+      <button class="method-btn active" data-method="easypaisa">Easypaisa</button>
+      <button class="method-btn" data-method="jazzcash">JazzCash</button>
+      <button class="method-btn" data-method="bank">Bank Transfer</button>
+    </div>
+
+    <div class="field" style="margin-top:16px;">
+      <label id="dwAmountLabel">Amount (PKR)</label>
+      <input type="number" id="dwAmountInput" placeholder="0" />
+    </div>
+
+    <button class="primary" id="dwSubmitBtn">Deposit via Easypaisa</button>
+    <div class="rate-note" id="dwNote" style="margin-top:10px;">Simulated on Arc testnet — no real money moves yet.</div>
+  </div>
+
+  <div class="card">
     <h2>Convert PKR → USDC</h2>
     <div class="hint">Move your savings into a stable digital dollar, instantly.</div>
     <div class="convert-row">
@@ -154,6 +200,17 @@
     </div>
     <div class="rate-note" id="rateLine">1 USD ≈ Rs 280</div>
     <button class="primary" id="convertBtn">Convert &amp; Save</button>
+  </div>
+
+  <div class="card">
+    <h2>Saving Goals</h2>
+    <div class="hint">Split your USDC savings into goals — track progress toward each one.</div>
+    <div id="goalsList" style="display:flex; flex-direction:column; gap:14px;"></div>
+    <div style="display:flex; gap:10px; margin-top:16px;">
+      <input type="text" id="goalNameInput" placeholder="Goal name (e.g. Emergency Fund)" style="flex:1.4; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; background:var(--bg); color:var(--ink);" />
+      <input type="number" id="goalTargetInput" placeholder="Target USDC" style="flex:1; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--bg); color:var(--ink);" />
+    </div>
+    <button class="primary" id="addGoalBtn" style="margin-top:10px;">Add Goal</button>
   </div>
 
   <div class="card">
@@ -222,9 +279,9 @@
     }
   }
 
-  function addHistoryEntry(pkr, usdc) {
+  function addHistoryEntry(pkr, usdc, label) {
     const history = getHistory();
-    history.unshift({ pkr, usdc, date: new Date().toISOString() });
+    history.unshift({ pkr, usdc, label: label || null, date: new Date().toISOString() });
     localStorage.setItem(HISTORY_KEY, JSON.stringify(history.slice(0, 20))); // keep last 20
     renderHistory();
   }
@@ -232,21 +289,23 @@
   function renderHistory() {
     const history = getHistory();
     const list = document.getElementById('historyList');
-    const empty = document.getElementById('historyEmpty');
     if (history.length === 0) {
-      list.innerHTML = '<div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;">No conversions yet — try one above.</div>';
+      list.innerHTML = '<div style="font-size:13px; color:var(--muted); text-align:center; padding:16px 0;">No activity yet — try converting or depositing above.</div>';
       return;
     }
     list.innerHTML = history.map(entry => {
       const d = new Date(entry.date);
       const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+      const isWithdraw = entry.label && entry.label.startsWith('Withdraw');
+      const title = entry.label ? entry.label : `Rs ${entry.pkr.toLocaleString('en-US')} converted`;
+      const sign = isWithdraw ? '-' : '+';
       return `
         <div class="history-row">
           <div class="h-left">
-            <div class="h-amounts">Rs ${entry.pkr.toLocaleString('en-US')} converted</div>
+            <div class="h-amounts">${title}</div>
             <div class="h-date">${dateStr}</div>
           </div>
-          <div class="h-usdc">+${entry.usdc.toFixed(2)} USDC</div>
+          <div class="h-usdc" style="${isWithdraw ? 'color:#B8532E;' : ''}">${sign}${entry.usdc.toFixed(2)} USDC</div>
         </div>
       `;
     }).join('');
@@ -380,6 +439,97 @@
   }
 
   connectBtn.addEventListener('click', connectWallet);
+
+  // ---- Deposit / Withdraw simulation (testnet demo, no real money moves) ----
+  const methodLabels = { easypaisa: 'Easypaisa', jazzcash: 'JazzCash', bank: 'Bank Transfer' };
+  let dwTab = 'deposit';
+  let dwMethod = 'easypaisa';
+
+  const dwTabDeposit = document.getElementById('dwTabDeposit');
+  const dwTabWithdraw = document.getElementById('dwTabWithdraw');
+  const dwAmountLabel = document.getElementById('dwAmountLabel');
+  const dwAmountInput = document.getElementById('dwAmountInput');
+  const dwSubmitBtn = document.getElementById('dwSubmitBtn');
+  const dwNote = document.getElementById('dwNote');
+  const methodBtns = document.querySelectorAll('.method-btn');
+
+  function updateDwUI() {
+    dwAmountLabel.textContent = dwTab === 'deposit' ? 'Amount (PKR)' : 'Amount (USDC)';
+    dwAmountInput.placeholder = '0';
+    dwSubmitBtn.textContent = (dwTab === 'deposit' ? 'Deposit via ' : 'Withdraw via ') + methodLabels[dwMethod];
+    dwNote.textContent = dwTab === 'deposit'
+      ? 'Simulated on Arc testnet — no real money moves yet.'
+      : 'Simulated withdrawal — funds are not actually sent to your ' + methodLabels[dwMethod] + ' account yet.';
+  }
+
+  dwTabDeposit.addEventListener('click', () => {
+    dwTab = 'deposit';
+    dwTabDeposit.classList.add('active');
+    dwTabWithdraw.classList.remove('active');
+    updateDwUI();
+  });
+  dwTabWithdraw.addEventListener('click', () => {
+    dwTab = 'withdraw';
+    dwTabWithdraw.classList.add('active');
+    dwTabDeposit.classList.remove('active');
+    updateDwUI();
+  });
+
+  methodBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      methodBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      dwMethod = btn.dataset.method;
+      updateDwUI();
+    });
+  });
+
+  function getCurrentBalance() {
+    return parseFloat(balanceAmount.textContent.replace(/,/g, '')) || 0;
+  }
+
+  function setDisplayedBalance(usdc) {
+    balanceAmount.textContent = formatUsd(usdc);
+    pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * RATE).toLocaleString('en-US');
+  }
+
+  dwSubmitBtn.addEventListener('click', () => {
+    const amount = parseFloat(dwAmountInput.value) || 0;
+    if (amount <= 0) {
+      showToast('Enter an amount first', true);
+      return;
+    }
+
+    const methodName = methodLabels[dwMethod];
+    const originalText = dwSubmitBtn.textContent;
+    dwSubmitBtn.disabled = true;
+    dwSubmitBtn.textContent = 'Processing…';
+
+    setTimeout(() => {
+      if (dwTab === 'deposit') {
+        const usdcGained = amount / RATE;
+        setDisplayedBalance(getCurrentBalance() + usdcGained);
+        addHistoryEntry(amount, usdcGained, 'Deposit via ' + methodName);
+        showToast('✅ Deposited Rs ' + amount.toLocaleString('en-US') + ' via ' + methodName);
+        dwAmountInput.value = '';
+      } else {
+        const currentBalance = getCurrentBalance();
+        if (amount > currentBalance) {
+          showToast('Insufficient USDC balance', true);
+        } else {
+          setDisplayedBalance(currentBalance - amount);
+          const pkrOut = amount * RATE;
+          addHistoryEntry(pkrOut, amount, 'Withdraw via ' + methodName);
+          showToast('✅ Withdrew Rs ' + Math.round(pkrOut).toLocaleString('en-US') + ' via ' + methodName);
+          dwAmountInput.value = '';
+        }
+      }
+      dwSubmitBtn.disabled = false;
+      dwSubmitBtn.textContent = originalText;
+    }, 1600);
+  });
+
+  updateDwUI();
 </script>
 </body>
 </html>
