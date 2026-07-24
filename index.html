@@ -8,43 +8,40 @@
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #101E17;
-    --paper: #1A2A21;
-    --paper2: #223528;
-    --ink: #EDE6D2;
-    --green: #2F9E76;
-    --green-soft: #257F5F;
-    --gold: #C9A24C;
-    --gold-soft: #A9843A;
-    --teal: #4FBFA0;
-    --line: rgba(201,162,76,0.20);
-    --muted: #9C9480;
-    --red: #B4483A;
+    --bg: #0A0E14;
+    --paper: #121826;
+    --paper2: #171F30;
+    --ink: #E7ECF3;
+    --green: #00C875;
+    --green-soft: #00A863;
+    --gold: #F4C430;
+    --teal: #2FE8C6;
+    --line: #262F42;
+    --muted: #8A93A8;
+    --red: #FF6B6B;
   }
   html[data-theme="light"] {
-    --bg: #E4E1D2;
-    --paper: #F7F4E7;
-    --paper2: #EFEBDA;
-    --ink: #23301F;
-    --green: #1F7A5C;
-    --green-soft: #17604A;
-    --gold: #9C7A2E;
-    --gold-soft: #7D6224;
-    --teal: #1C8A76;
-    --line: rgba(35,48,31,0.16);
-    --muted: #6E6754;
-    --red: #93392C;
+    --bg: #F5F7FA;
+    --paper: #FFFFFF;
+    --paper2: #EEF2F6;
+    --ink: #131A24;
+    --green: #049459;
+    --green-soft: #037A49;
+    --gold: #B8860B;
+    --teal: #0E8F79;
+    --line: #DCE2EA;
+    --muted: #5B6472;
+    --red: #C13E3E;
   }
-  html[data-theme="light"] body { background: var(--bg); }
-  html[data-theme="light"] .pin-overlay { background: #1B2A22; }
-  html[data-theme="light"] .seal {
-    box-shadow: 0 0 0 1px var(--gold), 0 0 0 6px var(--bg), 0 0 0 7px rgba(156,122,46,0.5), 0 16px 36px rgba(35,48,31,0.3);
+  html[data-theme="light"] body {
+    background: radial-gradient(1200px 600px at 50% -10%, rgba(4,148,89,0.06), transparent 60%), var(--bg);
   }
+  html[data-theme="light"] .pin-overlay { background: #0F1620; }
+  html[data-theme="light"] .seal { box-shadow: 0 12px 32px rgba(4,148,89,0.22); }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body {
     background:
-      radial-gradient(900px 480px at 50% -8%, rgba(201,162,76,0.08), transparent 60%),
-      repeating-linear-gradient(115deg, rgba(201,162,76,0.025) 0px, rgba(201,162,76,0.025) 1px, transparent 1px, transparent 7px),
+      radial-gradient(1200px 600px at 50% -10%, rgba(0,200,117,0.08), transparent 60%),
       var(--bg);
     color: var(--ink);
     font-family: 'IBM Plex Sans', sans-serif;
@@ -96,15 +93,15 @@
   }
   .theme-toggle:hover { color: var(--teal); border-color: var(--teal); }
 
-  /* Devaluation alert — styled like a stamped warning notice */
+  /* Devaluation alert */
   .alert-banner {
     display: none;
     align-items: center; justify-content: space-between; gap: 10px;
-    background: rgba(180,72,58,0.10); border: 1px solid rgba(180,72,58,0.35); color: var(--red);
-    border-radius: 3px; padding: 12px 14px; margin-bottom: 20px; font-size: 13px;
+    background: rgba(255,107,107,0.10); border: 1px solid rgba(255,107,107,0.3); color: var(--red);
+    border-radius: 10px; padding: 12px 14px; margin-bottom: 20px; font-size: 13px;
   }
   .alert-banner button {
-    background: var(--red); color: var(--paper); border: none; border-radius: 3px;
+    background: var(--red); color: #fff; border: none; border-radius: 6px;
     padding: 6px 10px; font-size: 12px; font-weight: 500; cursor: pointer; white-space: nowrap;
   }
   .alert-dismiss {
@@ -118,28 +115,16 @@
   .seal {
     width: 220px; height: 220px; border-radius: 50%;
     margin: 0 auto 20px;
-    background:
-      repeating-radial-gradient(circle at 50% 50%, rgba(201,162,76,0.05) 0px, rgba(201,162,76,0.05) 1px, transparent 1px, transparent 4px),
-      radial-gradient(circle at 50% 40%, var(--green-soft), var(--green) 78%);
+    background: radial-gradient(circle at 50% 40%, var(--green-soft), var(--green) 75%);
     display: flex; flex-direction: column; align-items: center; justify-content: center;
     position: relative;
-    box-shadow:
-      0 0 0 1px var(--gold),
-      0 0 0 6px var(--bg),
-      0 0 0 7px rgba(201,162,76,0.5),
-      0 16px 36px rgba(0,0,0,0.45);
+    box-shadow: 0 12px 36px rgba(0,0,0,0.5);
   }
   .seal::before {
     content: "";
-    position: absolute; inset: 12px;
+    position: absolute; inset: 10px;
     border-radius: 50%;
-    border: 1px dashed rgba(201,162,76,0.6);
-  }
-  .seal::after {
-    content: "";
-    position: absolute; inset: 22px;
-    border-radius: 50%;
-    border: 1px solid rgba(201,162,76,0.28);
+    border: 1px dashed rgba(201,162,39,0.55);
   }
   .seal .amount { font-family: 'IBM Plex Mono', monospace; font-size: 34px; font-weight: 500; color: #FBFAF6; }
   .seal .amount span { font-size: 16px; color: var(--gold); vertical-align: super; }
@@ -159,26 +144,15 @@
   .rt-up { color: var(--red); }
   .rt-down { color: var(--teal); }
 
-  /* Card — styled like a stamped ledger page */
+  /* Card */
   .card {
     background: var(--paper);
     border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: 26px;
+    border-radius: 14px;
+    padding: 24px;
     margin-bottom: 20px;
-    position: relative;
-    box-shadow: 0 1px 0 rgba(201,162,76,0.08) inset, 0 10px 26px -16px rgba(0,0,0,0.5);
-    transition: border-color 0.2s ease;
   }
-  .card::before, .card::after {
-    content: ""; position: absolute; width: 13px; height: 13px;
-    border: 1.5px solid var(--gold); opacity: 0.55; pointer-events: none;
-  }
-  .card::before { top: 8px; left: 8px; border-right: none; border-bottom: none; }
-  .card::after { bottom: 8px; right: 8px; border-left: none; border-top: none; }
-  .card:hover { border-color: rgba(201,162,76,0.4); }
-  .card:hover::before, .card:hover::after { opacity: 0.9; }
-  .card h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; margin-bottom: 4px; letter-spacing: -0.01em; }
+  .card h2 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; margin-bottom: 4px; }
   .card .hint { font-size: 13px; color: var(--muted); margin-bottom: 20px; }
 
   /* Trust card */
@@ -198,12 +172,11 @@
   .field { flex: 1; }
   .field label { display: block; font-size: 11px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
   .field input {
-    width: 100%; border: 1px solid var(--line); border-radius: 10px;
+    width: 100%; border: 1px solid var(--line); border-radius: 8px;
     padding: 12px 14px; font-family: 'IBM Plex Mono', monospace; font-size: 15px;
     background: var(--bg); color: var(--ink);
-    transition: border-color 0.15s ease, box-shadow 0.15s ease;
   }
-  .field input:focus { outline: none; border-color: var(--teal); box-shadow: 0 0 0 3px rgba(47,232,198,0.15); }
+  .field input:focus { outline: 2px solid var(--teal); outline-offset: 1px; }
   .arrow { display: flex; align-items: flex-end; padding-bottom: 12px; color: var(--gold); font-size: 18px; }
   .rate-note { font-size: 12px; color: var(--muted); margin-top: 10px; }
   .fee-note {
@@ -214,17 +187,14 @@
   .fee-badge { color: var(--teal); font-weight: 500; }
   button.primary {
     width: 100%; margin-top: 18px;
-    background: var(--ink); color: var(--paper); border: 1px solid var(--gold);
-    padding: 13px; border-radius: 3px; font-size: 14px; font-weight: 600;
-    letter-spacing: 0.03em;
+    background: var(--green); color: #FBFAF6; border: none;
+    padding: 14px; border-radius: 8px; font-size: 15px; font-weight: 500;
     font-family: 'IBM Plex Sans', sans-serif; cursor: pointer;
-    position: relative;
-    transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
+    transition: background 0.15s ease;
   }
-  button.primary:hover { background: var(--green-soft); border-color: var(--gold); transform: translateY(-1px); box-shadow: 0 6px 16px -6px rgba(0,0,0,0.4); }
-  button.primary:active { transform: translateY(0); }
+  button.primary:hover { background: var(--green-soft); }
   button.primary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
-  button.primary:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+  button.primary:disabled { opacity: 0.6; cursor: not-allowed; }
 
   /* Chart */
   .chart-wrap { position: relative; }
@@ -235,16 +205,16 @@
 
   footer { text-align: center; font-size: 12px; color: var(--muted); margin-top: 30px; }
 
-  /* History — styled like passbook ledger entries */
+  /* History */
   .history-row {
-    display: flex; align-items: baseline; justify-content: space-between; gap: 10px;
-    padding: 11px 2px; background: transparent; border-radius: 0;
-    border: none; border-bottom: 1px dotted var(--line);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 14px; background: var(--bg); border-radius: 8px;
+    border: 1px solid var(--line);
   }
-  .history-row .h-left { display: flex; flex-direction: column; gap: 2px; min-width: 0; }
-  .history-row .h-amounts { font-family: 'IBM Plex Sans', sans-serif; font-size: 13.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .history-row .h-date { font-size: 11px; color: var(--muted); font-family: 'IBM Plex Mono', monospace; }
-  .history-row .h-usdc { color: var(--green); font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px; flex-shrink: 0; }
+  .history-row .h-left { display: flex; flex-direction: column; gap: 2px; }
+  .history-row .h-amounts { font-family: 'IBM Plex Mono', monospace; font-size: 14px; font-weight: 500; }
+  .history-row .h-date { font-size: 11px; color: var(--muted); }
+  .history-row .h-usdc { color: var(--teal); font-family: 'IBM Plex Mono', monospace; font-weight: 500; font-size: 14px; }
 
   /* Deposit / Withdraw */
   .dw-tabs { display: flex; gap: 8px; margin-bottom: 18px; }
@@ -392,75 +362,12 @@
   .network-chip-sep { opacity: 0.5; }
   .network-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(0,200,117,0.18); }
 
-  /* Wallet bar — styled like a passbook cover strip */
-  .wallet-bar {
-    position: sticky; top: 0; z-index: 90;
-    display: flex; align-items: center; justify-content: space-between; gap: 12px;
-    background: var(--ink);
-    border: 1px solid var(--gold); border-radius: 4px; padding: 12px 16px; margin-bottom: 16px;
-    box-shadow: 0 8px 20px -8px rgba(0,0,0,0.5);
-    position: relative;
+  /* Yield badge */
+  .yield-badge {
+    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gold);
+    background: rgba(244,196,48,0.12); border-radius: 20px; padding: 5px 12px; margin-top: 10px;
+    font-family: 'IBM Plex Mono', monospace;
   }
-  .wallet-bar::before, .wallet-bar::after {
-    content: ""; position: absolute; top: 50%; width: 5px; height: 5px; border-radius: 50%;
-    background: var(--gold); opacity: 0.7; transform: translateY(-50%);
-  }
-  .wallet-bar::before { left: 7px; }
-  .wallet-bar::after { right: 7px; }
-  .wb-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: var(--paper); font-family: 'IBM Plex Mono', monospace; }
-  .wb-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--red); }
-  .wb-dot.connected { background: var(--teal); box-shadow: 0 0 0 3px rgba(79,191,160,0.25); }
-  .wb-actions { display: flex; align-items: center; gap: 8px; }
-  .wb-faucet {
-    background: transparent; color: var(--paper); border: 1px solid rgba(237,230,210,0.3);
-    border-radius: 3px; padding: 8px 12px; font-size: 12px; font-weight: 500; cursor: pointer;
-    transition: border-color 0.15s ease, transform 0.15s ease;
-  }
-  .wb-faucet:hover { border-color: var(--gold); transform: translateY(-1px); }
-  .wb-connect {
-    background: var(--gold); color: var(--ink); border: none;
-    border-radius: 3px; padding: 8px 16px; font-size: 13px; font-weight: 700; cursor: pointer;
-    letter-spacing: 0.02em;
-    transition: background 0.15s ease, transform 0.15s ease, box-shadow 0.15s ease;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.2);
-  }
-  .wb-connect:hover { background: #DABB6C; transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0,0,0,0.25); }
-
-  /* Wallet selection modal */
-  .wallet-modal-overlay {
-    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
-    backdrop-filter: blur(6px); -webkit-backdrop-filter: blur(6px);
-    z-index: 200; align-items: flex-end; justify-content: center;
-  }
-  .wallet-modal-overlay.show { display: flex; }
-  .wallet-modal {
-    background: var(--paper); border: 1px solid var(--gold); border-radius: 6px 6px 0 0;
-    width: 100%; max-width: 480px; padding: 20px; max-height: 80vh; overflow-y: auto;
-    animation: slideUp 0.2s ease;
-  }
-  @media (min-width: 560px) {
-    .wallet-modal-overlay { align-items: center; }
-    .wallet-modal { border-radius: 6px; }
-  }
-  @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
-  .wm-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
-  .wm-head h3 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; }
-  .wm-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; }
-  .wm-list { display: flex; flex-direction: column; gap: 8px; }
-  .wm-item {
-    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
-    border: 1px solid var(--line); border-radius: 4px; background: var(--bg);
-    cursor: pointer; font-size: 14px; font-weight: 500; color: var(--ink);
-    transition: border-color 0.15s ease, transform 0.15s ease, background 0.15s ease;
-  }
-  .wm-item:hover { border-color: var(--gold); transform: translateY(-1px); background: var(--paper2); }
-  .wm-item:active { transform: translateY(0); }
-  .wm-icon { width: 34px; height: 34px; border-radius: 6px; flex-shrink: 0; overflow: hidden; display:flex; align-items:center; justify-content:center; background: var(--paper2); }
-  .wm-icon img { width: 100%; height: 100%; object-fit: contain; }
-  .wm-name { flex: 1; }
-  .wm-tag { margin-left: auto; font-size: 11px; color: var(--muted); font-weight: 500; }
-  .wm-tag.detected { color: var(--teal); }
-  .wm-note { font-size: 11px; color: var(--muted); margin-top: 14px; line-height: 1.5; }
 
   /* How it works */
   .hiw-steps { display: flex; flex-direction: column; gap: 14px; }
@@ -562,28 +469,6 @@
     </div>
   </header>
 
-  <div class="wallet-bar" id="walletBar">
-    <div class="wb-status">
-      <span class="wb-dot" id="wbDot"></span>
-      <span id="statusLine" data-i18n="notConnected">Not connected</span>
-    </div>
-    <div class="wb-actions">
-      <button class="wb-faucet" id="faucetBtn" title="Get free testnet USDC">🚰 Faucet</button>
-      <button class="wb-connect" id="connectBtn" data-i18n="connectWallet">Connect Wallet</button>
-    </div>
-  </div>
-
-  <div class="wallet-modal-overlay" id="walletModalOverlay">
-    <div class="wallet-modal">
-      <div class="wm-head">
-        <h3 data-i18n="selectWallet">Select a wallet</h3>
-        <button class="wm-close" id="walletModalClose">✕</button>
-      </div>
-      <div class="wm-list" id="walletModalList"></div>
-      <div class="wm-note" data-i18n="phantomNote">Note: Phantom is a Solana wallet by default — enable its Ethereum/EVM mode in Phantom settings to use it here.</div>
-    </div>
-  </div>
-
   <nav class="top-tabs" id="topTabs">
     <button class="top-tab active" data-tabgroup="home" data-i18n="tabHome">Home</button>
     <button class="top-tab" data-tabgroup="savings" data-i18n="tabSavings">Savings</button>
@@ -606,6 +491,8 @@
   </div>
 
   <div class="hero tab-panel active-tab" data-tab="home">
+    <div class="eyebrow" id="statusLine" data-i18n="notConnected">Not connected</div>
+    <button class="lang-toggle" id="connectBtn" style="cursor:pointer; margin-bottom:18px;" data-i18n="connectWallet">Connect Wallet</button>
     <div class="seal">
       <div class="amount"><span>$</span><span id="balanceAmount">0.00</span></div>
       <div class="label" data-i18n="usdcBalance">USDC Balance</div>
@@ -616,6 +503,7 @@
       <span id="rateTickerText">1 USD ≈ Rs 280.00</span>
       <span class="rt-delta" id="rateDelta"></span>
     </div>
+    <div class="yield-badge" id="yieldBadge">📈 <span data-i18n="yieldTxt">Earning ~4% APY · +$0.00 so far</span></div>
     <div class="network-chip">
       <span class="network-dot"></span>
       <span data-i18n="networkVal">Arc Testnet</span>
@@ -657,25 +545,6 @@
         <p data-i18n="hiw3">Withdraw back to rupees, pay bills, or send money <b>anytime you want</b> — no waiting, no lock-in.</p>
       </div>
     </div>
-  </div>
-
-  <div class="card tab-panel" data-tab="profile">
-    <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
-      <div id="profileAvatar" style="width:56px; height:56px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:22px; flex-shrink:0;">?</div>
-      <div>
-        <div id="profileNameDisplay" style="font-family:'Fraunces',serif; font-size:17px;" data-i18n="profileNoName">Add your name</div>
-        <div id="profileWalletDisplay" style="font-size:12px; color:var(--muted); font-family:'IBM Plex Mono',monospace;">Not connected</div>
-      </div>
-    </div>
-    <div class="field" style="margin-bottom:12px;">
-      <label data-i18n="profileNameLabel">Your Name</label>
-      <input type="text" id="profileNameInput" placeholder="e.g. Sufyan" />
-    </div>
-    <div class="field" style="margin-bottom:14px;">
-      <label data-i18n="profilePhoneLabel">Phone (optional)</label>
-      <input type="text" id="profilePhoneInput" placeholder="03xx-xxxxxxx" />
-    </div>
-    <button class="primary" id="profileSaveBtn" data-i18n="profileSaveBtn">Save Profile</button>
   </div>
 
   <div class="card trust-card tab-panel" data-tab="profile">
@@ -738,12 +607,18 @@
 
   <div class="card tab-panel" data-tab="savings">
     <span class="dw-badge">Testnet Demo</span>
-    <h2 data-i18n="dwTitle">Swap</h2>
-    <div class="hint" data-i18n="dwHint">Convert your PKR-equivalent value into USDC on-chain, or swap back anytime — no lock-in.</div>
+    <h2 data-i18n="dwTitle">Deposit &amp; Withdraw</h2>
+    <div class="hint" data-i18n="dwHint">Move money between your mobile wallet/bank and your USDC savings.</div>
 
     <div class="dw-tabs">
-      <button class="dw-tab active" data-tab="deposit" id="dwTabDeposit" data-i18n="depositTab">Swap to USDC</button>
-      <button class="dw-tab" data-tab="withdraw" id="dwTabWithdraw" data-i18n="withdrawTab">Swap to PKR</button>
+      <button class="dw-tab active" data-tab="deposit" id="dwTabDeposit" data-i18n="depositTab">Deposit</button>
+      <button class="dw-tab" data-tab="withdraw" id="dwTabWithdraw" data-i18n="withdrawTab">Withdraw</button>
+    </div>
+
+    <div class="dw-methods">
+      <button class="method-btn active" data-method="easypaisa">Easypaisa</button>
+      <button class="method-btn" data-method="jazzcash">JazzCash</button>
+      <button class="method-btn" data-method="bank" data-i18n="bankTransfer">Bank Transfer</button>
     </div>
 
     <div class="field" style="margin-top:16px;">
@@ -751,8 +626,8 @@
       <input type="number" id="dwAmountInput" placeholder="0" />
     </div>
 
-    <button class="primary" id="dwSubmitBtn">Swap to USDC</button>
-    <div class="rate-note" id="dwNote" style="margin-top:10px;">Real testnet transaction on Arc — no real money moves yet, this is testnet only.</div>
+    <button class="primary" id="dwSubmitBtn">Deposit via Easypaisa</button>
+    <div class="rate-note" id="dwNote" style="margin-top:10px;">Simulated on Arc testnet — no real money moves yet.</div>
   </div>
 
   <div class="card tab-panel" data-tab="savings">
@@ -892,8 +767,8 @@
       </div>
     </div>
     <div class="field" style="margin-top:14px;">
-      <label data-i18n="remitRecipient">Recipient wallet address</label>
-      <input type="text" id="remitRecipientInput" placeholder="0x… wallet address" />
+      <label data-i18n="remitRecipient">Recipient wallet / phone</label>
+      <input type="text" id="remitRecipientInput" placeholder="03xx-xxxxxxx or wallet address" />
     </div>
     <div class="fee-note">
       <span data-i18n="feeLabel">Fee</span>
@@ -1018,7 +893,6 @@
         <div style="font-size:11px; color:var(--muted);" id="billResultDue"></div>
       </div>
       <button class="primary" id="billPayBtn" style="margin-top:14px;" data-i18n="payBill">Pay Bill</button>
-      <div class="rate-note" style="margin-top:10px;" data-i18n="billDemoNote">Demo data for now — live billing integration with real providers is coming.</div>
     </div>
   </div>
 
@@ -1153,7 +1027,7 @@
       addGoal: "Add Goal",
       remitTitle: "Send Money from Abroad", remitHint: "Overseas Pakistanis can send USD straight into a family member's savings — no bank delays.",
       remitCountry: "Sending from", remitSend: "You send (USD)", remitReceive: "Recipient gets (USDC)",
-      remitRecipient: "Recipient wallet address", remitFeeNote: "· flat $1, far below bank wire fees", remitBtnTxt: "Send Remittance",
+      remitRecipient: "Recipient wallet / phone", remitFeeNote: "· flat $1, far below bank wire fees", remitBtnTxt: "Send Remittance",
       topupTitle: "Mobile Top-Up", topupHint: "Top up any mobile number directly from your USDC savings.",
       topupOperator: "Operator", topupNumber: "Mobile Number", topupBtnTxt: "Top Up Now",
       referralTitle: "Invite Friends, Earn USDC", referralHint: "Share your code — you and your friend each get $1 USDC when they make their first deposit.",
@@ -1161,9 +1035,6 @@
       providerTitle: "Pay Utility Bills", providerHint: "Electricity, gas, and water bills — pay any provider across Pakistan straight from your USDC savings.",
       electricityTab: "Electricity", gasTab: "Gas", waterTab: "Water", providerLabel: "Provider",
       consumerLabel: "Consumer / Reference Number", fetchBill: "Fetch Bill", payBill: "Pay Bill",
-      billDemoNote: "Demo data for now — live billing integration with real providers is coming.",
-      profileNoName: "Add your name", profileNameLabel: "Your Name", profilePhoneLabel: "Phone (optional)", profileSaveBtn: "Save Profile",
-      selectWallet: "Select a wallet", phantomNote: "Note: Phantom is a Solana wallet by default — enable its Ethereum/EVM mode in Phantom settings to use it here.",
       billsPaidTitle: "Bills Paid This Month", billsPaidHint: "A running record of your utility payments, saved on this device.",
       chartTitle: "Rupee vs. Digital Dollar", chartHint: "What Rs 100,000 would be worth today if saved a year ago",
       legendUsdc: "USDC — holds value", legendPkr: "PKR — loses value to inflation",
@@ -1230,7 +1101,7 @@
       addGoal: "ہدف شامل کریں",
       remitTitle: "بیرون ملک سے رقم بھیجیں", remitHint: "بیرون ملک پاکستانی خاندان کے فرد کی بچت میں براہ راست ڈالر بھیج سکتے ہیں۔",
       remitCountry: "کہاں سے بھیج رہے ہیں", remitSend: "آپ بھیجیں (USD)", remitReceive: "وصول کنندہ کو ملے گا (USDC)",
-      remitRecipient: "وصول کنندہ کا والیٹ ایڈریس", remitFeeNote: "· فلیٹ $1، بینک وائر فیس سے کہیں کم", remitBtnTxt: "رقم بھیجیں",
+      remitRecipient: "وصول کنندہ والیٹ / فون", remitFeeNote: "· فلیٹ $1، بینک وائر فیس سے کہیں کم", remitBtnTxt: "رقم بھیجیں",
       topupTitle: "موبائل ٹاپ اپ", topupHint: "کسی بھی موبائل نمبر کو براہ راست اپنی یو ایس ڈی سی بچت سے ٹاپ اپ کریں۔",
       topupOperator: "آپریٹر", topupNumber: "موبائل نمبر", topupBtnTxt: "ابھی ٹاپ اپ کریں",
       referralTitle: "دوستوں کو مدعو کریں، یو ایس ڈی سی کمائیں", referralHint: "اپنا کوڈ شیئر کریں — پہلی جمع پر آپ اور آپ کے دوست دونوں کو $1 ملے گا۔",
@@ -1238,9 +1109,6 @@
       providerTitle: "یوٹیلیٹی بل ادا کریں", providerHint: "بجلی، گیس اور پانی کے بل — پاکستان بھر میں کسی بھی فراہم کنندہ کو یو ایس ڈی سی سے ادا کریں۔",
       electricityTab: "بجلی", gasTab: "گیس", waterTab: "پانی", providerLabel: "فراہم کنندہ",
       consumerLabel: "کنزیومر / حوالہ نمبر", fetchBill: "بل حاصل کریں", payBill: "بل ادا کریں",
-      billDemoNote: "ابھی یہ ڈیمو ڈیٹا ہے — حقیقی فراہم کنندگان کے ساتھ لائیو انٹیگریشن جلد آ رہا ہے۔",
-      profileNoName: "اپنا نام شامل کریں", profileNameLabel: "آپ کا نام", profilePhoneLabel: "فون (اختیاری)", profileSaveBtn: "پروفائل محفوظ کریں",
-      selectWallet: "والیٹ منتخب کریں", phantomNote: "نوٹ: Phantom بنیادی طور پر Solana والیٹ ہے — یہاں استعمال کے لیے اس کی Ethereum/EVM موڈ آن کریں۔",
       billsPaidTitle: "اس مہینے ادا شدہ بل", billsPaidHint: "آپ کی یوٹیلیٹی ادائیگیوں کا ریکارڈ، اسی ڈیوائس پر محفوظ۔",
       chartTitle: "روپیہ بمقابلہ ڈیجیٹل ڈالر", chartHint: "اگر ایک سال پہلے Rs 100,000 بچائے ہوتے تو آج کتنے ہوتے",
       legendUsdc: "یو ایس ڈی سی — قدر برقرار", legendPkr: "پی کے آر — افراط زر سے قدر میں کمی",
@@ -1436,7 +1304,7 @@
 
     try {
       const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e18)).toString(16);
-      await activeProvider.request({
+      await window.ethereum.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
       });
@@ -1461,131 +1329,34 @@
 
   const connectBtn = document.getElementById('connectBtn');
   const statusLine = document.getElementById('statusLine');
-  const wbDot = document.getElementById('wbDot');
   const balanceAmount = document.getElementById('balanceAmount');
   const pkrEquivalent = document.getElementById('pkrEquivalent');
-  let activeProvider = null; // the specific injected provider the user picked
 
   function formatUsd(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
   async function refreshBalance(address) {
-    const balHex = await activeProvider.request({ method: 'eth_getBalance', params: [address, 'latest'] });
+    const balHex = await window.ethereum.request({ method: 'eth_getBalance', params: [address, 'latest'] });
     const wei = BigInt(balHex);
     const usdc = Number(wei) / 1e18;
     balanceAmount.textContent = formatUsd(usdc);
     pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
   }
 
-  /* ---- EIP-6963 multi-wallet discovery ---- */
-  // Most modern EVM wallets (MetaMask, Rabby, OKX Wallet, Coinbase Wallet, Trust Wallet,
-  // Brave Wallet, Rainbow, etc.) announce themselves via this standard event, so any of
-  // them installed in the browser will show up automatically — no hardcoded list needed.
-  const discoveredWallets = new Map(); // uuid -> { info, provider }
-  window.addEventListener('eip6963:announceProvider', (event) => {
-    const { info, provider } = event.detail;
-    discoveredWallets.set(info.uuid, { info, provider });
-  });
-  window.dispatchEvent(new Event('eip6963:requestProvider'));
-
-  // Common wallets shown even if not detected yet, so the list looks complete —
-  // clicking one that isn't installed sends the user to install it instead of failing silently.
-  const KNOWN_WALLETS = [
-    { name: 'MetaMask', icon: 'https://icons.llamao.fi/icons/wallets/metamask?w=48&h=48', installUrl: 'https://metamask.io/download/' },
-    { name: 'Coinbase Wallet', icon: 'https://icons.llamao.fi/icons/wallets/coinbase?w=48&h=48', installUrl: 'https://www.coinbase.com/wallet/downloads' },
-    { name: 'Trust Wallet', icon: 'https://icons.llamao.fi/icons/wallets/trust?w=48&h=48', installUrl: 'https://trustwallet.com/download' },
-    { name: 'Rabby Wallet', icon: 'https://icons.llamao.fi/icons/wallets/rabby?w=48&h=48', installUrl: 'https://rabby.io/' },
-    { name: 'OKX Wallet', icon: 'https://icons.llamao.fi/icons/wallets/okx?w=48&h=48', installUrl: 'https://web3.okx.com/download' },
-    { name: 'Rainbow', icon: 'https://icons.llamao.fi/icons/wallets/rainbow?w=48&h=48', installUrl: 'https://rainbow.me/' },
-    { name: 'Brave Wallet', icon: 'https://icons.llamao.fi/icons/wallets/brave?w=48&h=48', installUrl: 'https://brave.com/wallet/' }
-  ];
-
-  const modalOverlay = document.getElementById('walletModalOverlay');
-  const modalList = document.getElementById('walletModalList');
-
-  function renderWalletModal() {
-    const detectedNames = new Set([...discoveredWallets.values()].map(w => w.info.name));
-    const rows = [];
-    // Detected, real providers first — these actually work when clicked
-    discoveredWallets.forEach(({ info, provider }) => {
-      const iconHtml = info.icon
-        ? `<img src="${info.icon}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${(info.name||'W')[0]}',style:'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:600;color:#fff;background:linear-gradient(135deg,var(--green),var(--teal));border-radius:10px;'}))">`
-        : '';
-      rows.push(`
-        <div class="wm-item" data-uuid="${info.uuid}">
-          <span class="wm-icon">${iconHtml}</span>
-          <span class="wm-name">${info.name}</span>
-          <span class="wm-tag detected">● Installed</span>
-        </div>`);
-    });
-    // Known wallets not yet detected — clicking opens the real install page,
-    // and we auto-connect the moment the extension is detected after install.
-    KNOWN_WALLETS.filter(w => !detectedNames.has(w.name)).forEach(w => {
-      rows.push(`
-        <div class="wm-item" data-install="${w.installUrl}" data-name="${w.name}">
-          <span class="wm-icon"><img src="${w.icon}" alt="" onerror="this.replaceWith(Object.assign(document.createElement('span'),{textContent:'${w.name[0]}',style:'display:flex;align-items:center;justify-content:center;width:100%;height:100%;font-weight:600;color:#fff;background:linear-gradient(135deg,var(--green),var(--teal));border-radius:10px;'}))"></span>
-          <span class="wm-name">${w.name}</span>
-          <span class="wm-tag">Install →</span>
-        </div>`);
-    });
-    modalList.innerHTML = rows.join('');
-  }
-
-  function openWalletModal() { renderWalletModal(); modalOverlay.classList.add('show'); }
-  function closeWalletModal() { modalOverlay.classList.remove('show'); }
-  document.getElementById('walletModalClose').addEventListener('click', closeWalletModal);
-  modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeWalletModal(); });
-
-  let pendingInstallWallet = null;
-
-  modalList.addEventListener('click', async (e) => {
-    const item = e.target.closest('.wm-item');
-    if (!item) return;
-    if (item.dataset.uuid) {
-      const chosen = discoveredWallets.get(item.dataset.uuid);
-      closeWalletModal();
-      await connectWithProvider(chosen.provider);
-    } else if (item.dataset.install) {
-      pendingInstallWallet = item.dataset.name;
-      closeWalletModal();
-      showToast('Opening ' + item.dataset.name + ' install page — come back here once it\'s installed');
-      window.open(item.dataset.install, '_blank', 'noopener');
-    }
-  });
-
-  // Once the user installs the wallet and switches back to this tab, re-scan for it
-  // and connect automatically instead of making them click Connect again.
-  window.addEventListener('focus', () => {
-    if (!pendingInstallWallet) return;
-    window.dispatchEvent(new Event('eip6963:requestProvider'));
-    setTimeout(() => {
-      const match = [...discoveredWallets.values()].find(w => w.info.name === pendingInstallWallet);
-      if (match) {
-        showToast(pendingInstallWallet + ' detected — connecting…');
-        connectWithProvider(match.provider);
-        pendingInstallWallet = null;
-      } else if (window.ethereum) {
-        connectWithProvider(window.ethereum);
-        pendingInstallWallet = null;
-      }
-    }, 600);
-  });
-
-  async function connectWithProvider(provider) {
+  async function connectWallet() {
+    if (!window.ethereum) { statusLine.textContent = 'No wallet found — install MetaMask'; return; }
     try {
       connectBtn.textContent = 'Connecting…';
-      const accounts = await provider.request({ method: 'eth_requestAccounts' });
+      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
       try {
-        await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: ARC_TESTNET.chainId }] });
+        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: ARC_TESTNET.chainId }] });
       } catch (switchErr) {
         if (switchErr.code === 4902) {
-          await provider.request({ method: 'wallet_addEthereumChain', params: [ARC_TESTNET] });
+          await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [ARC_TESTNET] });
         } else { throw switchErr; }
       }
-      activeProvider = provider;
       const address = accounts[0];
       connectedAddress = address;
       statusLine.textContent = address.slice(0, 6) + '…' + address.slice(-4) + ' · Arc Testnet';
-      wbDot.classList.add('connected');
       connectBtn.textContent = 'Connected';
       await refreshBalance(address);
       setupReferralCode(address);
@@ -1597,24 +1368,12 @@
       console.error(err);
     }
   }
+  connectBtn.addEventListener('click', connectWallet);
 
-  connectBtn.addEventListener('click', () => {
-    // If exactly one wallet is installed, skip the picker and connect straight to it.
-    if (discoveredWallets.size === 1) {
-      connectWithProvider([...discoveredWallets.values()][0].provider);
-    } else if (discoveredWallets.size === 0 && window.ethereum) {
-      connectWithProvider(window.ethereum); // fallback for browsers without EIP-6963 support
-    } else {
-      openWalletModal();
-    }
-  });
-
-  document.getElementById('faucetBtn').addEventListener('click', () => {
-    window.open('https://faucet.circle.com/', '_blank');
-  });
-
-  /* ---------------- Swap (was Deposit / Withdraw) ---------------- */
+  /* ---------------- Deposit / Withdraw ---------------- */
+  const methodLabels = { easypaisa: 'Easypaisa', jazzcash: 'JazzCash', bank: 'Bank Transfer' };
   let dwTab = 'deposit';
+  let dwMethod = 'easypaisa';
 
   const dwTabDeposit = document.getElementById('dwTabDeposit');
   const dwTabWithdraw = document.getElementById('dwTabWithdraw');
@@ -1622,20 +1381,21 @@
   const dwAmountInput = document.getElementById('dwAmountInput');
   const dwSubmitBtn = document.getElementById('dwSubmitBtn');
   const dwNote = document.getElementById('dwNote');
+  const methodBtns = document.querySelectorAll('.method-btn[data-method]');
 
   function updateDwUI() {
     dwAmountLabel.textContent = dwTab === 'deposit' ? 'Amount (PKR)' : 'Amount (USDC)';
-    dwSubmitBtn.textContent = dwTab === 'deposit' ? 'Swap to USDC' : 'Swap to PKR';
-    const lockedRate = liveRate.toFixed(2);
+    dwSubmitBtn.textContent = (dwTab === 'deposit' ? 'Deposit via ' : 'Withdraw via ') + methodLabels[dwMethod];
     dwNote.textContent = dwTab === 'deposit'
-      ? 'Rate locked at Rs ' + lockedRate + ' for this swap — real testnet transaction on Arc.'
-      : 'Rate locked at Rs ' + lockedRate + ' for this swap — real testnet transaction on Arc.';
+      ? 'Simulated on Arc testnet — no real money moves yet.'
+      : 'Simulated withdrawal — funds are not actually sent to your ' + methodLabels[dwMethod] + ' account yet.';
   }
 
   dwTabDeposit.addEventListener('click', () => { dwTab = 'deposit'; dwTabDeposit.classList.add('active'); dwTabWithdraw.classList.remove('active'); updateDwUI(); });
   dwTabWithdraw.addEventListener('click', () => { dwTab = 'withdraw'; dwTabWithdraw.classList.add('active'); dwTabDeposit.classList.remove('active'); updateDwUI(); });
+  methodBtns.forEach(btn => btn.addEventListener('click', () => { methodBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); dwMethod = btn.dataset.method; updateDwUI(); }));
 
-  function getCurrentBalance() { return Number(balanceAmount.textContent.replace(/,/g, '')) || 0; }
+  function getCurrentBalance() { return parseFloat(balanceAmount.textContent.replace(/,/g, '')) || 0; }
   function setDisplayedBalance(usdc) {
     balanceAmount.textContent = formatUsd(usdc);
     pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
@@ -1643,9 +1403,9 @@
 
   dwSubmitBtn.addEventListener('click', () => {
     if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
-    const amount = Number(dwAmountInput.value) || 0;
+    const amount = parseFloat(dwAmountInput.value) || 0;
     if (amount <= 0) { showToast('Enter an amount first', true); return; }
-    const swapRate = liveRate; // lock the rate at the moment the swap is submitted
+    const methodName = methodLabels[dwMethod];
     const originalText = dwSubmitBtn.textContent;
     dwSubmitBtn.disabled = true;
     dwSubmitBtn.textContent = translations[currentLang].txPending + '… ⏳';
@@ -1655,10 +1415,10 @@
     setTimeout(() => {
       dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
       if (dwTab === 'deposit') {
-        const usdcGained = amount / swapRate;
+        const usdcGained = amount / liveRate;
         setDisplayedBalance(getCurrentBalance() + usdcGained);
-        addHistoryEntry(amount, usdcGained, 'Swap PKR → USDC');
-        showToast('✅ Swapped Rs ' + amount.toLocaleString('en-US') + ' → ' + usdcGained.toFixed(2) + ' USDC');
+        addHistoryEntry(amount, usdcGained, 'Deposit via ' + methodName);
+        showToast('✅ Deposited Rs ' + amount.toLocaleString('en-US') + ' via ' + methodName);
         dwAmountInput.value = '';
       } else {
         const currentBalance = getCurrentBalance();
@@ -1666,9 +1426,9 @@
           showToast('Insufficient USDC balance', true);
         } else {
           setDisplayedBalance(currentBalance - amount);
-          const pkrOut = amount * swapRate;
-          addHistoryEntry(pkrOut, amount, 'Swap USDC → PKR');
-          showToast('✅ Swapped ' + amount.toFixed(2) + ' USDC → Rs ' + Math.round(pkrOut).toLocaleString('en-US'));
+          const pkrOut = amount * liveRate;
+          addHistoryEntry(pkrOut, amount, 'Withdraw via ' + methodName);
+          showToast('✅ Withdrew Rs ' + Math.round(pkrOut).toLocaleString('en-US') + ' via ' + methodName);
           dwAmountInput.value = '';
         }
       }
@@ -1746,30 +1506,7 @@
 
   /* ---------------- Referral ---------------- */
   const REFERRAL_KEY = 'saveInDollars_referral';
-  /* ---------------- Profile ---------------- */
-  const PROFILE_KEY = 'saveInDollars_profile';
-  function getProfile() { try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; } catch (e) { return {}; } }
-  function renderProfile() {
-    const p = getProfile();
-    document.getElementById('profileNameInput').value = p.name || '';
-    document.getElementById('profilePhoneInput').value = p.phone || '';
-    document.getElementById('profileNameDisplay').textContent = p.name || 'Add your name';
-    document.getElementById('profileAvatar').textContent = p.name ? p.name.trim()[0].toUpperCase() : '?';
-    document.getElementById('profileWalletDisplay').textContent = connectedAddress
-      ? connectedAddress.slice(0, 6) + '…' + connectedAddress.slice(-4)
-      : 'Not connected';
-  }
-  document.getElementById('profileSaveBtn').addEventListener('click', () => {
-    const name = document.getElementById('profileNameInput').value.trim();
-    const phone = document.getElementById('profilePhoneInput').value.trim();
-    localStorage.setItem(PROFILE_KEY, JSON.stringify({ name, phone }));
-    renderProfile();
-    showToast('✅ Profile saved');
-  });
-  renderProfile();
-
   function setupReferralCode(address) {
-    renderProfile(); // refresh wallet address shown on profile once connected
     let ref = JSON.parse(localStorage.getItem(REFERRAL_KEY) || 'null');
     if (!ref) {
       const code = 'SID-' + (address ? address.slice(2, 6).toUpperCase() : Math.floor(1000 + Math.random() * 9000));
@@ -1850,7 +1587,7 @@
     const usd = parseFloat(remitUsdInput.value) || 0;
     const recipient = document.getElementById('remitRecipientInput').value.trim();
     if (usd <= 1) { showToast('Enter an amount above $1', true); return; }
-    if (!/^0x[a-fA-F0-9]{6,}$/.test(recipient)) { showToast('Enter a valid recipient wallet address', true); return; }
+    if (!recipient) { showToast('Enter a recipient wallet or phone number', true); return; }
     const btn = document.getElementById('remitSendBtn');
     const original = btn.textContent;
     btn.disabled = true; btn.textContent = 'Sending…';
