@@ -362,12 +362,60 @@
   .network-chip-sep { opacity: 0.5; }
   .network-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 0 3px rgba(0,200,117,0.18); }
 
-  /* Yield badge */
-  .yield-badge {
-    display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--gold);
-    background: rgba(244,196,48,0.12); border-radius: 20px; padding: 5px 12px; margin-top: 10px;
-    font-family: 'IBM Plex Mono', monospace;
+  /* Wallet bar - always visible, high contrast */
+  .wallet-bar {
+    position: sticky; top: 0; z-index: 90;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    background: linear-gradient(135deg, var(--green-soft), var(--green));
+    border-radius: 14px; padding: 12px 16px; margin-bottom: 16px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.35);
   }
+  .wb-status { display: flex; align-items: center; gap: 8px; font-size: 12px; color: #EAFBF3; font-family: 'IBM Plex Mono', monospace; }
+  .wb-dot { width: 7px; height: 7px; border-radius: 50%; background: #FF6B6B; }
+  .wb-dot.connected { background: #C9FFE8; box-shadow: 0 0 0 3px rgba(255,255,255,0.25); }
+  .wb-actions { display: flex; align-items: center; gap: 8px; }
+  .wb-faucet {
+    background: rgba(255,255,255,0.16); color: #fff; border: 1px solid rgba(255,255,255,0.3);
+    border-radius: 20px; padding: 8px 12px; font-size: 12px; font-weight: 500; cursor: pointer;
+  }
+  .wb-faucet:hover { background: rgba(255,255,255,0.26); }
+  .wb-connect {
+    background: #fff; color: var(--green-soft); border: none;
+    border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer;
+  }
+  .wb-connect:hover { background: #EAFBF3; }
+
+  /* Wallet selection modal */
+  .wallet-modal-overlay {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.55);
+    z-index: 200; align-items: flex-end; justify-content: center;
+  }
+  .wallet-modal-overlay.show { display: flex; }
+  .wallet-modal {
+    background: var(--paper); border: 1px solid var(--line); border-radius: 18px 18px 0 0;
+    width: 100%; max-width: 480px; padding: 20px; max-height: 80vh; overflow-y: auto;
+    animation: slideUp 0.2s ease;
+  }
+  @media (min-width: 560px) {
+    .wallet-modal-overlay { align-items: center; }
+    .wallet-modal { border-radius: 18px; }
+  }
+  @keyframes slideUp { from { transform: translateY(24px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+  .wm-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 14px; }
+  .wm-head h3 { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; }
+  .wm-close { background: none; border: none; color: var(--muted); font-size: 18px; cursor: pointer; }
+  .wm-list { display: flex; flex-direction: column; gap: 8px; }
+  .wm-item {
+    display: flex; align-items: center; gap: 12px; padding: 12px 14px;
+    border: 1px solid var(--line); border-radius: 10px; background: var(--bg);
+    cursor: pointer; font-size: 14px; font-weight: 500; color: var(--ink);
+    transition: border-color 0.15s ease;
+  }
+  .wm-item:hover { border-color: var(--teal); }
+  .wm-icon { width: 28px; height: 28px; border-radius: 8px; flex-shrink: 0; display:flex; align-items:center; justify-content:center; font-size:16px; background: var(--paper2); }
+  .wm-tag { margin-left: auto; font-size: 11px; color: var(--muted); }
+  .wm-tag.detected { color: var(--teal); }
+  .wm-note { font-size: 11px; color: var(--muted); margin-top: 14px; line-height: 1.5; }
 
   /* How it works */
   .hiw-steps { display: flex; flex-direction: column; gap: 14px; }
@@ -469,6 +517,28 @@
     </div>
   </header>
 
+  <div class="wallet-bar" id="walletBar">
+    <div class="wb-status">
+      <span class="wb-dot" id="wbDot"></span>
+      <span id="statusLine" data-i18n="notConnected">Not connected</span>
+    </div>
+    <div class="wb-actions">
+      <button class="wb-faucet" id="faucetBtn" title="Get free testnet USDC">🚰 Faucet</button>
+      <button class="wb-connect" id="connectBtn" data-i18n="connectWallet">Connect Wallet</button>
+    </div>
+  </div>
+
+  <div class="wallet-modal-overlay" id="walletModalOverlay">
+    <div class="wallet-modal">
+      <div class="wm-head">
+        <h3 data-i18n="selectWallet">Select a wallet</h3>
+        <button class="wm-close" id="walletModalClose">✕</button>
+      </div>
+      <div class="wm-list" id="walletModalList"></div>
+      <div class="wm-note" data-i18n="phantomNote">Note: Phantom is a Solana wallet by default — enable its Ethereum/EVM mode in Phantom settings to use it here.</div>
+    </div>
+  </div>
+
   <nav class="top-tabs" id="topTabs">
     <button class="top-tab active" data-tabgroup="home" data-i18n="tabHome">Home</button>
     <button class="top-tab" data-tabgroup="savings" data-i18n="tabSavings">Savings</button>
@@ -491,8 +561,6 @@
   </div>
 
   <div class="hero tab-panel active-tab" data-tab="home">
-    <div class="eyebrow" id="statusLine" data-i18n="notConnected">Not connected</div>
-    <button class="lang-toggle" id="connectBtn" style="cursor:pointer; margin-bottom:18px;" data-i18n="connectWallet">Connect Wallet</button>
     <div class="seal">
       <div class="amount"><span>$</span><span id="balanceAmount">0.00</span></div>
       <div class="label" data-i18n="usdcBalance">USDC Balance</div>
@@ -503,7 +571,6 @@
       <span id="rateTickerText">1 USD ≈ Rs 280.00</span>
       <span class="rt-delta" id="rateDelta"></span>
     </div>
-    <div class="yield-badge" id="yieldBadge">📈 <span data-i18n="yieldTxt">Earning ~4% APY · +$0.00 so far</span></div>
     <div class="network-chip">
       <span class="network-dot"></span>
       <span data-i18n="networkVal">Arc Testnet</span>
@@ -534,7 +601,7 @@
     <div class="hiw-steps">
       <div class="hiw-step">
         <div class="hiw-num">1</div>
-        <p data-i18n="hiw1">Deposit rupees using <b>Easypaisa, JazzCash, or bank transfer</b> — just like sending money to a friend.</p>
+        <p data-i18n="hiw1">Enter a rupee amount and swap it into <b>USDC</b> on-chain — a digital dollar that always equals $1, so inflation can't eat into it.</p>
       </div>
       <div class="hiw-step">
         <div class="hiw-num">2</div>
@@ -542,9 +609,28 @@
       </div>
       <div class="hiw-step">
         <div class="hiw-num">3</div>
-        <p data-i18n="hiw3">Withdraw back to rupees, pay bills, or send money <b>anytime you want</b> — no waiting, no lock-in.</p>
+        <p data-i18n="hiw3">Swap back to rupees, pay bills, or send money <b>anytime you want</b> — no waiting, no lock-in.</p>
       </div>
     </div>
+  </div>
+
+  <div class="card tab-panel" data-tab="profile">
+    <div style="display:flex; align-items:center; gap:14px; margin-bottom:18px;">
+      <div id="profileAvatar" style="width:56px; height:56px; border-radius:50%; background:var(--green); color:#fff; display:flex; align-items:center; justify-content:center; font-family:'Fraunces',serif; font-size:22px; flex-shrink:0;">?</div>
+      <div>
+        <div id="profileNameDisplay" style="font-family:'Fraunces',serif; font-size:17px;" data-i18n="profileNoName">Add your name</div>
+        <div id="profileWalletDisplay" style="font-size:12px; color:var(--muted); font-family:'IBM Plex Mono',monospace;">Not connected</div>
+      </div>
+    </div>
+    <div class="field" style="margin-bottom:12px;">
+      <label data-i18n="profileNameLabel">Your Name</label>
+      <input type="text" id="profileNameInput" placeholder="e.g. Sufyan" />
+    </div>
+    <div class="field" style="margin-bottom:14px;">
+      <label data-i18n="profilePhoneLabel">Phone (optional)</label>
+      <input type="text" id="profilePhoneInput" placeholder="03xx-xxxxxxx" />
+    </div>
+    <button class="primary" id="profileSaveBtn" data-i18n="profileSaveBtn">Save Profile</button>
   </div>
 
   <div class="card trust-card tab-panel" data-tab="profile">
@@ -607,18 +693,12 @@
 
   <div class="card tab-panel" data-tab="savings">
     <span class="dw-badge">Testnet Demo</span>
-    <h2 data-i18n="dwTitle">Deposit &amp; Withdraw</h2>
-    <div class="hint" data-i18n="dwHint">Move money between your mobile wallet/bank and your USDC savings.</div>
+    <h2 data-i18n="dwTitle">Swap</h2>
+    <div class="hint" data-i18n="dwHint">Convert your PKR-equivalent value into USDC on-chain, or swap back anytime — no lock-in.</div>
 
     <div class="dw-tabs">
-      <button class="dw-tab active" data-tab="deposit" id="dwTabDeposit" data-i18n="depositTab">Deposit</button>
-      <button class="dw-tab" data-tab="withdraw" id="dwTabWithdraw" data-i18n="withdrawTab">Withdraw</button>
-    </div>
-
-    <div class="dw-methods">
-      <button class="method-btn active" data-method="easypaisa">Easypaisa</button>
-      <button class="method-btn" data-method="jazzcash">JazzCash</button>
-      <button class="method-btn" data-method="bank" data-i18n="bankTransfer">Bank Transfer</button>
+      <button class="dw-tab active" data-tab="deposit" id="dwTabDeposit" data-i18n="depositTab">Swap to USDC</button>
+      <button class="dw-tab" data-tab="withdraw" id="dwTabWithdraw" data-i18n="withdrawTab">Swap to PKR</button>
     </div>
 
     <div class="field" style="margin-top:16px;">
@@ -626,8 +706,8 @@
       <input type="number" id="dwAmountInput" placeholder="0" />
     </div>
 
-    <button class="primary" id="dwSubmitBtn">Deposit via Easypaisa</button>
-    <div class="rate-note" id="dwNote" style="margin-top:10px;">Simulated on Arc testnet — no real money moves yet.</div>
+    <button class="primary" id="dwSubmitBtn">Swap to USDC</button>
+    <div class="rate-note" id="dwNote" style="margin-top:10px;">Real testnet transaction on Arc — no real money moves yet, this is testnet only.</div>
   </div>
 
   <div class="card tab-panel" data-tab="savings">
@@ -767,8 +847,8 @@
       </div>
     </div>
     <div class="field" style="margin-top:14px;">
-      <label data-i18n="remitRecipient">Recipient wallet / phone</label>
-      <input type="text" id="remitRecipientInput" placeholder="03xx-xxxxxxx or wallet address" />
+      <label data-i18n="remitRecipient">Recipient wallet address</label>
+      <input type="text" id="remitRecipientInput" placeholder="0x… wallet address" />
     </div>
     <div class="fee-note">
       <span data-i18n="feeLabel">Fee</span>
@@ -893,6 +973,7 @@
         <div style="font-size:11px; color:var(--muted);" id="billResultDue"></div>
       </div>
       <button class="primary" id="billPayBtn" style="margin-top:14px;" data-i18n="payBill">Pay Bill</button>
+      <div class="rate-note" style="margin-top:10px;" data-i18n="billDemoNote">Demo data for now — live billing integration with real providers is coming.</div>
     </div>
   </div>
 
@@ -1016,8 +1097,8 @@
       trust2: "Your savings live in <b>your own wallet</b> — not our bank account. Only you hold the keys.",
       trust3: "You can withdraw back to <b>PKR anytime</b> — there's no lock-in period.",
       kycNotDone: "Identity not verified — tap to verify", kycDone: "Identity verified",
-      dwTitle: "Deposit &amp; Withdraw", dwHint: "Move money between your mobile wallet/bank and your USDC savings.",
-      depositTab: "Deposit", withdrawTab: "Withdraw", bankTransfer: "Bank Transfer",
+      dwTitle: "Swap", dwHint: "Convert your PKR-equivalent value into USDC on-chain, or swap back anytime — no lock-in.",
+      depositTab: "Swap to USDC", withdrawTab: "Swap to PKR", bankTransfer: "Bank Transfer",
       autoSaveTitle: "Auto-Save", autoSaveHint: "Automatically convert PKR to USDC every month",
       autoSaveAmount: "Amount (PKR / month)", autoSaveDay: "Day of month", autoSaveSave: "Confirm Auto-Save",
       convertTitle: "Convert PKR → USDC", convertHint: "Move your savings into a stable digital dollar, instantly.",
@@ -1027,7 +1108,7 @@
       addGoal: "Add Goal",
       remitTitle: "Send Money from Abroad", remitHint: "Overseas Pakistanis can send USD straight into a family member's savings — no bank delays.",
       remitCountry: "Sending from", remitSend: "You send (USD)", remitReceive: "Recipient gets (USDC)",
-      remitRecipient: "Recipient wallet / phone", remitFeeNote: "· flat $1, far below bank wire fees", remitBtnTxt: "Send Remittance",
+      remitRecipient: "Recipient wallet address", remitFeeNote: "· flat $1, far below bank wire fees", remitBtnTxt: "Send Remittance",
       topupTitle: "Mobile Top-Up", topupHint: "Top up any mobile number directly from your USDC savings.",
       topupOperator: "Operator", topupNumber: "Mobile Number", topupBtnTxt: "Top Up Now",
       referralTitle: "Invite Friends, Earn USDC", referralHint: "Share your code — you and your friend each get $1 USDC when they make their first deposit.",
@@ -1035,6 +1116,9 @@
       providerTitle: "Pay Utility Bills", providerHint: "Electricity, gas, and water bills — pay any provider across Pakistan straight from your USDC savings.",
       electricityTab: "Electricity", gasTab: "Gas", waterTab: "Water", providerLabel: "Provider",
       consumerLabel: "Consumer / Reference Number", fetchBill: "Fetch Bill", payBill: "Pay Bill",
+      billDemoNote: "Demo data for now — live billing integration with real providers is coming.",
+      profileNoName: "Add your name", profileNameLabel: "Your Name", profilePhoneLabel: "Phone (optional)", profileSaveBtn: "Save Profile",
+      selectWallet: "Select a wallet", phantomNote: "Note: Phantom is a Solana wallet by default — enable its Ethereum/EVM mode in Phantom settings to use it here.",
       billsPaidTitle: "Bills Paid This Month", billsPaidHint: "A running record of your utility payments, saved on this device.",
       chartTitle: "Rupee vs. Digital Dollar", chartHint: "What Rs 100,000 would be worth today if saved a year ago",
       legendUsdc: "USDC — holds value", legendPkr: "PKR — loses value to inflation",
@@ -1048,9 +1132,9 @@
       yieldTxt: "Earning ~4% APY", alertTitle: "Rate Alert", alertHint: "Set your own target rate — we'll notify you when it's hit.",
       alertWhen: "Notify me when 1 USD reaches", alertSet: "Set", alertClear: "Remove",
       hiwTitle: "How It Works", hiwHint: "Three simple steps — no crypto knowledge needed.",
-      hiw1: "Deposit rupees using <b>Easypaisa, JazzCash, or bank transfer</b> — just like sending money to a friend.",
-      hiw2: "We convert it into <b>USDC</b>, a digital dollar that always equals $1 — so inflation can't eat into it.",
-      hiw3: "Withdraw back to rupees, pay bills, or send money <b>anytime you want</b> — no waiting, no lock-in.",
+      hiw1: "Enter a rupee amount and swap it into <b>USDC</b> on-chain — a digital dollar that always equals $1, so inflation can't eat into it.",
+      hiw2: "Your balance updates instantly on Arc testnet, with a full record kept in your transaction history.",
+      hiw3: "Swap back to rupees, pay bills, or send money <b>anytime you want</b> — no waiting, no lock-in.",
       roundupTitle: "Round-Up Savings", roundupHint: "Round up everyday spends to the nearest Rs 50/100 and save the change",
       roundupSaved: "Saved from round-ups so far", simulatePurchase: "Simulate a Purchase (Demo)",
       groupTitle: "Family / Group Savings", groupHint: "Like a digital committee (BC) — everyone contributes toward one shared goal.",
@@ -1090,8 +1174,8 @@
       trust2: "آپ کی بچت <b>آپ کے اپنے والیٹ</b> میں رہتی ہے — ہمارے بینک اکاؤنٹ میں نہیں۔ صرف آپ کے پاس چابیاں ہیں۔",
       trust3: "آپ کسی بھی وقت <b>پی کے آر میں واپس</b> نکلوا سکتے ہیں — کوئی لاک ان نہیں۔",
       kycNotDone: "شناخت تصدیق نہیں ہوئی — تصدیق کے لیے دبائیں", kycDone: "شناخت تصدیق شدہ",
-      dwTitle: "جمع اور نکلوائیں", dwHint: "اپنے موبائل والیٹ/بینک اور یو ایس ڈی سی بچت کے درمیان رقم منتقل کریں۔",
-      depositTab: "جمع کریں", withdrawTab: "نکلوائیں", bankTransfer: "بینک ٹرانسفر",
+      dwTitle: "تبدیل کریں", dwHint: "اپنی روپے کی رقم کو براہِ راست USDC میں تبدیل کریں، یا کسی بھی وقت واپس بدلیں۔",
+      depositTab: "USDC میں تبدیل کریں", withdrawTab: "PKR میں تبدیل کریں", bankTransfer: "بینک ٹرانسفر",
       autoSaveTitle: "خودکار بچت", autoSaveHint: "ہر مہینے خودکار طور پر پی کے آر کو یو ایس ڈی سی میں تبدیل کریں",
       autoSaveAmount: "رقم (پی کے آر / ماہانہ)", autoSaveDay: "مہینے کا دن", autoSaveSave: "خودکار بچت کی تصدیق کریں",
       convertTitle: "پی کے آر → یو ایس ڈی سی کنورٹ کریں", convertHint: "اپنی بچت کو فوری طور پر مستحکم ڈیجیٹل ڈالر میں تبدیل کریں۔",
@@ -1101,7 +1185,7 @@
       addGoal: "ہدف شامل کریں",
       remitTitle: "بیرون ملک سے رقم بھیجیں", remitHint: "بیرون ملک پاکستانی خاندان کے فرد کی بچت میں براہ راست ڈالر بھیج سکتے ہیں۔",
       remitCountry: "کہاں سے بھیج رہے ہیں", remitSend: "آپ بھیجیں (USD)", remitReceive: "وصول کنندہ کو ملے گا (USDC)",
-      remitRecipient: "وصول کنندہ والیٹ / فون", remitFeeNote: "· فلیٹ $1، بینک وائر فیس سے کہیں کم", remitBtnTxt: "رقم بھیجیں",
+      remitRecipient: "وصول کنندہ کا والیٹ ایڈریس", remitFeeNote: "· فلیٹ $1، بینک وائر فیس سے کہیں کم", remitBtnTxt: "رقم بھیجیں",
       topupTitle: "موبائل ٹاپ اپ", topupHint: "کسی بھی موبائل نمبر کو براہ راست اپنی یو ایس ڈی سی بچت سے ٹاپ اپ کریں۔",
       topupOperator: "آپریٹر", topupNumber: "موبائل نمبر", topupBtnTxt: "ابھی ٹاپ اپ کریں",
       referralTitle: "دوستوں کو مدعو کریں، یو ایس ڈی سی کمائیں", referralHint: "اپنا کوڈ شیئر کریں — پہلی جمع پر آپ اور آپ کے دوست دونوں کو $1 ملے گا۔",
@@ -1109,6 +1193,9 @@
       providerTitle: "یوٹیلیٹی بل ادا کریں", providerHint: "بجلی، گیس اور پانی کے بل — پاکستان بھر میں کسی بھی فراہم کنندہ کو یو ایس ڈی سی سے ادا کریں۔",
       electricityTab: "بجلی", gasTab: "گیس", waterTab: "پانی", providerLabel: "فراہم کنندہ",
       consumerLabel: "کنزیومر / حوالہ نمبر", fetchBill: "بل حاصل کریں", payBill: "بل ادا کریں",
+      billDemoNote: "ابھی یہ ڈیمو ڈیٹا ہے — حقیقی فراہم کنندگان کے ساتھ لائیو انٹیگریشن جلد آ رہا ہے۔",
+      profileNoName: "اپنا نام شامل کریں", profileNameLabel: "آپ کا نام", profilePhoneLabel: "فون (اختیاری)", profileSaveBtn: "پروفائل محفوظ کریں",
+      selectWallet: "والیٹ منتخب کریں", phantomNote: "نوٹ: Phantom بنیادی طور پر Solana والیٹ ہے — یہاں استعمال کے لیے اس کی Ethereum/EVM موڈ آن کریں۔",
       billsPaidTitle: "اس مہینے ادا شدہ بل", billsPaidHint: "آپ کی یوٹیلیٹی ادائیگیوں کا ریکارڈ، اسی ڈیوائس پر محفوظ۔",
       chartTitle: "روپیہ بمقابلہ ڈیجیٹل ڈالر", chartHint: "اگر ایک سال پہلے Rs 100,000 بچائے ہوتے تو آج کتنے ہوتے",
       legendUsdc: "یو ایس ڈی سی — قدر برقرار", legendPkr: "پی کے آر — افراط زر سے قدر میں کمی",
@@ -1122,9 +1209,9 @@
       yieldTxt: "تقریباً 4% سالانہ منافع", alertTitle: "ریٹ الرٹ", alertHint: "اپنی مرضی کی شرح مقرر کریں — پہنچنے پر ہم آپ کو بتائیں گے۔",
       alertWhen: "مجھے بتائیں جب 1 USD اس تک پہنچے", alertSet: "سیٹ کریں", alertClear: "ہٹائیں",
       hiwTitle: "یہ کیسے کام کرتا ہے", hiwHint: "تین آسان اقدامات — کرپٹو کی سمجھ کی ضرورت نہیں۔",
-      hiw1: "<b>ایزی پیسہ، جاز کیش یا بینک ٹرانسفر</b> سے روپے جمع کریں — بالکل دوست کو پیسے بھیجنے جیسا۔",
-      hiw2: "ہم اسے <b>یو ایس ڈی سی</b> میں تبدیل کرتے ہیں، ایک ڈیجیٹل ڈالر جو ہمیشہ $1 کے برابر رہتا ہے۔",
-      hiw3: "کسی بھی وقت روپوں میں واپس نکلوائیں، بل ادا کریں یا رقم بھیجیں — کوئی انتظار نہیں۔",
+      hiw1: "روپے کی رقم درج کریں اور اسے آن چین <b>USDC</b> میں تبدیل کریں — ایک ڈیجیٹل ڈالر جو ہمیشہ $1 کے برابر رہتا ہے۔",
+      hiw2: "آپ کا بیلنس فوراً Arc ٹیسٹ نیٹ پر اپڈیٹ ہوتا ہے، اور مکمل ریکارڈ آپ کی ٹرانزیکشن ہسٹری میں محفوظ رہتا ہے۔",
+      hiw3: "کسی بھی وقت روپوں میں واپس تبدیل کریں، بل ادا کریں یا رقم بھیجیں — کوئی انتظار نہیں۔",
       roundupTitle: "راؤنڈ اپ بچت", roundupHint: "روزمرہ خرچ کو قریب ترین Rs 50/100 تک راؤنڈ کریں اور فرق بچائیں",
       roundupSaved: "راؤنڈ اپ سے اب تک بچت", simulatePurchase: "خریداری کی مثال (ڈیمو)",
       groupTitle: "خاندانی / گروپ بچت", groupHint: "ڈیجیٹل کمیٹی کی طرح — سب مل کر ایک ہدف کی طرف حصہ ڈالیں۔",
@@ -1258,7 +1345,7 @@
     list.innerHTML = history.map(entry => {
       const d = new Date(entry.date);
       const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-      const isWithdraw = entry.label && entry.label.startsWith('Withdraw');
+      const isWithdraw = entry.label && entry.label.startsWith('Swap USDC');
       const title = entry.label ? entry.label : `Rs ${entry.pkr.toLocaleString('en-US')} converted`;
       const sign = isWithdraw ? '-' : '+';
       return `
@@ -1304,7 +1391,7 @@
 
     try {
       const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e18)).toString(16);
-      await window.ethereum.request({
+      await activeProvider.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
       });
@@ -1329,34 +1416,99 @@
 
   const connectBtn = document.getElementById('connectBtn');
   const statusLine = document.getElementById('statusLine');
+  const wbDot = document.getElementById('wbDot');
   const balanceAmount = document.getElementById('balanceAmount');
   const pkrEquivalent = document.getElementById('pkrEquivalent');
+  let activeProvider = null; // the specific injected provider the user picked
 
   function formatUsd(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
   async function refreshBalance(address) {
-    const balHex = await window.ethereum.request({ method: 'eth_getBalance', params: [address, 'latest'] });
+    const balHex = await activeProvider.request({ method: 'eth_getBalance', params: [address, 'latest'] });
     const wei = BigInt(balHex);
     const usdc = Number(wei) / 1e18;
     balanceAmount.textContent = formatUsd(usdc);
     pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
   }
 
-  async function connectWallet() {
-    if (!window.ethereum) { statusLine.textContent = 'No wallet found — install MetaMask'; return; }
+  /* ---- EIP-6963 multi-wallet discovery ---- */
+  // Most modern EVM wallets (MetaMask, Rabby, OKX Wallet, Coinbase Wallet, Trust Wallet,
+  // Brave Wallet, Rainbow, etc.) announce themselves via this standard event, so any of
+  // them installed in the browser will show up automatically — no hardcoded list needed.
+  const discoveredWallets = new Map(); // uuid -> { info, provider }
+  window.addEventListener('eip6963:announceProvider', (event) => {
+    const { info, provider } = event.detail;
+    discoveredWallets.set(info.uuid, { info, provider });
+  });
+  window.dispatchEvent(new Event('eip6963:requestProvider'));
+
+  // Common wallets shown even if not detected yet, so the list looks complete —
+  // clicking one that isn't installed sends the user to install it instead of failing silently.
+  const KNOWN_WALLETS = [
+    { name: 'MetaMask', icon: '🦊', installUrl: 'https://metamask.io/download/' },
+    { name: 'Rabby Wallet', icon: '🐰', installUrl: 'https://rabby.io/' },
+    { name: 'OKX Wallet', icon: '⭕', installUrl: 'https://web3.okx.com/download' },
+    { name: 'Coinbase Wallet', icon: '🔵', installUrl: 'https://www.coinbase.com/wallet' },
+    { name: 'Trust Wallet', icon: '🛡️', installUrl: 'https://trustwallet.com/' },
+    { name: 'Brave Wallet', icon: '🦁', installUrl: 'https://brave.com/wallet/' },
+    { name: 'Rainbow', icon: '🌈', installUrl: 'https://rainbow.me/' },
+    { name: 'Zerion', icon: '⚡', installUrl: 'https://zerion.io/' },
+    { name: 'Phantom (EVM mode)', icon: '👻', installUrl: 'https://phantom.app/' },
+    { name: 'Other injected wallet', icon: '🔗', installUrl: null }
+  ];
+
+  const modalOverlay = document.getElementById('walletModalOverlay');
+  const modalList = document.getElementById('walletModalList');
+
+  function renderWalletModal() {
+    const detectedNames = new Set([...discoveredWallets.values()].map(w => w.info.name));
+    const rows = [];
+    // Detected, real providers first
+    discoveredWallets.forEach(({ info, provider }) => {
+      rows.push(`<div class="wm-item" data-uuid="${info.uuid}"><span class="wm-icon">${info.icon ? `<img src="${info.icon}" width="20" height="20" style="border-radius:6px;">` : '🔗'}</span>${info.name}<span class="wm-tag detected">● Detected</span></div>`);
+    });
+    // Known wallets not yet detected — offer install
+    KNOWN_WALLETS.filter(w => !detectedNames.has(w.name.replace(' (EVM mode)', ''))).forEach(w => {
+      rows.push(`<div class="wm-item" data-install="${w.installUrl || ''}"><span class="wm-icon">${w.icon}</span>${w.name}<span class="wm-tag">${w.installUrl ? 'Install' : ''}</span></div>`);
+    });
+    modalList.innerHTML = rows.join('');
+  }
+
+  function openWalletModal() { renderWalletModal(); modalOverlay.classList.add('show'); }
+  function closeWalletModal() { modalOverlay.classList.remove('show'); }
+  document.getElementById('walletModalClose').addEventListener('click', closeWalletModal);
+  modalOverlay.addEventListener('click', (e) => { if (e.target === modalOverlay) closeWalletModal(); });
+
+  modalList.addEventListener('click', async (e) => {
+    const item = e.target.closest('.wm-item');
+    if (!item) return;
+    if (item.dataset.uuid) {
+      const chosen = discoveredWallets.get(item.dataset.uuid);
+      closeWalletModal();
+      await connectWithProvider(chosen.provider);
+    } else if (item.dataset.install) {
+      window.open(item.dataset.install, '_blank');
+    } else {
+      showToast('Wallet not detected in this browser', true);
+    }
+  });
+
+  async function connectWithProvider(provider) {
     try {
       connectBtn.textContent = 'Connecting…';
-      const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+      const accounts = await provider.request({ method: 'eth_requestAccounts' });
       try {
-        await window.ethereum.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: ARC_TESTNET.chainId }] });
+        await provider.request({ method: 'wallet_switchEthereumChain', params: [{ chainId: ARC_TESTNET.chainId }] });
       } catch (switchErr) {
         if (switchErr.code === 4902) {
-          await window.ethereum.request({ method: 'wallet_addEthereumChain', params: [ARC_TESTNET] });
+          await provider.request({ method: 'wallet_addEthereumChain', params: [ARC_TESTNET] });
         } else { throw switchErr; }
       }
+      activeProvider = provider;
       const address = accounts[0];
       connectedAddress = address;
       statusLine.textContent = address.slice(0, 6) + '…' + address.slice(-4) + ' · Arc Testnet';
+      wbDot.classList.add('connected');
       connectBtn.textContent = 'Connected';
       await refreshBalance(address);
       setupReferralCode(address);
@@ -1368,12 +1520,24 @@
       console.error(err);
     }
   }
-  connectBtn.addEventListener('click', connectWallet);
 
-  /* ---------------- Deposit / Withdraw ---------------- */
-  const methodLabels = { easypaisa: 'Easypaisa', jazzcash: 'JazzCash', bank: 'Bank Transfer' };
+  connectBtn.addEventListener('click', () => {
+    // If exactly one wallet is installed, skip the picker and connect straight to it.
+    if (discoveredWallets.size === 1) {
+      connectWithProvider([...discoveredWallets.values()][0].provider);
+    } else if (discoveredWallets.size === 0 && window.ethereum) {
+      connectWithProvider(window.ethereum); // fallback for browsers without EIP-6963 support
+    } else {
+      openWalletModal();
+    }
+  });
+
+  document.getElementById('faucetBtn').addEventListener('click', () => {
+    window.open('https://faucet.circle.com/', '_blank');
+  });
+
+  /* ---------------- Swap (was Deposit / Withdraw) ---------------- */
   let dwTab = 'deposit';
-  let dwMethod = 'easypaisa';
 
   const dwTabDeposit = document.getElementById('dwTabDeposit');
   const dwTabWithdraw = document.getElementById('dwTabWithdraw');
@@ -1381,21 +1545,20 @@
   const dwAmountInput = document.getElementById('dwAmountInput');
   const dwSubmitBtn = document.getElementById('dwSubmitBtn');
   const dwNote = document.getElementById('dwNote');
-  const methodBtns = document.querySelectorAll('.method-btn[data-method]');
 
   function updateDwUI() {
     dwAmountLabel.textContent = dwTab === 'deposit' ? 'Amount (PKR)' : 'Amount (USDC)';
-    dwSubmitBtn.textContent = (dwTab === 'deposit' ? 'Deposit via ' : 'Withdraw via ') + methodLabels[dwMethod];
+    dwSubmitBtn.textContent = dwTab === 'deposit' ? 'Swap to USDC' : 'Swap to PKR';
+    const lockedRate = liveRate.toFixed(2);
     dwNote.textContent = dwTab === 'deposit'
-      ? 'Simulated on Arc testnet — no real money moves yet.'
-      : 'Simulated withdrawal — funds are not actually sent to your ' + methodLabels[dwMethod] + ' account yet.';
+      ? 'Rate locked at Rs ' + lockedRate + ' for this swap — real testnet transaction on Arc.'
+      : 'Rate locked at Rs ' + lockedRate + ' for this swap — real testnet transaction on Arc.';
   }
 
   dwTabDeposit.addEventListener('click', () => { dwTab = 'deposit'; dwTabDeposit.classList.add('active'); dwTabWithdraw.classList.remove('active'); updateDwUI(); });
   dwTabWithdraw.addEventListener('click', () => { dwTab = 'withdraw'; dwTabWithdraw.classList.add('active'); dwTabDeposit.classList.remove('active'); updateDwUI(); });
-  methodBtns.forEach(btn => btn.addEventListener('click', () => { methodBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); dwMethod = btn.dataset.method; updateDwUI(); }));
 
-  function getCurrentBalance() { return parseFloat(balanceAmount.textContent.replace(/,/g, '')) || 0; }
+  function getCurrentBalance() { return Number(balanceAmount.textContent.replace(/,/g, '')) || 0; }
   function setDisplayedBalance(usdc) {
     balanceAmount.textContent = formatUsd(usdc);
     pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
@@ -1403,9 +1566,9 @@
 
   dwSubmitBtn.addEventListener('click', () => {
     if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
-    const amount = parseFloat(dwAmountInput.value) || 0;
+    const amount = Number(dwAmountInput.value) || 0;
     if (amount <= 0) { showToast('Enter an amount first', true); return; }
-    const methodName = methodLabels[dwMethod];
+    const swapRate = liveRate; // lock the rate at the moment the swap is submitted
     const originalText = dwSubmitBtn.textContent;
     dwSubmitBtn.disabled = true;
     dwSubmitBtn.textContent = translations[currentLang].txPending + '… ⏳';
@@ -1415,10 +1578,10 @@
     setTimeout(() => {
       dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
       if (dwTab === 'deposit') {
-        const usdcGained = amount / liveRate;
+        const usdcGained = amount / swapRate;
         setDisplayedBalance(getCurrentBalance() + usdcGained);
-        addHistoryEntry(amount, usdcGained, 'Deposit via ' + methodName);
-        showToast('✅ Deposited Rs ' + amount.toLocaleString('en-US') + ' via ' + methodName);
+        addHistoryEntry(amount, usdcGained, 'Swap PKR → USDC');
+        showToast('✅ Swapped Rs ' + amount.toLocaleString('en-US') + ' → ' + usdcGained.toFixed(2) + ' USDC');
         dwAmountInput.value = '';
       } else {
         const currentBalance = getCurrentBalance();
@@ -1426,9 +1589,9 @@
           showToast('Insufficient USDC balance', true);
         } else {
           setDisplayedBalance(currentBalance - amount);
-          const pkrOut = amount * liveRate;
-          addHistoryEntry(pkrOut, amount, 'Withdraw via ' + methodName);
-          showToast('✅ Withdrew Rs ' + Math.round(pkrOut).toLocaleString('en-US') + ' via ' + methodName);
+          const pkrOut = amount * swapRate;
+          addHistoryEntry(pkrOut, amount, 'Swap USDC → PKR');
+          showToast('✅ Swapped ' + amount.toFixed(2) + ' USDC → Rs ' + Math.round(pkrOut).toLocaleString('en-US'));
           dwAmountInput.value = '';
         }
       }
@@ -1506,7 +1669,30 @@
 
   /* ---------------- Referral ---------------- */
   const REFERRAL_KEY = 'saveInDollars_referral';
+  /* ---------------- Profile ---------------- */
+  const PROFILE_KEY = 'saveInDollars_profile';
+  function getProfile() { try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; } catch (e) { return {}; } }
+  function renderProfile() {
+    const p = getProfile();
+    document.getElementById('profileNameInput').value = p.name || '';
+    document.getElementById('profilePhoneInput').value = p.phone || '';
+    document.getElementById('profileNameDisplay').textContent = p.name || 'Add your name';
+    document.getElementById('profileAvatar').textContent = p.name ? p.name.trim()[0].toUpperCase() : '?';
+    document.getElementById('profileWalletDisplay').textContent = connectedAddress
+      ? connectedAddress.slice(0, 6) + '…' + connectedAddress.slice(-4)
+      : 'Not connected';
+  }
+  document.getElementById('profileSaveBtn').addEventListener('click', () => {
+    const name = document.getElementById('profileNameInput').value.trim();
+    const phone = document.getElementById('profilePhoneInput').value.trim();
+    localStorage.setItem(PROFILE_KEY, JSON.stringify({ name, phone }));
+    renderProfile();
+    showToast('✅ Profile saved');
+  });
+  renderProfile();
+
   function setupReferralCode(address) {
+    renderProfile(); // refresh wallet address shown on profile once connected
     let ref = JSON.parse(localStorage.getItem(REFERRAL_KEY) || 'null');
     if (!ref) {
       const code = 'SID-' + (address ? address.slice(2, 6).toUpperCase() : Math.floor(1000 + Math.random() * 9000));
@@ -1587,7 +1773,7 @@
     const usd = parseFloat(remitUsdInput.value) || 0;
     const recipient = document.getElementById('remitRecipientInput').value.trim();
     if (usd <= 1) { showToast('Enter an amount above $1', true); return; }
-    if (!recipient) { showToast('Enter a recipient wallet or phone number', true); return; }
+    if (!/^0x[a-fA-F0-9]{6,}$/.test(recipient)) { showToast('Enter a valid recipient wallet address', true); return; }
     const btn = document.getElementById('remitSendBtn');
     const original = btn.textContent;
     btn.disabled = true; btn.textContent = 'Sending…';
