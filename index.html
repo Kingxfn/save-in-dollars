@@ -755,11 +755,12 @@
       <span data-i18n="groupTotal">Total contributed</span>
       <b id="groupTotalAmt">0.00 USDC</b>
     </div>
+    <div class="hint" id="groupAddHint" style="margin:14px 0 8px; font-size:12px;" data-i18n="groupAddHint">Enter a name and amount, then tap the button below to send it as a real transaction — it'll show up in the list above once confirmed.</div>
     <div class="group-add-row" style="align-items:center;">
       <input type="text" id="groupMemberName" placeholder="Member name" />
       <input type="number" id="groupMemberAmt" placeholder="USDC" />
-      <button id="groupAddBtn" title="Add contribution" style="flex:0 0 auto; width:40px; height:40px; border-radius:50%; background:var(--green); color:#fff; border:none; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;">+</button>
     </div>
+    <button class="primary" id="groupAddBtn" title="Add contribution" style="margin-top:10px; width:100%;" data-i18n="groupAdd">➕ Add Contribution</button>
   </div>
 
   <div class="card tab-panel" data-tab="pay">
@@ -1142,7 +1143,8 @@
       hiw2: "Your balance updates instantly on Arc testnet, with a full record kept in your transaction history.",
       hiw3: "Swap back to rupees, pay bills, or send money <b>anytime you want</b> — no waiting, no lock-in.",
       groupTitle: "Family / Group Savings", groupHint: "Like a digital committee (BC) — everyone contributes toward one shared goal.",
-      groupTotal: "Total contributed", groupAdd: "Add Contribution",
+      groupTotal: "Total contributed", groupAdd: "➕ Add Contribution",
+      groupAddHint: "Enter a name and amount, then tap the button below to send it as a real transaction — it'll show up in the list above once confirmed.",
       qrTitle: "Pay / Receive via QR", qrHint: "Scan to send USDC directly to another ArcPay user.",
       qrConnectFirst: "Connect your wallet to generate your receive code",
       badgesTitle: "Milestones", badgesHint: "Little wins along the way to your first $100 saved.",
@@ -1217,7 +1219,8 @@
       hiw2: "آپ کا بیلنس فوراً Arc ٹیسٹ نیٹ پر اپڈیٹ ہوتا ہے، اور مکمل ریکارڈ آپ کی ٹرانزیکشن ہسٹری میں محفوظ رہتا ہے۔",
       hiw3: "کسی بھی وقت روپوں میں واپس تبدیل کریں، بل ادا کریں یا رقم بھیجیں — کوئی انتظار نہیں۔",
       groupTitle: "خاندانی / گروپ بچت", groupHint: "ڈیجیٹل کمیٹی کی طرح — سب مل کر ایک ہدف کی طرف حصہ ڈالیں۔",
-      groupTotal: "کل حصہ", groupAdd: "حصہ شامل کریں",
+      groupTotal: "کل حصہ", groupAdd: "➕ حصہ شامل کریں",
+      groupAddHint: "نام اور رقم درج کریں، پھر نیچے دیے گئے بٹن پر ٹیپ کریں تاکہ یہ ایک حقیقی ٹرانزیکشن کے طور پر بھیجا جائے — تصدیق ہونے پر یہ اوپر فہرست میں نظر آئے گا۔",
       qrTitle: "کیو آر سے ادائیگی / وصولی", qrHint: "کسی دوسرے صارف کو براہ راست یو ایس ڈی سی بھیجنے کے لیے اسکین کریں۔",
       qrConnectFirst: "اپنا وصولی کوڈ بنانے کے لیے والیٹ جوڑیں",
       badgesTitle: "سنگ میل", badgesHint: "آپ کے پہلے $100 تک چھوٹی چھوٹی کامیابیاں۔",
@@ -1423,6 +1426,11 @@
     rpcUrls: ['https://rpc.testnet.arc.network'], blockExplorerUrls: []
   };
 
+  // Used for actions that genuinely spend USDC (Swap → PKR, Group contributions) so the
+  // wallet's real on-chain balance actually decreases — not just a self-send that costs gas
+  // but leaves the balance unchanged.
+  const TREASURY_ADDRESS = '0x000000000000000000000000000000000000dEaD';
+
   const connectBtn = document.getElementById('connectBtn');
   const statusLine = document.getElementById('statusLine');
   const wbDot = document.getElementById('wbDot');
@@ -1589,42 +1597,67 @@
     if (typeof updateRemitBalanceNote === 'function') updateRemitBalanceNote();
   }
 
-  dwSubmitBtn.addEventListener('click', () => {
+  dwSubmitBtn.addEventListener('click', async () => {
     if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
     const amount = Number(dwAmountInput.value) || 0;
     if (amount <= 0) { showToast('Enter an amount first', true); return; }
     const swapRate = liveRate; // lock the rate at the moment the swap is submitted
+
+    // Re-check against the real, last-known on-chain balance before allowing a withdrawal —
+    // this is what stops the "unlimited USDC" bug (you can never swap out more than you have).
+    if (dwTab === 'withdraw' && amount > getCurrentBalance()) {
+      showToast('Insufficient USDC balance', true);
+      return;
+    }
+
     const originalText = dwSubmitBtn.textContent;
     dwSubmitBtn.disabled = true;
     dwSubmitBtn.textContent = translations[currentLang].txPending + '… ⏳';
 
-    setTimeout(() => { dwSubmitBtn.textContent = translations[currentLang].txConfirming + '… 🔄'; }, 550);
-
-    setTimeout(() => {
-      dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
+    try {
       if (dwTab === 'deposit') {
         const usdcGained = amount / swapRate;
-        setDisplayedBalance(getCurrentBalance() + usdcGained);
+        const valueWei = '0x' + BigInt(Math.round(usdcGained * 1e18)).toString(16);
+        showToast('Confirm the swap in your wallet…');
+        // Recorded on-chain as a self-send. Note: on a testnet, this can't mint new USDC out
+        // of thin air — your real balance only grows via the faucet. The number shown below
+        // always reflects the true on-chain balance, refreshed right after this transaction.
+        await activeProvider.request({
+          method: 'eth_sendTransaction',
+          params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
+        });
+        dwSubmitBtn.textContent = translations[currentLang].txConfirming + '… 🔄';
         addHistoryEntry(amount, usdcGained, 'Swap PKR → USDC');
-        showToast('✅ Swapped Rs ' + amount.toLocaleString('en-US') + ' → ' + usdcGained.toFixed(2) + ' USDC');
         dwAmountInput.value = '';
+        await refreshBalance(connectedAddress);
+        dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
+        showToast('✅ Swap recorded — your real balance is now ' + getCurrentBalance().toFixed(2) + ' USDC');
       } else {
-        const currentBalance = getCurrentBalance();
-        if (amount > currentBalance) {
-          showToast('Insufficient USDC balance', true);
-        } else {
-          setDisplayedBalance(currentBalance - amount);
-          const pkrOut = amount * swapRate;
-          addHistoryEntry(pkrOut, amount, 'Swap USDC → PKR');
-          showToast('✅ Swapped ' + amount.toFixed(2) + ' USDC → Rs ' + Math.round(pkrOut).toLocaleString('en-US'));
-          dwAmountInput.value = '';
-        }
+        const valueWei = '0x' + BigInt(Math.round(amount * 1e18)).toString(16);
+        showToast('Confirm the swap in your wallet…');
+        // Sends the USDC to the treasury address so it actually leaves the wallet — the
+        // balance genuinely decreases instead of just being edited on screen.
+        await activeProvider.request({
+          method: 'eth_sendTransaction',
+          params: [{ from: connectedAddress, to: TREASURY_ADDRESS, value: valueWei }]
+        });
+        dwSubmitBtn.textContent = translations[currentLang].txConfirming + '… 🔄';
+        const pkrOut = amount * swapRate;
+        addHistoryEntry(pkrOut, amount, 'Swap USDC → PKR');
+        dwAmountInput.value = '';
+        await refreshBalance(connectedAddress);
+        dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
+        showToast('✅ Swapped ' + amount.toFixed(2) + ' USDC → Rs ' + Math.round(pkrOut).toLocaleString('en-US'));
       }
+    } catch (err) {
+      console.error(err);
+      showToast('Transaction cancelled or failed', true);
+    } finally {
       setTimeout(() => {
         dwSubmitBtn.disabled = false;
         dwSubmitBtn.textContent = originalText;
-      }, 700);
-    }, 1600);
+      }, 500);
+    }
   });
   updateDwUI();
 
@@ -2053,11 +2086,52 @@
           <div style="background:var(--bg); border:1px solid var(--line); border-radius:20px; height:10px; overflow:hidden;">
             <div style="width:${pct}%; height:100%; background:var(--teal);"></div>
           </div>
-          <div style="font-size:11px; color:var(--muted); margin-top:5px;">${timelineNote}${deadlineNote}</div>
+          <div style="font-size:11px; color:var(--muted); margin-top:5px;" class="goal-remaining-note">${timelineNote}${deadlineNote}</div>
+          <div style="display:flex; gap:6px; margin-top:8px;">
+            <input type="number" class="goal-amt-input" data-idx="${i}" placeholder="Amount USDC" style="flex:1; border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--bg); color:var(--ink);" />
+            <button class="secondary goal-deposit-btn" data-idx="${i}" style="flex:0 0 auto; padding:8px 12px; font-size:12px;">${currentLang === 'ur' ? 'جمع کریں' : 'Deposit'}</button>
+            <button class="secondary goal-withdraw-btn" data-idx="${i}" style="flex:0 0 auto; padding:8px 12px; font-size:12px;">${currentLang === 'ur' ? 'نکالیں' : 'Withdraw'}</button>
+          </div>
         </div>
       `;
     }).join('');
   }
+  // Depositing/withdrawing on a goal is bookkeeping only (it doesn't move real funds — the
+  // money is already in your wallet, this just earmarks part of it toward a goal), so no
+  // blockchain transaction is needed here, and it never exceeds your real wallet balance.
+  document.getElementById('goalsList').addEventListener('click', (e) => {
+    const depositBtn = e.target.closest('.goal-deposit-btn');
+    const withdrawBtn = e.target.closest('.goal-withdraw-btn');
+    const btn = depositBtn || withdrawBtn;
+    if (!btn) return;
+    const idx = Number(btn.dataset.idx);
+    const row = btn.closest('div').querySelector('.goal-amt-input');
+    const amt = parseFloat(row.value) || 0;
+    if (amt <= 0) { showToast('Enter an amount first', true); return; }
+    const goals = getGoals();
+    const g = goals[idx];
+    if (!g) return;
+    if (depositBtn) {
+      const availableToEarmark = connectedAddress ? getCurrentBalance() : Infinity;
+      const alreadyEarmarked = goals.reduce((s, gg) => s + gg.saved, 0);
+      if (connectedAddress && (alreadyEarmarked + amt) > availableToEarmark) {
+        showToast('That would earmark more than your real wallet balance — add USDC first', true);
+        return;
+      }
+      g.saved = Math.min(g.target, g.saved + amt);
+      saveGoals(goals);
+      renderGoals();
+      const remaining = Math.max(0, g.target - g.saved);
+      showToast(remaining === 0 ? ('🎉 "' + g.name + '" goal reached!') : ('+' + amt.toFixed(2) + ' → "' + g.name + '" — ' + remaining.toFixed(2) + ' USDC left to reach target'));
+    } else {
+      if (amt > g.saved) { showToast('You can\'t withdraw more than what\'s saved in this goal', true); return; }
+      g.saved -= amt;
+      saveGoals(goals);
+      renderGoals();
+      const remaining = Math.max(0, g.target - g.saved);
+      showToast('-' + amt.toFixed(2) + ' from "' + g.name + '" — ' + remaining.toFixed(2) + ' USDC left to reach target');
+    }
+  });
   document.getElementById('addGoalBtn').addEventListener('click', () => {
     const name = document.getElementById('goalNameInput').value.trim();
     const target = parseFloat(document.getElementById('goalTargetInput').value) || 0;
@@ -2305,15 +2379,17 @@
     if (!name || amt <= 0) { showToast('Enter member name and amount', true); return; }
     if (amt > getCurrentBalance()) { showToast('Not enough USDC balance — add USDC to your wallet first', true); return; }
     const addBtn = document.getElementById('groupAddBtn');
+    const originalBtnText = addBtn.textContent;
     addBtn.disabled = true;
+    addBtn.textContent = translations[currentLang].txPending + '… ⏳';
     try {
       const valueWei = '0x' + BigInt(Math.round(amt * 1e18)).toString(16);
       showToast('Confirm the contribution in your wallet…');
       await activeProvider.request({
         method: 'eth_sendTransaction',
-        params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
+        params: [{ from: connectedAddress, to: TREASURY_ADDRESS, value: valueWei }]
       });
-      setDisplayedBalance(getCurrentBalance() - amt);
+      addBtn.textContent = translations[currentLang].txConfirming + '… 🔄';
       addHistoryEntry(amt * liveRate, amt, 'Group Savings — ' + name);
       const members = getGroupMembers();
       members.push({ name, amt });
@@ -2321,13 +2397,17 @@
       renderGroup();
       document.getElementById('groupMemberName').value = '';
       document.getElementById('groupMemberAmt').value = '';
+      // Pull the real on-chain balance instead of guessing locally — this is what actually
+      // fixes the "random"/"unlimited" balance bug, since the number is never faked in between.
+      await refreshBalance(connectedAddress);
+      addBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
       showToast('👨‍👩‍👧 ' + name + ' contributed ' + amt.toFixed(2) + ' USDC — new balance ' + getCurrentBalance().toFixed(2) + ' USDC');
-      setTimeout(() => refreshBalance(connectedAddress), 2000);
     } catch (err) {
       console.error(err);
       showToast('Transaction cancelled or failed', true);
     } finally {
       addBtn.disabled = false;
+      setTimeout(() => { addBtn.textContent = originalBtnText; }, 600);
     }
   });
   renderGroup();
