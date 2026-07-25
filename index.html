@@ -778,6 +778,7 @@
     <h2 data-i18n="badgesTitle">Milestones</h2>
     <div class="hint" data-i18n="badgesHint">Little wins along the way — set your own target too.</div>
     <div class="badges-grid" id="badgesGrid"></div>
+    <div id="customMilestonesList"></div>
     <div class="group-add-row" style="align-items:center; margin-top:16px;">
       <input type="number" id="customMilestoneInput" placeholder="Custom target (USDC)" style="flex:1;" />
       <button id="customMilestoneBtn" title="Add custom milestone" style="flex:0 0 auto; width:40px; height:40px; border-radius:50%; background:var(--green); color:#fff; border:none; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;">+</button>
@@ -885,44 +886,6 @@
       <button class="method-btn" data-amt="1000">Rs 1000</button>
     </div>
     <button class="secondary" id="topupBtn" data-i18n="topupBtnTxt">Top Up Now</button>
-  </div>
-
-  <div class="card tab-panel" data-tab="pay">
-    <span class="dw-badge">Testnet Demo</span>
-    <h2 data-i18n="freelanceTitle">Get Paid by Foreign Clients</h2>
-    <div class="hint" data-i18n="freelanceHint">No Payoneer, no PayPal, no bank delays — generate a link, foreign client pays in USDC straight to your wallet.</div>
-
-    <div class="field" style="margin-bottom:14px;">
-      <label data-i18n="freelanceClientLabel">Client / Company Name</label>
-      <input type="text" id="freelanceClientInput" placeholder="e.g. Acme Studio, USA" />
-    </div>
-    <div class="convert-row">
-      <div class="field">
-        <label data-i18n="freelanceAmountLabel">Invoice Amount (USD)</label>
-        <input type="number" id="freelanceAmountInput" placeholder="0" value="250" />
-      </div>
-      <div class="arrow">→</div>
-      <div class="field">
-        <label data-i18n="freelanceReceiveLabel">You receive</label>
-        <input type="text" id="freelanceUsdcOutput" readonly />
-      </div>
-    </div>
-    <div class="fee-note">
-      <span data-i18n="feeLabel">Fee</span>
-      <span><b id="freelanceFee">$0.00</b> <span class="fee-badge" data-i18n="freelanceFeeNote">· ~0.5% flat, vs 3–5% on Payoneer/PayPal-style platforms</span></span>
-    </div>
-    <button class="primary" id="freelanceGenerateBtn" data-i18n="freelanceGenerate">Generate Payment Link</button>
-
-    <div id="freelanceLinkBox" style="display:none; margin-top:16px;">
-      <div class="referral-code-box">
-        <span class="code" id="freelanceLinkText" style="font-size:12px;">—</span>
-        <button class="copy-btn" id="freelanceCopyBtn" data-i18n="copyCode">Copy</button>
-      </div>
-      <div class="rate-note" data-i18n="freelanceLinkNote">This is a demo reference — real shareable payment links go live at mainnet launch. For now, use the button below to simulate your client paying it.</div>
-      <button class="secondary" id="freelanceSimulatePayBtn" style="margin-top:12px;" data-i18n="freelanceSimulate">Simulate Client Payment (Demo)</button>
-    </div>
-
-    <div id="freelanceReceivedList" style="margin-top:16px; display:flex; flex-direction:column; gap:10px;"></div>
   </div>
 
   <div class="card tab-panel" data-tab="profile">
@@ -1168,11 +1131,6 @@
       legalTerms: "Terms of Service", legalPrivacy: "Privacy Policy", legalFaq: "FAQ / Docs",
       txPending: "Pending", txConfirming: "Confirming", txConfirmed: "Confirmed",
       txStateTitle: "Transaction status",
-      freelanceTitle: "Get Paid by Foreign Clients", freelanceHint: "No Payoneer, no PayPal, no bank delays — generate a link, foreign client pays in USDC straight to your wallet.",
-      freelanceClientLabel: "Client / Company Name", freelanceAmountLabel: "Invoice Amount (USD)", freelanceReceiveLabel: "You receive",
-      freelanceFeeNote: "· ~0.5% flat, vs 3–5% on Payoneer/PayPal-style platforms",
-      freelanceGenerate: "Generate Payment Link", freelanceLinkNote: "This is a demo reference — real shareable payment links go live at mainnet launch. For now, use the button below to simulate your client paying it.",
-      freelanceSimulate: "Simulate Client Payment (Demo)", freelanceReceivedTitle: "Received from clients"
     },
     ur: {
       brandName: "ArcPay", devalMsg: "⚠️ روپے کی قدر آج کم ہوئی ہے — ابھی کنورٹ کرنے کا اچھا وقت ہے۔",
@@ -1245,11 +1203,6 @@
       legalTerms: "شرائط و ضوابط", legalPrivacy: "پرائیویسی پالیسی", legalFaq: "عمومی سوالات / دستاویزات",
       txPending: "زیر التوا", txConfirming: "تصدیق ہو رہی ہے", txConfirmed: "تصدیق شدہ",
       txStateTitle: "ٹرانزیکشن اسٹیٹس",
-      freelanceTitle: "غیر ملکی کلائنٹس سے ادائیگی وصول کریں", freelanceHint: "نہ Payoneer، نہ PayPal، نہ بینک تاخیر — لنک بنائیں، غیر ملکی کلائنٹ براہ راست آپ کے والیٹ میں USDC ادا کرے۔",
-      freelanceClientLabel: "کلائنٹ / کمپنی کا نام", freelanceAmountLabel: "انوائس رقم (USD)", freelanceReceiveLabel: "آپ کو ملے گا",
-      freelanceFeeNote: "· تقریباً 0.5% فلیٹ، بمقابلہ Payoneer/PayPal طرز کے پلیٹ فارمز پر 3–5%",
-      freelanceGenerate: "پیمنٹ لنک بنائیں", freelanceLinkNote: "یہ ایک ڈیمو ریفرنس ہے — اصل شیئر ایبل پیمنٹ لنکس مین نیٹ لانچ پر فعال ہوں گے۔ ابھی کے لیے نیچے دیا گیا بٹن استعمال کریں۔",
-      freelanceSimulate: "کلائنٹ کی ادائیگی سیمولیٹ کریں (ڈیمو)", freelanceReceivedTitle: "کلائنٹس سے موصول شدہ"
     }
   };
   let currentLang = localStorage.getItem('saveInDollars_lang') || 'en';
@@ -1300,21 +1253,34 @@
     if (pkrWalletEl) pkrWalletEl.textContent = 'Rs ' + Math.round(clamped).toLocaleString('en-US');
     return clamped;
   }
-  function getUsdcBalance() {
+  // Real on-chain balance (read from the connected wallet — this is what the faucet fills up).
+  // The app-tracked ledger above (USDC_BAL_KEY) only ever recorded swaps done inside the app,
+  // so it ignored whatever was already sitting in the wallet — that's why the balance shown
+  // could read 0 even with faucet funds present. getUsdcBalance()/setUsdcBalance() now always
+  // work with the combined total (wallet + app ledger) so every screen shows the real number.
+  let onchainUsdc = 0;
+  function getAppLedgerUsdc() {
     const v = parseFloat(localStorage.getItem(USDC_BAL_KEY));
     return isNaN(v) ? 0 : v;
   }
+  function getUsdcBalance() {
+    return getAppLedgerUsdc() + onchainUsdc;
+  }
   function setUsdcBalance(usdc) {
-    const clamped = Math.max(0, usdc);
-    localStorage.setItem(USDC_BAL_KEY, clamped);
-    balanceAmount.textContent = formatUsd(clamped);
-    pkrEquivalent.textContent = 'Rs ' + Math.round(clamped * liveRate).toLocaleString('en-US');
-    updateWbBalanceChip(clamped);
+    // usdc is the desired TOTAL (wallet + app ledger); store only the app-ledger portion,
+    // since the on-chain portion isn't ours to write — it lives in the wallet.
+    const clampedTotal = Math.max(0, usdc);
+    const appPortion = Math.max(0, clampedTotal - onchainUsdc);
+    localStorage.setItem(USDC_BAL_KEY, appPortion);
+    const total = appPortion + onchainUsdc;
+    balanceAmount.textContent = formatUsd(total);
+    pkrEquivalent.textContent = 'Rs ' + Math.round(total * liveRate).toLocaleString('en-US');
+    updateWbBalanceChip(total);
     if (typeof updateTopupAvailability === 'function') updateTopupAvailability();
     if (typeof renderGroup === 'function') renderGroup();
     if (typeof renderGoals === 'function') renderGoals();
     if (typeof updateRemitBalanceNote === 'function') updateRemitBalanceNote();
-    return clamped;
+    return total;
   }
 
   function syncLedgerUI() {
@@ -1401,7 +1367,9 @@
         entry.label.startsWith('Bill Payment') ||
         entry.label.startsWith('Top-Up') ||
         entry.label.startsWith('Remittance to') ||
-        entry.label.startsWith('Group Savings')
+        entry.label.startsWith('Group Savings') ||
+        entry.label.startsWith('Goal Withdraw') ||
+        entry.label.startsWith('Milestone Withdraw')
       );
       const title = entry.label ? entry.label : `Rs ${entry.pkr.toLocaleString('en-US')} converted`;
       const sign = isWithdraw ? '-' : '+';
@@ -1503,6 +1471,8 @@
       const balHex = await activeProvider.request({ method: 'eth_getBalance', params: [address, 'latest'] });
       const wei = BigInt(balHex);
       const usdc = Number(wei) / 1e18;
+      onchainUsdc = usdc;
+      setUsdcBalance(getUsdcBalance()); // re-render main balance now that it includes the wallet's real funds
       const info = document.getElementById('onchainInfoLine');
       if (info) {
         info.style.display = 'block';
@@ -1595,7 +1565,6 @@
       syncLedgerUI();
       refreshBalance(address);
       setupReferralCode(address);
-      maybeShowKyc();
       updateQrForAddress(address);
     } catch (err) {
       statusLine.textContent = 'Connection failed — try again';
@@ -1694,6 +1663,7 @@
         dwAmountInput.value = '';
         dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
         showToast('✅ Swapped ' + amount.toFixed(2) + ' USDC → Rs ' + Math.round(pkrOut).toLocaleString('en-US'));
+        setTimeout(() => refreshBalance(connectedAddress), 2000);
       }
     } catch (err) {
       console.error(err);
@@ -1991,89 +1961,6 @@
     }
   });
 
-  /* ---------------- Freelance / Cross-Border Payments ---------------- */
-  const FREELANCE_KEY = 'saveInDollars_freelance_received';
-  const freelanceAmountInput = document.getElementById('freelanceAmountInput');
-  const freelanceUsdcOutput = document.getElementById('freelanceUsdcOutput');
-  const freelanceFee = document.getElementById('freelanceFee');
-  const FREELANCE_FEE_PCT = 0.005;
-
-  function updateFreelanceConversion() {
-    const usd = parseFloat(freelanceAmountInput.value) || 0;
-    const fee = usd * FREELANCE_FEE_PCT;
-    freelanceUsdcOutput.value = Math.max(0, usd - fee).toFixed(2);
-    freelanceFee.textContent = '$' + fee.toFixed(2);
-  }
-  freelanceAmountInput.addEventListener('input', updateFreelanceConversion);
-  updateFreelanceConversion();
-
-  function getFreelanceReceived() { try { return JSON.parse(localStorage.getItem(FREELANCE_KEY)) || []; } catch (e) { return []; } }
-  function renderFreelanceReceived() {
-    const list = getFreelanceReceived();
-    const box = document.getElementById('freelanceReceivedList');
-    if (list.length === 0) { box.innerHTML = ''; return; }
-    box.innerHTML = '<div style="font-size:12px; color:var(--muted); margin-bottom:2px;">' +
-      (translations[currentLang].freelanceReceivedTitle) + '</div>' +
-      list.slice().reverse().map(p => `
-        <div class="history-row">
-          <div class="h-left">
-            <span class="h-amounts">${p.client}</span>
-            <span class="h-date">${new Date(p.date).toLocaleDateString()}</span>
-          </div>
-          <span class="h-usdc">+${p.usdc.toFixed(2)} USDC</span>
-        </div>
-      `).join('');
-  }
-  renderFreelanceReceived();
-
-  let freelancePendingInvoice = null;
-
-  document.getElementById('freelanceGenerateBtn').addEventListener('click', () => {
-    const client = document.getElementById('freelanceClientInput').value.trim();
-    const usd = parseFloat(freelanceAmountInput.value) || 0;
-    if (!client) { showToast('Enter a client / company name', true); return; }
-    if (usd <= 0) { showToast('Enter an invoice amount', true); return; }
-    const invoiceId = 'INV-' + Math.random().toString(36).slice(2, 8).toUpperCase();
-    freelancePendingInvoice = { client, usd, invoiceId };
-    document.getElementById('freelanceLinkText').textContent = 'Invoice reference: ' + invoiceId + ' (demo)';
-    document.getElementById('freelanceLinkBox').style.display = 'block';
-    showToast('🧾 Invoice created for ' + client);
-  });
-
-  document.getElementById('freelanceCopyBtn').addEventListener('click', () => {
-    const link = document.getElementById('freelanceLinkText').textContent;
-    navigator.clipboard?.writeText(link).then(() => showToast('Invoice reference copied'))
-      .catch(() => showToast(link));
-  });
-
-  document.getElementById('freelanceSimulatePayBtn').addEventListener('click', () => {
-    if (!freelancePendingInvoice) { showToast('Generate a payment link first', true); return; }
-    if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
-    const btn = document.getElementById('freelanceSimulatePayBtn');
-    const original = btn.textContent;
-    btn.disabled = true;
-    btn.textContent = translations[currentLang].txPending + '… ⏳';
-    setTimeout(() => { btn.textContent = translations[currentLang].txConfirming + '… 🔄'; }, 500);
-    setTimeout(() => {
-      const { client, usd } = freelancePendingInvoice;
-      const fee = usd * FREELANCE_FEE_PCT;
-      const usdcAmount = usd - fee;
-      setDisplayedBalance(getCurrentBalance() + usdcAmount);
-      addHistoryEntry(0, usdcAmount, 'Client Payment — ' + client);
-      const list = getFreelanceReceived();
-      list.push({ client, usdc: usdcAmount, date: new Date().toISOString() });
-      localStorage.setItem(FREELANCE_KEY, JSON.stringify(list));
-      renderFreelanceReceived();
-      showToast('✅ ' + client + ' paid $' + usd.toFixed(2) + ' → ' + usdcAmount.toFixed(2) + ' USDC received');
-      document.getElementById('freelanceLinkBox').style.display = 'none';
-      document.getElementById('freelanceClientInput').value = '';
-      freelancePendingInvoice = null;
-      btn.disabled = false;
-      btn.textContent = original;
-      checkBadges();
-    }, 1600);
-  });
-
   /* ---------------- Saving Goals ---------------- */
   const GOALS_KEY = 'saveInDollars_goals';
   function getGoals() { try { return JSON.parse(localStorage.getItem(GOALS_KEY)) || []; } catch (e) { return []; } }
@@ -2159,14 +2046,14 @@
     if (!g) return;
     if (depositBtn) {
       const availableToEarmark = connectedAddress ? getCurrentBalance() : Infinity;
-      const alreadyEarmarked = goals.reduce((s, gg) => s + gg.saved, 0);
-      if (connectedAddress && (alreadyEarmarked + amt) > availableToEarmark) {
+      if (connectedAddress && (totalEarmarked() + amt) > availableToEarmark) {
         showToast('That would earmark more than your real wallet balance — add USDC first', true);
         return;
       }
       g.saved = Math.min(g.target, g.saved + amt);
       saveGoals(goals);
       renderGoals();
+      addHistoryEntry(0, amt, 'Goal Deposit — ' + g.name);
       const remaining = Math.max(0, g.target - g.saved);
       showToast(remaining === 0 ? ('🎉 "' + g.name + '" goal reached!') : ('+' + amt.toFixed(2) + ' → "' + g.name + '" — ' + remaining.toFixed(2) + ' USDC left to reach target'));
     } else {
@@ -2174,6 +2061,7 @@
       g.saved -= amt;
       saveGoals(goals);
       renderGoals();
+      addHistoryEntry(0, amt, 'Goal Withdraw — ' + g.name);
       const remaining = Math.max(0, g.target - g.saved);
       showToast('-' + amt.toFixed(2) + ' from "' + g.name + '" — ' + remaining.toFixed(2) + ' USDC left to reach target');
     }
@@ -2466,40 +2354,114 @@
     { id: 'hundred', icon: '💎', label: '$100 Saved', threshold: 100 }
   ];
   const CUSTOM_BADGES_KEY = 'saveInDollars_custom_badges';
-  function getCustomBadges() { try { return JSON.parse(localStorage.getItem(CUSTOM_BADGES_KEY)) || []; } catch (e) { return []; } }
-  function allBadges() {
-    const custom = getCustomBadges().map(c => ({ id: 'custom-' + c.amount, icon: '🎯', label: '$' + c.amount + ' Saved', threshold: c.amount }));
-    return [...BADGES, ...custom].sort((a, b) => a.threshold - b.threshold);
+  // Custom milestones store their own { amount, saved } — unlike the default badges (which
+  // unlock automatically once your lifetime total crosses a threshold), a custom milestone
+  // is a fundable target: you deposit/withdraw toward it directly, same as a Saving Goal.
+  function getCustomBadges() {
+    try {
+      const list = JSON.parse(localStorage.getItem(CUSTOM_BADGES_KEY)) || [];
+      return list.map(c => ({ amount: c.amount, saved: c.saved || 0 }));
+    } catch (e) { return []; }
+  }
+  function saveCustomBadges(list) { localStorage.setItem(CUSTOM_BADGES_KEY, JSON.stringify(list)); }
+  // Combined amount currently earmarked into Saving Goals + custom Milestones, so neither
+  // screen lets you earmark more than what's actually in your wallet.
+  function totalEarmarked() {
+    const goalsTotal = (typeof getGoals === 'function') ? getGoals().reduce((s, gg) => s + gg.saved, 0) : 0;
+    const milestonesTotal = getCustomBadges().reduce((s, c) => s + c.saved, 0);
+    return goalsTotal + milestonesTotal;
   }
   document.getElementById('customMilestoneBtn').addEventListener('click', () => {
     const amt = parseFloat(document.getElementById('customMilestoneInput').value) || 0;
     if (amt <= 0) { showToast('Enter a target amount', true); return; }
     const custom = getCustomBadges();
     if (custom.some(c => c.amount === amt) || BADGES.some(b => b.threshold === amt)) { showToast('That milestone already exists', true); return; }
-    custom.push({ amount: amt });
-    localStorage.setItem(CUSTOM_BADGES_KEY, JSON.stringify(custom));
+    custom.push({ amount: amt, saved: 0 });
+    saveCustomBadges(custom);
     document.getElementById('customMilestoneInput').value = '';
     renderBadges();
     showToast('🎯 Custom milestone added: $' + amt + ' Saved');
   });
   function totalSavedFromHistory() {
-    return getHistory().filter(h => h.usdc > 0).reduce((s, h) => s + h.usdc, 0);
+    return getHistory().filter(h => h.usdc > 0 && !(h.label && (h.label.startsWith('Goal ') || h.label.startsWith('Milestone ')))).reduce((s, h) => s + h.usdc, 0);
   }
   function renderBadges() {
     const total = totalSavedFromHistory();
     const grid = document.getElementById('badgesGrid');
-    grid.innerHTML = allBadges().map(b => `
+    grid.innerHTML = BADGES.map(b => `
       <div class="badge-item ${total >= b.threshold ? 'unlocked' : ''}">
         <div class="b-icon">${b.icon}</div>
         <div class="b-label">${b.label}</div>
       </div>
     `).join('');
+    renderCustomMilestones();
   }
+  function renderCustomMilestones() {
+    const box = document.getElementById('customMilestonesList');
+    if (!box) return;
+    const custom = getCustomBadges();
+    if (custom.length === 0) { box.innerHTML = ''; return; }
+    box.innerHTML = custom.map((c, i) => {
+      const pct = Math.min(100, (c.saved / c.amount) * 100).toFixed(0);
+      const remaining = Math.max(0, c.amount - c.saved);
+      return `
+        <div style="margin-top:14px; padding-top:14px; border-top:1px solid var(--line);">
+          <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
+            <span style="font-weight:500;">🎯 $${c.amount} Saved</span>
+            <span style="font-family:'IBM Plex Mono',monospace; color:var(--muted);">${c.saved.toFixed(2)} / ${c.amount.toFixed(2)} USDC</span>
+          </div>
+          <div style="background:var(--bg); border:1px solid var(--line); border-radius:20px; height:10px; overflow:hidden;">
+            <div style="width:${pct}%; height:100%; background:var(--teal);"></div>
+          </div>
+          <div style="font-size:11px; color:var(--muted); margin-top:5px;">${remaining === 0 ? '🎉 Milestone reached!' : remaining.toFixed(2) + ' USDC left'}</div>
+          <div style="display:flex; gap:6px; margin-top:8px;">
+            <input type="number" class="milestone-amt-input" data-idx="${i}" placeholder="Amount USDC" style="flex:1; border:1px solid var(--line); border-radius:8px; padding:8px 10px; font-family:'IBM Plex Mono',monospace; font-size:12px; background:var(--bg); color:var(--ink);" />
+            <button class="secondary milestone-deposit-btn" data-idx="${i}" style="flex:0 0 auto; padding:8px 12px; font-size:12px;">${currentLang === 'ur' ? 'جمع کریں' : 'Deposit'}</button>
+            <button class="secondary milestone-withdraw-btn" data-idx="${i}" style="flex:0 0 auto; padding:8px 12px; font-size:12px;">${currentLang === 'ur' ? 'نکالیں' : 'Withdraw'}</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+  }
+  document.getElementById('customMilestonesList')?.addEventListener('click', (e) => {
+    const depositBtn = e.target.closest('.milestone-deposit-btn');
+    const withdrawBtn = e.target.closest('.milestone-withdraw-btn');
+    const btn = depositBtn || withdrawBtn;
+    if (!btn) return;
+    const idx = Number(btn.dataset.idx);
+    const row = btn.closest('div').querySelector('.milestone-amt-input');
+    const amt = parseFloat(row.value) || 0;
+    if (amt <= 0) { showToast('Enter an amount first', true); return; }
+    const custom = getCustomBadges();
+    const c = custom[idx];
+    if (!c) return;
+    if (depositBtn) {
+      const availableToEarmark = connectedAddress ? getCurrentBalance() : Infinity;
+      if (connectedAddress && (totalEarmarked() + amt) > availableToEarmark) {
+        showToast('That would earmark more than your real wallet balance — add USDC first', true);
+        return;
+      }
+      c.saved = Math.min(c.amount, c.saved + amt);
+      saveCustomBadges(custom);
+      renderBadges();
+      addHistoryEntry(0, amt, 'Milestone Deposit — $' + c.amount);
+      const remaining = Math.max(0, c.amount - c.saved);
+      showToast(remaining === 0 ? ('🎉 $' + c.amount + ' milestone reached!') : ('+' + amt.toFixed(2) + ' — ' + remaining.toFixed(2) + ' USDC left'));
+    } else {
+      if (amt > c.saved) { showToast('You can\'t withdraw more than what\'s saved toward this milestone', true); return; }
+      c.saved -= amt;
+      saveCustomBadges(custom);
+      renderBadges();
+      addHistoryEntry(0, amt, 'Milestone Withdraw — $' + c.amount);
+      const remaining = Math.max(0, c.amount - c.saved);
+      showToast('-' + amt.toFixed(2) + ' — ' + remaining.toFixed(2) + ' USDC left to reach milestone');
+    }
+  });
   function checkBadges() {
     const total = totalSavedFromHistory();
     const unlockedKey = 'saveInDollars_badges_seen';
     let seen = JSON.parse(localStorage.getItem(unlockedKey) || '[]');
-    allBadges().forEach(b => {
+    BADGES.forEach(b => {
       if (total >= b.threshold && !seen.includes(b.id)) {
         seen.push(b.id);
         showToast('🎉 Milestone unlocked: ' + b.label + '!');
