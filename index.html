@@ -528,6 +528,7 @@
       <button class="wb-connect" id="connectBtn" data-i18n="connectWallet">Connect Wallet</button>
     </div>
   </div>
+  <div id="onchainInfoLine" style="display:none; font-size:11px; color:var(--muted); margin:-14px 0 18px; text-align:right;"></div>
 
   <div class="wallet-modal-overlay" id="walletModalOverlay">
     <div class="wallet-modal">
@@ -567,6 +568,7 @@
       <div class="label" data-i18n="usdcBalance">USDC Balance</div>
     </div>
     <div class="sub-value"><span data-i18n="equivTo">Equivalent to</span> <b id="pkrEquivalent">Rs 0</b> <span data-i18n="atRate">at today's rate</span></div>
+    <div class="sub-value" style="margin-top:4px;"><span data-i18n="pkrWalletLabel">Your PKR wallet</span>: <b id="pkrWalletBalance">Rs 0</b></div>
     <div class="rate-ticker">
       <span class="rt-dot"></span>
       <span id="rateTickerText">1 USD ≈ Rs 280.00</span>
@@ -1099,6 +1101,7 @@
       brandName: "ArcPay", devalMsg: "⚠️ Rupee has weakened today — good time to convert.",
       devalCta: "Convert now", notConnected: "Not connected", connectWallet: "Connect Wallet",
       usdcBalance: "USDC Balance", equivTo: "Equivalent to", atRate: "at today's rate",
+      pkrWalletLabel: "Your PKR wallet",
       trustTitle: "Your money is safe", trustHint: "A simple explanation of where your savings actually go.",
       trust1: "<b>USDC</b> is a digital dollar — each one is always worth exactly $1, backed 1-to-1 by real US dollar reserves.",
       trust2: "Your savings live in <b>your own wallet</b> — not our bank account. Only you hold the keys.",
@@ -1175,6 +1178,7 @@
       brandName: "ArcPay", devalMsg: "⚠️ روپے کی قدر آج کم ہوئی ہے — ابھی کنورٹ کرنے کا اچھا وقت ہے۔",
       devalCta: "ابھی کنورٹ کریں", notConnected: "منسلک نہیں", connectWallet: "والیٹ جوڑیں",
       usdcBalance: "یو ایس ڈی سی بیلنس", equivTo: "برابر ہے", atRate: "آج کی شرح پر",
+      pkrWalletLabel: "آپ کا PKR والیٹ",
       trustTitle: "آپ کا پیسہ محفوظ ہے", trustHint: "سادہ الفاظ میں سمجھیں کہ آپ کی بچت کہاں جاتی ہے۔",
       trust1: "<b>یو ایس ڈی سی</b> ایک ڈیجیٹل ڈالر ہے — ہر ایک کی قیمت ہمیشہ $1 کے برابر ہوتی ہے، اصل امریکی ڈالر ذخائر سے مکمل طور پر محفوظ۔",
       trust2: "آپ کی بچت <b>آپ کے اپنے والیٹ</b> میں رہتی ہے — ہمارے بینک اکاؤنٹ میں نہیں۔ صرف آپ کے پاس چابیاں ہیں۔",
@@ -1275,6 +1279,48 @@
   const usdcOutput = document.getElementById('usdcOutput');
   const feeAmount = document.getElementById('feeAmount');
   const FEE_PCT = 0.005;
+
+  /* ---------------- PKR + USDC virtual ledger ---------------- */
+  // These are the two balances the whole app runs on. Every screen (Convert, Swap, Goals,
+  // Group Savings, Bills, Top-Up, Remittance) reads and writes the SAME two numbers here,
+  // so nothing can show a stale or "random" figure — there's exactly one source of truth.
+  // Your real on-chain Arc testnet balance (from the faucet) is shown separately, further
+  // down, purely as information — it never overwrites these numbers.
+  const PKR_BAL_KEY = 'saveInDollars_pkr_balance';
+  const USDC_BAL_KEY = 'saveInDollars_usdc_balance';
+  const pkrWalletEl = document.getElementById('pkrWalletBalance');
+
+  function getPkrBalance() {
+    const v = parseFloat(localStorage.getItem(PKR_BAL_KEY));
+    return isNaN(v) ? 100000 : v; // demo starting balance so there's something to convert
+  }
+  function setPkrBalance(v) {
+    const clamped = Math.max(0, v);
+    localStorage.setItem(PKR_BAL_KEY, clamped);
+    if (pkrWalletEl) pkrWalletEl.textContent = 'Rs ' + Math.round(clamped).toLocaleString('en-US');
+    return clamped;
+  }
+  function getUsdcBalance() {
+    const v = parseFloat(localStorage.getItem(USDC_BAL_KEY));
+    return isNaN(v) ? 0 : v;
+  }
+  function setUsdcBalance(usdc) {
+    const clamped = Math.max(0, usdc);
+    localStorage.setItem(USDC_BAL_KEY, clamped);
+    balanceAmount.textContent = formatUsd(clamped);
+    pkrEquivalent.textContent = 'Rs ' + Math.round(clamped * liveRate).toLocaleString('en-US');
+    updateWbBalanceChip(clamped);
+    if (typeof updateTopupAvailability === 'function') updateTopupAvailability();
+    if (typeof renderGroup === 'function') renderGroup();
+    if (typeof renderGoals === 'function') renderGoals();
+    if (typeof updateRemitBalanceNote === 'function') updateRemitBalanceNote();
+    return clamped;
+  }
+
+  function syncLedgerUI() {
+    setPkrBalance(getPkrBalance());
+    setUsdcBalance(getUsdcBalance());
+  }
 
   function updateConversion() {
     const pkr = parseFloat(pkrInput.value) || 0;
@@ -1394,6 +1440,7 @@
     const fee = pkr * FEE_PCT;
     const usdcAmount = (pkr - fee) / liveRate;
     if (usdcAmount <= 0) { showToast('Enter an amount to convert', true); return; }
+    if (pkr > getPkrBalance()) { showToast('Not enough PKR in your wallet', true); return; }
 
     const btn = document.getElementById('convertBtn');
     const originalText = btn.textContent;
@@ -1406,10 +1453,15 @@
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
       });
+      setPkrBalance(getPkrBalance() - pkr);
+      setUsdcBalance(getUsdcBalance() + usdcAmount);
       addHistoryEntry(pkr, usdcAmount);
       const goalMsg = allocateToGoal(usdcAmount);
       showToast('✅ Converted ' + pkr.toLocaleString('en-US') + ' PKR → +' + usdcAmount.toFixed(2) + ' USDC' + (goalMsg ? ' · ' + goalMsg : ''));
-      setTimeout(() => refreshBalance(connectedAddress), 2000);
+      // Reset the "you send" field — it's an amount to convert, not a running balance, so it
+      // should go back to empty/0 once the PKR has actually been spent.
+      pkrInput.value = '';
+      updateConversion();
     } catch (err) {
       console.error(err);
       showToast('Transaction cancelled or failed', true);
@@ -1447,16 +1499,18 @@
     chip.textContent = usdc.toFixed(2) + ' USDC · Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
   }
   async function refreshBalance(address) {
-    const balHex = await activeProvider.request({ method: 'eth_getBalance', params: [address, 'latest'] });
-    const wei = BigInt(balHex);
-    const usdc = Number(wei) / 1e18;
-    balanceAmount.textContent = formatUsd(usdc);
-    pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
-    updateWbBalanceChip(usdc);
-    if (typeof updateTopupAvailability === 'function') updateTopupAvailability();
-    if (typeof renderGroup === 'function') renderGroup();
-    if (typeof renderGoals === 'function') renderGoals();
-    if (typeof updateRemitBalanceNote === 'function') updateRemitBalanceNote();
+    try {
+      const balHex = await activeProvider.request({ method: 'eth_getBalance', params: [address, 'latest'] });
+      const wei = BigInt(balHex);
+      const usdc = Number(wei) / 1e18;
+      const info = document.getElementById('onchainInfoLine');
+      if (info) {
+        info.style.display = 'block';
+        info.textContent = (currentLang === 'ur' ? 'آن چین ٹیسٹ نیٹ بیلنس (فاسٹ سے): ' : 'On-chain testnet balance (from faucet): ') + usdc.toFixed(4) + ' USDC';
+      }
+    } catch (e) {
+      console.error(e);
+    }
   }
 
   /* ---- EIP-6963 multi-wallet discovery ---- */
@@ -1538,7 +1592,8 @@
       statusLine.textContent = address.slice(0, 6) + '…' + address.slice(-4) + ' · Arc Testnet';
       wbDot.classList.add('connected');
       connectBtn.textContent = 'Connected';
-      await refreshBalance(address);
+      syncLedgerUI();
+      refreshBalance(address);
       setupReferralCode(address);
       maybeShowKyc();
       updateQrForAddress(address);
@@ -1586,16 +1641,8 @@
   dwTabDeposit.addEventListener('click', () => { dwTab = 'deposit'; dwTabDeposit.classList.add('active'); dwTabWithdraw.classList.remove('active'); updateDwUI(); });
   dwTabWithdraw.addEventListener('click', () => { dwTab = 'withdraw'; dwTabWithdraw.classList.add('active'); dwTabDeposit.classList.remove('active'); updateDwUI(); });
 
-  function getCurrentBalance() { return Number(balanceAmount.textContent.replace(/,/g, '')) || 0; }
-  function setDisplayedBalance(usdc) {
-    balanceAmount.textContent = formatUsd(usdc);
-    pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
-    updateWbBalanceChip(usdc);
-    if (typeof updateTopupAvailability === 'function') updateTopupAvailability();
-    if (typeof renderGroup === 'function') renderGroup();
-    if (typeof renderGoals === 'function') renderGoals();
-    if (typeof updateRemitBalanceNote === 'function') updateRemitBalanceNote();
-  }
+  function getCurrentBalance() { return getUsdcBalance(); }
+  function setDisplayedBalance(usdc) { return setUsdcBalance(usdc); }
 
   dwSubmitBtn.addEventListener('click', async () => {
     if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
@@ -1603,9 +1650,11 @@
     if (amount <= 0) { showToast('Enter an amount first', true); return; }
     const swapRate = liveRate; // lock the rate at the moment the swap is submitted
 
-    // Re-check against the real, last-known on-chain balance before allowing a withdrawal —
-    // this is what stops the "unlimited USDC" bug (you can never swap out more than you have).
-    if (dwTab === 'withdraw' && amount > getCurrentBalance()) {
+    if (dwTab === 'deposit' && amount > getPkrBalance()) {
+      showToast('Not enough PKR in your wallet', true);
+      return;
+    }
+    if (dwTab === 'withdraw' && amount > getUsdcBalance()) {
       showToast('Insufficient USDC balance', true);
       return;
     }
@@ -1619,33 +1668,30 @@
         const usdcGained = amount / swapRate;
         const valueWei = '0x' + BigInt(Math.round(usdcGained * 1e18)).toString(16);
         showToast('Confirm the swap in your wallet…');
-        // Recorded on-chain as a self-send. Note: on a testnet, this can't mint new USDC out
-        // of thin air — your real balance only grows via the faucet. The number shown below
-        // always reflects the true on-chain balance, refreshed right after this transaction.
         await activeProvider.request({
           method: 'eth_sendTransaction',
           params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
         });
         dwSubmitBtn.textContent = translations[currentLang].txConfirming + '… 🔄';
+        setPkrBalance(getPkrBalance() - amount);
+        setUsdcBalance(getUsdcBalance() + usdcGained);
         addHistoryEntry(amount, usdcGained, 'Swap PKR → USDC');
         dwAmountInput.value = '';
-        await refreshBalance(connectedAddress);
         dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
-        showToast('✅ Swap recorded — your real balance is now ' + getCurrentBalance().toFixed(2) + ' USDC');
+        showToast('✅ Swapped Rs ' + amount.toLocaleString('en-US') + ' → ' + usdcGained.toFixed(2) + ' USDC');
       } else {
         const valueWei = '0x' + BigInt(Math.round(amount * 1e18)).toString(16);
         showToast('Confirm the swap in your wallet…');
-        // Sends the USDC to the treasury address so it actually leaves the wallet — the
-        // balance genuinely decreases instead of just being edited on screen.
         await activeProvider.request({
           method: 'eth_sendTransaction',
           params: [{ from: connectedAddress, to: TREASURY_ADDRESS, value: valueWei }]
         });
         dwSubmitBtn.textContent = translations[currentLang].txConfirming + '… 🔄';
         const pkrOut = amount * swapRate;
+        setUsdcBalance(getUsdcBalance() - amount);
+        setPkrBalance(getPkrBalance() + pkrOut);
         addHistoryEntry(pkrOut, amount, 'Swap USDC → PKR');
         dwAmountInput.value = '';
-        await refreshBalance(connectedAddress);
         dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
         showToast('✅ Swapped ' + amount.toFixed(2) + ' USDC → Rs ' + Math.round(pkrOut).toLocaleString('en-US'));
       }
@@ -2570,6 +2616,7 @@
   });
 
   /* ---------------- Init ---------------- */
+  syncLedgerUI();
   applyTranslations();
 </script>
 </body>
