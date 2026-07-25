@@ -521,6 +521,7 @@
     <div class="wb-status">
       <span class="wb-dot" id="wbDot"></span>
       <span id="statusLine" data-i18n="notConnected">Not connected</span>
+      <span id="wbBalanceChip" style="display:none; margin-left:6px; padding:3px 9px; border-radius:20px; background:rgba(255,255,255,0.15); font-size:11px;"></span>
     </div>
     <div class="wb-actions">
       <button class="wb-faucet" id="faucetBtn" title="Get free testnet USDC">🚰 Faucet</button>
@@ -746,24 +747,6 @@
   </div>
 
   <div class="card tab-panel" data-tab="savings">
-    <div class="toggle-row">
-      <div>
-        <div class="tr-label" data-i18n="roundupTitle">Round-Up Savings</div>
-        <div class="tr-sub" data-i18n="roundupHint">Round up everyday spends to the nearest Rs 50/100 and save the change</div>
-      </div>
-      <label class="switch">
-        <input type="checkbox" id="roundupToggle" />
-        <span class="slider"></span>
-      </label>
-    </div>
-    <div class="roundup-summary">
-      <span data-i18n="roundupSaved">Saved from round-ups so far</span>
-      <b id="roundupTotal">0.00 USDC</b>
-    </div>
-    <button class="secondary" id="simulatePurchaseBtn" style="margin-top:14px;" data-i18n="simulatePurchase">Simulate a Purchase (Demo)</button>
-  </div>
-
-  <div class="card tab-panel" data-tab="savings">
     <h2 data-i18n="groupTitle">Family / Group Savings</h2>
     <div class="hint" data-i18n="groupHint">Like a digital committee (BC) — everyone contributes toward one shared goal.</div>
     <div class="rate-note" id="groupBalanceNote" style="margin-bottom:10px;">Connect your wallet to contribute from your USDC balance.</div>
@@ -790,8 +773,12 @@
 
   <div class="card tab-panel" data-tab="savings">
     <h2 data-i18n="badgesTitle">Milestones</h2>
-    <div class="hint" data-i18n="badgesHint">Little wins along the way to your first $100 saved.</div>
+    <div class="hint" data-i18n="badgesHint">Little wins along the way — set your own target too.</div>
     <div class="badges-grid" id="badgesGrid"></div>
+    <div class="group-add-row" style="align-items:center; margin-top:16px;">
+      <input type="number" id="customMilestoneInput" placeholder="Custom target (USDC)" style="flex:1;" />
+      <button id="customMilestoneBtn" title="Add custom milestone" style="flex:0 0 auto; width:40px; height:40px; border-radius:50%; background:var(--green); color:#fff; border:none; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;">+</button>
+    </div>
   </div>
 
   <div class="card tab-panel" data-tab="savings">
@@ -865,6 +852,7 @@
       <span data-i18n="feeLabel">Fee</span>
       <span><b id="remitFee">$1.00</b> <span class="fee-badge" data-i18n="remitFeeNote">· flat $1, far below bank wire fees</span></span>
     </div>
+    <div class="rate-note" id="remitBalanceNote" style="margin-bottom:10px;">Connect your wallet to see your available balance.</div>
     <button class="secondary" id="remitSendBtn" data-i18n="remitBtnTxt">Send Remittance</button>
   </div>
 
@@ -927,7 +915,7 @@
         <span class="code" id="freelanceLinkText" style="font-size:12px;">—</span>
         <button class="copy-btn" id="freelanceCopyBtn" data-i18n="copyCode">Copy</button>
       </div>
-      <div class="rate-note" data-i18n="freelanceLinkNote">Share this link with your client — when they pay, it lands directly in your USDC balance.</div>
+      <div class="rate-note" data-i18n="freelanceLinkNote">This is a demo reference — real shareable payment links go live at mainnet launch. For now, use the button below to simulate your client paying it.</div>
       <button class="secondary" id="freelanceSimulatePayBtn" style="margin-top:12px;" data-i18n="freelanceSimulate">Simulate Client Payment (Demo)</button>
     </div>
 
@@ -981,11 +969,13 @@
         <div>
           <div style="font-size:12px; color:var(--muted);" id="billResultProvider"></div>
           <div style="font-family:'IBM Plex Mono', monospace; font-size:20px; font-weight:500; margin-top:4px;" id="billResultAmount"></div>
+          <div style="font-family:'IBM Plex Mono', monospace; font-size:12px; color:var(--teal); margin-top:2px;" id="billResultUsdc"></div>
         </div>
         <div style="font-size:11px; color:var(--muted);" id="billResultDue"></div>
       </div>
-      <button class="primary" id="billPayBtn" style="margin-top:14px;" data-i18n="payBill">Pay Bill</button>
-      <div class="rate-note" style="margin-top:10px;" data-i18n="billDemoNote">Demo data for now — live billing integration with real providers is coming.</div>
+      <div class="rate-note" id="billBalanceNote" style="margin-top:10px;"></div>
+      <button class="primary" id="billPayBtn" style="margin-top:10px;" data-i18n="payBill">Pay Bill</button>
+      <div class="rate-note" style="margin-top:10px;" data-i18n="billDemoNote">Demo bill amounts for testing — live billing integration with real providers is coming.</div>
     </div>
   </div>
 
@@ -1063,18 +1053,22 @@
 <div class="modal-overlay" id="kycModal">
   <div class="modal-box">
     <h2 data-i18n="kycModalTitle">Quick Identity Check</h2>
-    <div class="hint" data-i18n="kycModalHint">Just 3 details — required by regulation to keep your money safe. Takes 30 seconds.</div>
+    <div class="hint" data-i18n="kycModalHint">Just a few details — required by regulation to keep your money safe. Takes 30 seconds.</div>
     <div class="field">
-      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="kycNameLabel">Full Name</label>
-      <input type="text" id="kycName" placeholder="e.g. Ayesha Khan" />
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="profileFirstNameLabel">First Name</label>
+      <input type="text" id="kycFirstName" placeholder="e.g. Ayesha" />
     </div>
     <div class="field">
-      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="kycCnicLabel">CNIC Number</label>
-      <input type="text" id="kycCnic" placeholder="xxxxx-xxxxxxx-x" maxlength="15" />
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="profileLastNameLabel">Last Name</label>
+      <input type="text" id="kycLastName" placeholder="e.g. Khan" />
     </div>
     <div class="field">
-      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="kycPhoneLabel">Mobile Number</label>
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="profilePhoneLabel">Phone Number</label>
       <input type="text" id="kycPhone" placeholder="03xx-xxxxxxx" />
+    </div>
+    <div class="field">
+      <label style="display:block; font-size:11px; text-transform:uppercase; letter-spacing:0.08em; color:var(--muted); margin-bottom:6px;" data-i18n="profileCnicLabel">CNIC / Passport Number</label>
+      <input type="text" id="kycCnic" placeholder="xxxxx-xxxxxxx-x" maxlength="15" />
     </div>
     <div class="modal-actions">
       <button class="modal-skip" id="kycSkipBtn" data-i18n="kycSkip">Later</button>
@@ -1128,7 +1122,7 @@
       providerTitle: "Pay Utility Bills", providerHint: "Electricity, gas, and water bills — pay any provider across Pakistan straight from your USDC savings.",
       electricityTab: "Electricity", gasTab: "Gas", waterTab: "Water", providerLabel: "Provider",
       consumerLabel: "Consumer / Reference Number", fetchBill: "Fetch Bill", payBill: "Pay Bill",
-      billDemoNote: "Demo data for now — live billing integration with real providers is coming.",
+      billDemoNote: "Demo bill amounts for testing — live billing integration with real providers is coming.",
       profileNoName: "Add your name", profileFirstNameLabel: "First Name", profileLastNameLabel: "Last Name", profilePhoneLabel: "Phone Number", profileCnicLabel: "CNIC / Passport Number", profileSaveBtn: "Save Profile",
       selectWallet: "Select a wallet", phantomNote: "Note: Phantom is a Solana wallet by default — enable its Ethereum/EVM mode in Phantom settings to use it here.",
       billsPaidTitle: "Bills Paid This Month", billsPaidHint: "A running record of your utility payments, saved on this device.",
@@ -1147,8 +1141,6 @@
       hiw1: "Enter a rupee amount and swap it into <b>USDC</b> on-chain — a digital dollar that always equals $1, so inflation can't eat into it.",
       hiw2: "Your balance updates instantly on Arc testnet, with a full record kept in your transaction history.",
       hiw3: "Swap back to rupees, pay bills, or send money <b>anytime you want</b> — no waiting, no lock-in.",
-      roundupTitle: "Round-Up Savings", roundupHint: "Round up everyday spends to the nearest Rs 50/100 and save the change",
-      roundupSaved: "Saved from round-ups so far", simulatePurchase: "Simulate a Purchase (Demo)",
       groupTitle: "Family / Group Savings", groupHint: "Like a digital committee (BC) — everyone contributes toward one shared goal.",
       groupTotal: "Total contributed", groupAdd: "Add Contribution",
       qrTitle: "Pay / Receive via QR", qrHint: "Scan to send USDC directly to another ArcPay user.",
@@ -1174,7 +1166,7 @@
       freelanceTitle: "Get Paid by Foreign Clients", freelanceHint: "No Payoneer, no PayPal, no bank delays — generate a link, foreign client pays in USDC straight to your wallet.",
       freelanceClientLabel: "Client / Company Name", freelanceAmountLabel: "Invoice Amount (USD)", freelanceReceiveLabel: "You receive",
       freelanceFeeNote: "· ~0.5% flat, vs 3–5% on Payoneer/PayPal-style platforms",
-      freelanceGenerate: "Generate Payment Link", freelanceLinkNote: "Share this link with your client — when they pay, it lands directly in your USDC balance.",
+      freelanceGenerate: "Generate Payment Link", freelanceLinkNote: "This is a demo reference — real shareable payment links go live at mainnet launch. For now, use the button below to simulate your client paying it.",
       freelanceSimulate: "Simulate Client Payment (Demo)", freelanceReceivedTitle: "Received from clients"
     },
     ur: {
@@ -1224,8 +1216,6 @@
       hiw1: "روپے کی رقم درج کریں اور اسے آن چین <b>USDC</b> میں تبدیل کریں — ایک ڈیجیٹل ڈالر جو ہمیشہ $1 کے برابر رہتا ہے۔",
       hiw2: "آپ کا بیلنس فوراً Arc ٹیسٹ نیٹ پر اپڈیٹ ہوتا ہے، اور مکمل ریکارڈ آپ کی ٹرانزیکشن ہسٹری میں محفوظ رہتا ہے۔",
       hiw3: "کسی بھی وقت روپوں میں واپس تبدیل کریں، بل ادا کریں یا رقم بھیجیں — کوئی انتظار نہیں۔",
-      roundupTitle: "راؤنڈ اپ بچت", roundupHint: "روزمرہ خرچ کو قریب ترین Rs 50/100 تک راؤنڈ کریں اور فرق بچائیں",
-      roundupSaved: "راؤنڈ اپ سے اب تک بچت", simulatePurchase: "خریداری کی مثال (ڈیمو)",
       groupTitle: "خاندانی / گروپ بچت", groupHint: "ڈیجیٹل کمیٹی کی طرح — سب مل کر ایک ہدف کی طرف حصہ ڈالیں۔",
       groupTotal: "کل حصہ", groupAdd: "حصہ شامل کریں",
       qrTitle: "کیو آر سے ادائیگی / وصولی", qrHint: "کسی دوسرے صارف کو براہ راست یو ایس ڈی سی بھیجنے کے لیے اسکین کریں۔",
@@ -1251,7 +1241,7 @@
       freelanceTitle: "غیر ملکی کلائنٹس سے ادائیگی وصول کریں", freelanceHint: "نہ Payoneer، نہ PayPal، نہ بینک تاخیر — لنک بنائیں، غیر ملکی کلائنٹ براہ راست آپ کے والیٹ میں USDC ادا کرے۔",
       freelanceClientLabel: "کلائنٹ / کمپنی کا نام", freelanceAmountLabel: "انوائس رقم (USD)", freelanceReceiveLabel: "آپ کو ملے گا",
       freelanceFeeNote: "· تقریباً 0.5% فلیٹ، بمقابلہ Payoneer/PayPal طرز کے پلیٹ فارمز پر 3–5%",
-      freelanceGenerate: "پیمنٹ لنک بنائیں", freelanceLinkNote: "یہ لنک اپنے کلائنٹ کو بھیجیں — ادائیگی کرتے ہی یہ براہ راست آپ کے USDC بیلنس میں آ جائے گی۔",
+      freelanceGenerate: "پیمنٹ لنک بنائیں", freelanceLinkNote: "یہ ایک ڈیمو ریفرنس ہے — اصل شیئر ایبل پیمنٹ لنکس مین نیٹ لانچ پر فعال ہوں گے۔ ابھی کے لیے نیچے دیا گیا بٹن استعمال کریں۔",
       freelanceSimulate: "کلائنٹ کی ادائیگی سیمولیٹ کریں (ڈیمو)", freelanceReceivedTitle: "کلائنٹس سے موصول شدہ"
     }
   };
@@ -1357,7 +1347,13 @@
     list.innerHTML = history.map(entry => {
       const d = new Date(entry.date);
       const dateStr = d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) + ' · ' + d.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
-      const isWithdraw = entry.label && entry.label.startsWith('Swap USDC');
+      const isWithdraw = entry.label && (
+        entry.label.startsWith('Swap USDC') ||
+        entry.label.startsWith('Bill Payment') ||
+        entry.label.startsWith('Top-Up') ||
+        entry.label.startsWith('Remittance to') ||
+        entry.label.startsWith('Group Savings')
+      );
       const title = entry.label ? entry.label : `Rs ${entry.pkr.toLocaleString('en-US')} converted`;
       const sign = isWithdraw ? '-' : '+';
       return `
@@ -1407,8 +1403,9 @@
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
       });
-      showToast('✅ Converted ' + pkr.toLocaleString('en-US') + ' PKR → ' + usdcAmount.toFixed(2) + ' USDC');
       addHistoryEntry(pkr, usdcAmount);
+      const goalMsg = allocateToGoal(usdcAmount);
+      showToast('✅ Converted ' + pkr.toLocaleString('en-US') + ' PKR → +' + usdcAmount.toFixed(2) + ' USDC' + (goalMsg ? ' · ' + goalMsg : ''));
       setTimeout(() => refreshBalance(connectedAddress), 2000);
     } catch (err) {
       console.error(err);
@@ -1435,15 +1432,23 @@
 
   function formatUsd(n) { return n.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 }); }
 
+  function updateWbBalanceChip(usdc) {
+    const chip = document.getElementById('wbBalanceChip');
+    if (!chip) return;
+    chip.style.display = 'inline';
+    chip.textContent = usdc.toFixed(2) + ' USDC · Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
+  }
   async function refreshBalance(address) {
     const balHex = await activeProvider.request({ method: 'eth_getBalance', params: [address, 'latest'] });
     const wei = BigInt(balHex);
     const usdc = Number(wei) / 1e18;
     balanceAmount.textContent = formatUsd(usdc);
     pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
+    updateWbBalanceChip(usdc);
     if (typeof updateTopupAvailability === 'function') updateTopupAvailability();
     if (typeof renderGroup === 'function') renderGroup();
     if (typeof renderGoals === 'function') renderGoals();
+    if (typeof updateRemitBalanceNote === 'function') updateRemitBalanceNote();
   }
 
   /* ---- EIP-6963 multi-wallet discovery ---- */
@@ -1577,9 +1582,11 @@
   function setDisplayedBalance(usdc) {
     balanceAmount.textContent = formatUsd(usdc);
     pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
+    updateWbBalanceChip(usdc);
     if (typeof updateTopupAvailability === 'function') updateTopupAvailability();
     if (typeof renderGroup === 'function') renderGroup();
     if (typeof renderGoals === 'function') renderGoals();
+    if (typeof updateRemitBalanceNote === 'function') updateRemitBalanceNote();
   }
 
   dwSubmitBtn.addEventListener('click', () => {
@@ -1751,10 +1758,9 @@
     showToast('🎉 A friend joined with your code — $1 USDC bonus added!');
   });
 
-  /* ---------------- KYC Modal ---------------- */
-  const KYC_KEY = 'saveInDollars_kyc';
+  /* ---------------- KYC Modal (writes directly into Profile — single source of truth) ---------------- */
   const kycModal = document.getElementById('kycModal');
-  function getKyc() { try { return JSON.parse(localStorage.getItem(KYC_KEY)); } catch (e) { return null; } }
+  function getKyc() { const p = getProfile(); return p.verified ? p : null; }
   function updateKycBadge() {
     const badge = document.getElementById('kycBadge');
     const kyc = getKyc();
@@ -1764,52 +1770,82 @@
       badge.innerHTML = '🪪 <span>' + translations[currentLang].kycNotDone + '</span>';
     }
   }
-  document.getElementById('kycBadge').addEventListener('click', () => { kycModal.classList.add('show'); });
+  document.getElementById('kycBadge').addEventListener('click', () => {
+    const p = getProfile();
+    document.getElementById('kycFirstName').value = p.firstName || '';
+    document.getElementById('kycLastName').value = p.lastName || '';
+    document.getElementById('kycPhone').value = p.phone || '';
+    document.getElementById('kycCnic').value = p.cnic || '';
+    kycModal.classList.add('show');
+  });
   function maybeShowKyc() {
     if (!getKyc()) kycModal.classList.add('show');
   }
   document.getElementById('kycSkipBtn').addEventListener('click', () => kycModal.classList.remove('show'));
   document.getElementById('kycSubmitBtn').addEventListener('click', () => {
-    const name = document.getElementById('kycName').value.trim();
-    const cnic = document.getElementById('kycCnic').value.trim();
+    const firstName = document.getElementById('kycFirstName').value.trim();
+    const lastName = document.getElementById('kycLastName').value.trim();
     const phone = document.getElementById('kycPhone').value.trim();
-    if (!name || !cnic || !phone) { showToast('Please fill all 3 fields', true); return; }
-    localStorage.setItem(KYC_KEY, JSON.stringify({ name, cnic, phone, date: new Date().toISOString() }));
+    const cnic = document.getElementById('kycCnic').value.trim();
+    if (!firstName || !phone || !cnic) { showToast('Please fill in your name, phone, and CNIC', true); return; }
+    localStorage.setItem(PROFILE_KEY, JSON.stringify({ firstName, lastName, phone, cnic, verified: true, verifiedDate: new Date().toISOString() }));
     kycModal.classList.remove('show');
+    renderProfile();
     updateKycBadge();
-    showToast('✅ Identity verified — thank you, ' + name.split(' ')[0] + '!');
+    showToast('✅ Identity verified — thank you, ' + firstName + '!');
   });
   updateKycBadge();
 
   /* ---------------- Remittance ---------------- */
   const remitUsdInput = document.getElementById('remitUsdInput');
   const remitUsdcOutput = document.getElementById('remitUsdcOutput');
+  const remitBalanceNote = document.getElementById('remitBalanceNote');
   function updateRemitConversion() {
     const usd = parseFloat(remitUsdInput.value) || 0;
     const fee = 1;
     remitUsdcOutput.value = Math.max(0, usd - fee).toFixed(2);
+    updateRemitBalanceNote();
+  }
+  function updateRemitBalanceNote() {
+    if (!connectedAddress) { remitBalanceNote.textContent = 'Connect your wallet to see your available balance.'; return; }
+    const usd = parseFloat(remitUsdInput.value) || 0;
+    const bal = getCurrentBalance();
+    remitBalanceNote.textContent = 'Your wallet: ' + bal.toFixed(2) + ' USDC available' +
+      (usd > bal ? ' — not enough for this amount, add USDC first.' : '.');
   }
   remitUsdInput.addEventListener('input', updateRemitConversion);
   updateRemitConversion();
 
-  document.getElementById('remitSendBtn').addEventListener('click', () => {
+  document.getElementById('remitSendBtn').addEventListener('click', async () => {
+    if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
     const usd = parseFloat(remitUsdInput.value) || 0;
     const recipient = document.getElementById('remitRecipientInput').value.trim();
     if (usd <= 1) { showToast('Enter an amount above $1', true); return; }
     if (!/^0x[a-fA-F0-9]{6,}$/.test(recipient)) { showToast('Enter a valid recipient wallet address', true); return; }
+    if (usd > getCurrentBalance()) { showToast('Not enough USDC in your wallet — add USDC first', true); return; }
     const btn = document.getElementById('remitSendBtn');
     const original = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Sending…';
-    setTimeout(() => {
+    btn.disabled = true; btn.textContent = 'Confirm in wallet…';
+    try {
       const usdcAmount = usd - 1;
-      if (connectedAddress) {
-        setDisplayedBalance(getCurrentBalance() + usdcAmount);
-        addHistoryEntry(0, usdcAmount, 'Remittance from ' + document.getElementById('remitCountry').value);
-      }
-      showToast('✅ Sent $' + usd.toFixed(2) + ' → ' + recipient + ' received ' + usdcAmount.toFixed(2) + ' USDC');
+      const valueWei = '0x' + BigInt(Math.round(usd * 1e18)).toString(16);
+      await activeProvider.request({
+        method: 'eth_sendTransaction',
+        params: [{ from: connectedAddress, to: recipient, value: valueWei }]
+      });
+      setDisplayedBalance(getCurrentBalance() - usd);
+      const shortAddr = recipient.slice(0, 6) + '…' + recipient.slice(-4);
+      addHistoryEntry(0, usd, 'Remittance to ' + shortAddr);
+      showToast('✅ Sent $' + usd.toFixed(2) + ' → ' + shortAddr + ' (' + usdcAmount.toFixed(2) + ' USDC after fee) · your balance now ' + getCurrentBalance().toFixed(2) + ' USDC');
       document.getElementById('remitRecipientInput').value = '';
+      updateRemitBalanceNote();
+      setTimeout(() => refreshBalance(connectedAddress), 2000);
+    } catch (err) {
+      console.error(err);
+      showToast('Transaction cancelled or failed', true);
+    } finally {
       btn.disabled = false; btn.textContent = original;
-    }, 1600);
+    }
   });
 
   /* ---------------- Mobile Top-Up ---------------- */
@@ -1846,24 +1882,34 @@
     });
   });
   updateTopupAvailability();
-  document.getElementById('topupBtn').addEventListener('click', () => {
+  document.getElementById('topupBtn').addEventListener('click', async () => {
     if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
     const number = document.getElementById('topupNumberInput').value.trim();
     if (!number) { showToast('Enter a mobile number', true); return; }
     if (!topupSelectedAmt) { showToast('Choose a top-up amount', true); return; }
     const operator = document.getElementById('topupOperator').value;
     const usdcCost = topupSelectedAmt / liveRate;
-    if (usdcCost > getCurrentBalance()) { showToast('Insufficient USDC balance', true); return; }
+    if (usdcCost > getCurrentBalance()) { showToast('Not enough USDC — add USDC to your wallet first', true); return; }
     const btn = document.getElementById('topupBtn');
     const original = btn.textContent;
-    btn.disabled = true; btn.textContent = 'Processing…';
-    setTimeout(() => {
+    btn.disabled = true; btn.textContent = 'Confirm in wallet…';
+    try {
+      const valueWei = '0x' + BigInt(Math.round(usdcCost * 1e18)).toString(16);
+      await activeProvider.request({
+        method: 'eth_sendTransaction',
+        params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
+      });
       setDisplayedBalance(getCurrentBalance() - usdcCost);
       addHistoryEntry(topupSelectedAmt, usdcCost, 'Top-Up ' + operator + ' ' + number);
-      showToast('✅ Topped up Rs ' + topupSelectedAmt + ' to ' + number + ' (' + operator + ')');
+      showToast('✅ Topped up Rs ' + topupSelectedAmt + ' to ' + number + ' (' + operator + ') · balance now ' + getCurrentBalance().toFixed(2) + ' USDC');
       document.getElementById('topupNumberInput').value = '';
+      setTimeout(() => refreshBalance(connectedAddress), 2000);
+    } catch (err) {
+      console.error(err);
+      showToast('Transaction cancelled or failed', true);
+    } finally {
       btn.disabled = false; btn.textContent = original;
-    }, 1400);
+    }
   });
 
   /* ---------------- Freelance / Cross-Border Payments ---------------- */
@@ -1910,15 +1956,14 @@
     if (usd <= 0) { showToast('Enter an invoice amount', true); return; }
     const invoiceId = 'INV-' + Math.random().toString(36).slice(2, 8).toUpperCase();
     freelancePendingInvoice = { client, usd, invoiceId };
-    document.getElementById('freelanceLinkText').textContent =
-      'saveindollars.app/pay/' + invoiceId;
+    document.getElementById('freelanceLinkText').textContent = 'Invoice reference: ' + invoiceId + ' (demo)';
     document.getElementById('freelanceLinkBox').style.display = 'block';
-    showToast('🔗 Payment link generated — share it with ' + client);
+    showToast('🧾 Invoice created for ' + client);
   });
 
   document.getElementById('freelanceCopyBtn').addEventListener('click', () => {
     const link = document.getElementById('freelanceLinkText').textContent;
-    navigator.clipboard?.writeText(link).then(() => showToast('Payment link copied'))
+    navigator.clipboard?.writeText(link).then(() => showToast('Invoice reference copied'))
       .catch(() => showToast(link));
   });
 
@@ -1954,6 +1999,18 @@
   const GOALS_KEY = 'saveInDollars_goals';
   function getGoals() { try { return JSON.parse(localStorage.getItem(GOALS_KEY)) || []; } catch (e) { return []; } }
   function saveGoals(goals) { localStorage.setItem(GOALS_KEY, JSON.stringify(goals)); }
+  function allocateToGoal(usdcAmount) {
+    const goals = getGoals();
+    const target = goals.find(g => g.saved < g.target);
+    if (!target) return null;
+    target.saved = Math.min(target.target, target.saved + usdcAmount);
+    saveGoals(goals);
+    renderGoals();
+    const remaining = Math.max(0, target.target - target.saved);
+    return remaining === 0
+      ? ('🎉 "' + target.name + '" goal reached!')
+      : ('+' + usdcAmount.toFixed(2) + ' → "' + target.name + '" (' + remaining.toFixed(2) + ' USDC left)');
+  }
   function renderGoals() {
     const goals = getGoals();
     const list = document.getElementById('goalsList');
@@ -2023,7 +2080,7 @@
     gas: ['SSGC (Sindh & Balochistan)', 'SNGPL (Punjab & KPK)'],
     water: ['KWSB (Karachi Water & Sewerage Board)', 'WASA Lahore', 'WASA Faisalabad', 'WASA Rawalpindi', 'WASA Multan', 'PHED Punjab', 'PHED Sindh']
   };
-  const BILL_RANGES = { electricity: [1500, 15000], gas: [800, 6000], water: [500, 3000] };
+  const BILL_USDC_RANGE = [1, 100];
 
   let billCategory = 'electricity';
   let currentBill = null;
@@ -2035,7 +2092,9 @@
   const billResult = document.getElementById('billResult');
   const billResultProvider = document.getElementById('billResultProvider');
   const billResultAmount = document.getElementById('billResultAmount');
+  const billResultUsdc = document.getElementById('billResultUsdc');
   const billResultDue = document.getElementById('billResultDue');
+  const billBalanceNote = document.getElementById('billBalanceNote');
   const billPayBtn = document.getElementById('billPayBtn');
   const billsPaidList = document.getElementById('billsPaidList');
 
@@ -2055,44 +2114,62 @@
     });
   });
 
+  function updateBillBalanceNote(usdcAmount) {
+    if (!connectedAddress) { billBalanceNote.textContent = 'Connect your wallet to pay this bill.'; billPayBtn.disabled = false; return; }
+    const bal = getCurrentBalance();
+    if (usdcAmount > bal) {
+      billBalanceNote.innerHTML = '⚠️ Your wallet has ' + bal.toFixed(2) + ' USDC — not enough to pay this bill. <b>Add USDC</b> from the Convert tab first.';
+    } else {
+      billBalanceNote.textContent = 'Your wallet: ' + bal.toFixed(2) + ' USDC available.';
+    }
+  }
+
   billFetchBtn.addEventListener('click', () => {
     const consumer = billConsumerInput.value.trim();
     if (!consumer) { showToast('Enter your consumer number first', true); return; }
-    const [min, max] = BILL_RANGES[billCategory];
-    const amount = Math.round((min + Math.random() * (max - min)) / 10) * 10;
+    const [min, max] = BILL_USDC_RANGE;
+    const usdcAmount = +(min + Math.random() * (max - min)).toFixed(2);
+    const pkrAmount = Math.round(usdcAmount * liveRate);
     const provider = billProviderSelect.value;
     const dueDate = new Date();
     dueDate.setDate(20);
-    currentBill = { provider, consumer, amount, category: billCategory };
+    currentBill = { provider, consumer, amount: pkrAmount, usdc: usdcAmount, category: billCategory };
     billResultProvider.textContent = provider + ' · ' + consumer;
-    billResultAmount.textContent = 'Rs ' + amount.toLocaleString('en-US');
+    billResultAmount.textContent = 'Rs ' + pkrAmount.toLocaleString('en-US');
+    billResultUsdc.textContent = '≈ ' + usdcAmount.toFixed(2) + ' USDC';
     billResultDue.textContent = 'Due ' + dueDate.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    updateBillBalanceNote(usdcAmount);
     billResult.style.display = 'block';
   });
 
-  billPayBtn.addEventListener('click', () => {
+  billPayBtn.addEventListener('click', async () => {
     if (!currentBill) return;
     if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
+    const usdcAmount = currentBill.usdc;
+    if (usdcAmount > getCurrentBalance()) { showToast('Not enough USDC — add USDC to your wallet first', true); return; }
     const originalText = billPayBtn.textContent;
     billPayBtn.disabled = true;
-    billPayBtn.textContent = 'Processing…';
-    setTimeout(() => {
-      const usdcAmount = currentBill.amount / liveRate;
-      const currentBalance = getCurrentBalance();
-      if (usdcAmount > currentBalance) {
-        showToast('Insufficient USDC balance to pay this bill', true);
-        billPayBtn.disabled = false; billPayBtn.textContent = originalText;
-        return;
-      }
-      setDisplayedBalance(currentBalance - usdcAmount);
+    billPayBtn.textContent = 'Confirm in wallet…';
+    try {
+      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e18)).toString(16);
+      await activeProvider.request({
+        method: 'eth_sendTransaction',
+        params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
+      });
+      setDisplayedBalance(getCurrentBalance() - usdcAmount);
       addHistoryEntry(currentBill.amount, usdcAmount, 'Bill Payment – ' + currentBill.provider);
       saveBillPaid(currentBill);
-      showToast('✅ Paid Rs ' + currentBill.amount.toLocaleString('en-US') + ' — ' + currentBill.provider);
+      showToast('✅ Paid Rs ' + currentBill.amount.toLocaleString('en-US') + ' (' + usdcAmount.toFixed(2) + ' USDC) — ' + currentBill.provider + ' · balance now ' + getCurrentBalance().toFixed(2) + ' USDC');
       billResult.style.display = 'none';
       billConsumerInput.value = '';
       currentBill = null;
+      setTimeout(() => refreshBalance(connectedAddress), 2000);
+    } catch (err) {
+      console.error(err);
+      showToast('Transaction cancelled or failed', true);
+    } finally {
       billPayBtn.disabled = false; billPayBtn.textContent = originalText;
-    }, 1600);
+    }
   });
 
   const BILLS_KEY = 'saveInDollars_bills';
@@ -2192,36 +2269,6 @@
   document.getElementById('pinSkipBtn').addEventListener('click', () => pinOverlay.classList.remove('show'));
   // PIN setup popup disabled — startPinFlow() intentionally not called on load.
 
-  /* ---------------- Round-up savings ---------------- */
-  const ROUNDUP_KEY = 'saveInDollars_roundup';
-  const ROUNDUP_ON_KEY = 'saveInDollars_roundup_on';
-  function getRoundupTotal() { return parseFloat(localStorage.getItem(ROUNDUP_KEY)) || 0; }
-  function renderRoundup() {
-    document.getElementById('roundupTotal').textContent = getRoundupTotal().toFixed(2) + ' USDC';
-    document.getElementById('roundupToggle').checked = localStorage.getItem(ROUNDUP_ON_KEY) === 'true';
-  }
-  document.getElementById('roundupToggle').addEventListener('change', (e) => {
-    localStorage.setItem(ROUNDUP_ON_KEY, e.target.checked);
-    showToast(e.target.checked ? 'Round-up savings turned on' : 'Round-up savings turned off');
-  });
-  document.getElementById('simulatePurchaseBtn').addEventListener('click', () => {
-    if (localStorage.getItem(ROUNDUP_ON_KEY) !== 'true') { showToast('Turn on Round-Up Savings first', true); return; }
-    const spend = Math.round((50 + Math.random() * 950) / 10) * 10;
-    const roundedTo = Math.ceil(spend / 50) * 50;
-    const change = roundedTo - spend;
-    const usdcChange = change / liveRate;
-    const newTotal = getRoundupTotal() + usdcChange;
-    localStorage.setItem(ROUNDUP_KEY, newTotal.toFixed(4));
-    renderRoundup();
-    if (connectedAddress) {
-      setDisplayedBalance(getCurrentBalance() + usdcChange);
-      addHistoryEntry(0, usdcChange, 'Round-Up Savings');
-    }
-    showToast('🛍️ Spent Rs ' + spend + ' → rounded to Rs ' + roundedTo + ' → Rs ' + change + ' saved');
-    checkBadges();
-  });
-  renderRoundup();
-
   /* ---------------- Family / Group savings ---------------- */
   const GROUP_KEY = 'saveInDollars_group';
   const groupBalanceNote = document.getElementById('groupBalanceNote');
@@ -2251,21 +2298,37 @@
       </div>
     `).join('');
   }
-  document.getElementById('groupAddBtn').addEventListener('click', () => {
+  document.getElementById('groupAddBtn').addEventListener('click', async () => {
     if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
     const name = document.getElementById('groupMemberName').value.trim();
     const amt = parseFloat(document.getElementById('groupMemberAmt').value) || 0;
     if (!name || amt <= 0) { showToast('Enter member name and amount', true); return; }
-    if (amt > getCurrentBalance()) { showToast('Not enough USDC balance to contribute this much', true); return; }
-    setDisplayedBalance(getCurrentBalance() - amt);
-    addHistoryEntry(amt * liveRate, amt, 'Group Savings — ' + name);
-    const members = getGroupMembers();
-    members.push({ name, amt });
-    localStorage.setItem(GROUP_KEY, JSON.stringify(members));
-    renderGroup();
-    document.getElementById('groupMemberName').value = '';
-    document.getElementById('groupMemberAmt').value = '';
-    showToast('👨‍👩‍👧 ' + name + ' contributed ' + amt.toFixed(2) + ' USDC');
+    if (amt > getCurrentBalance()) { showToast('Not enough USDC balance — add USDC to your wallet first', true); return; }
+    const addBtn = document.getElementById('groupAddBtn');
+    addBtn.disabled = true;
+    try {
+      const valueWei = '0x' + BigInt(Math.round(amt * 1e18)).toString(16);
+      showToast('Confirm the contribution in your wallet…');
+      await activeProvider.request({
+        method: 'eth_sendTransaction',
+        params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
+      });
+      setDisplayedBalance(getCurrentBalance() - amt);
+      addHistoryEntry(amt * liveRate, amt, 'Group Savings — ' + name);
+      const members = getGroupMembers();
+      members.push({ name, amt });
+      localStorage.setItem(GROUP_KEY, JSON.stringify(members));
+      renderGroup();
+      document.getElementById('groupMemberName').value = '';
+      document.getElementById('groupMemberAmt').value = '';
+      showToast('👨‍👩‍👧 ' + name + ' contributed ' + amt.toFixed(2) + ' USDC — new balance ' + getCurrentBalance().toFixed(2) + ' USDC');
+      setTimeout(() => refreshBalance(connectedAddress), 2000);
+    } catch (err) {
+      console.error(err);
+      showToast('Transaction cancelled or failed', true);
+    } finally {
+      addBtn.disabled = false;
+    }
   });
   renderGroup();
 
@@ -2276,13 +2339,30 @@
     { id: 'fifty', icon: '🏆', label: '$50 Saved', threshold: 50 },
     { id: 'hundred', icon: '💎', label: '$100 Saved', threshold: 100 }
   ];
+  const CUSTOM_BADGES_KEY = 'saveInDollars_custom_badges';
+  function getCustomBadges() { try { return JSON.parse(localStorage.getItem(CUSTOM_BADGES_KEY)) || []; } catch (e) { return []; } }
+  function allBadges() {
+    const custom = getCustomBadges().map(c => ({ id: 'custom-' + c.amount, icon: '🎯', label: '$' + c.amount + ' Saved', threshold: c.amount }));
+    return [...BADGES, ...custom].sort((a, b) => a.threshold - b.threshold);
+  }
+  document.getElementById('customMilestoneBtn').addEventListener('click', () => {
+    const amt = parseFloat(document.getElementById('customMilestoneInput').value) || 0;
+    if (amt <= 0) { showToast('Enter a target amount', true); return; }
+    const custom = getCustomBadges();
+    if (custom.some(c => c.amount === amt) || BADGES.some(b => b.threshold === amt)) { showToast('That milestone already exists', true); return; }
+    custom.push({ amount: amt });
+    localStorage.setItem(CUSTOM_BADGES_KEY, JSON.stringify(custom));
+    document.getElementById('customMilestoneInput').value = '';
+    renderBadges();
+    showToast('🎯 Custom milestone added: $' + amt + ' Saved');
+  });
   function totalSavedFromHistory() {
     return getHistory().filter(h => h.usdc > 0).reduce((s, h) => s + h.usdc, 0);
   }
   function renderBadges() {
     const total = totalSavedFromHistory();
     const grid = document.getElementById('badgesGrid');
-    grid.innerHTML = BADGES.map(b => `
+    grid.innerHTML = allBadges().map(b => `
       <div class="badge-item ${total >= b.threshold ? 'unlocked' : ''}">
         <div class="b-icon">${b.icon}</div>
         <div class="b-label">${b.label}</div>
@@ -2293,7 +2373,7 @@
     const total = totalSavedFromHistory();
     const unlockedKey = 'saveInDollars_badges_seen';
     let seen = JSON.parse(localStorage.getItem(unlockedKey) || '[]');
-    BADGES.forEach(b => {
+    allBadges().forEach(b => {
       if (total >= b.threshold && !seen.includes(b.id)) {
         seen.push(b.id);
         showToast('🎉 Milestone unlocked: ' + b.label + '!');
