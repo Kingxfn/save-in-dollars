@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Save in Dollars</title>
+<title>ArcPay</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
@@ -84,7 +84,7 @@
     display: flex; align-items: center; justify-content: center;
     font-family: 'Fraunces', serif; font-weight: 600; font-size: 15px; color: var(--green);
   }
-  .brand-name { font-family: 'Fraunces', serif; font-weight: 500; font-size: 18px; letter-spacing: 0.01em; }
+  .brand-name { font-family: 'Fraunces', serif; font-weight: 600; font-size: 21px; letter-spacing: 0.01em; }
   .lang-toggle { font-size: 12px; color: var(--muted); border: 1px solid var(--line); padding: 6px 12px; border-radius: 20px; background: var(--paper); cursor: pointer; }
   .theme-toggle {
     font-size: 14px; color: var(--muted); border: 1px solid var(--line); width: 30px; height: 30px;
@@ -508,8 +508,8 @@
 
   <header>
     <div class="brand">
-      <div class="brand-mark">$</div>
-      <div class="brand-name" data-i18n="brandName">Save in Dollars</div>
+      <div class="brand-mark">A</div>
+      <div class="brand-name" data-i18n="brandName">ArcPay</div>
     </div>
     <div style="display:flex; align-items:center; gap:8px;">
       <button class="theme-toggle" id="themeToggle" title="Toggle theme">☾</button>
@@ -623,12 +623,20 @@
       </div>
     </div>
     <div class="field" style="margin-bottom:12px;">
-      <label data-i18n="profileNameLabel">Your Name</label>
-      <input type="text" id="profileNameInput" placeholder="e.g. Sufyan" />
+      <label data-i18n="profileFirstNameLabel">First Name</label>
+      <input type="text" id="profileFirstNameInput" placeholder="e.g. Sufyan" />
+    </div>
+    <div class="field" style="margin-bottom:12px;">
+      <label data-i18n="profileLastNameLabel">Last Name</label>
+      <input type="text" id="profileLastNameInput" placeholder="e.g. Khan" />
+    </div>
+    <div class="field" style="margin-bottom:12px;">
+      <label data-i18n="profilePhoneLabel">Phone Number</label>
+      <input type="text" id="profilePhoneInput" placeholder="03xx-xxxxxxx" />
     </div>
     <div class="field" style="margin-bottom:14px;">
-      <label data-i18n="profilePhoneLabel">Phone (optional)</label>
-      <input type="text" id="profilePhoneInput" placeholder="03xx-xxxxxxx" />
+      <label data-i18n="profileCnicLabel">CNIC / Passport Number</label>
+      <input type="text" id="profileCnicInput" placeholder="xxxxx-xxxxxxx-x or passport no." />
     </div>
     <button class="primary" id="profileSaveBtn" data-i18n="profileSaveBtn">Save Profile</button>
   </div>
@@ -758,21 +766,22 @@
   <div class="card tab-panel" data-tab="savings">
     <h2 data-i18n="groupTitle">Family / Group Savings</h2>
     <div class="hint" data-i18n="groupHint">Like a digital committee (BC) — everyone contributes toward one shared goal.</div>
+    <div class="rate-note" id="groupBalanceNote" style="margin-bottom:10px;">Connect your wallet to contribute from your USDC balance.</div>
     <div id="groupMembersList"></div>
     <div class="roundup-summary" style="margin-top:14px;">
       <span data-i18n="groupTotal">Total contributed</span>
       <b id="groupTotalAmt">0.00 USDC</b>
     </div>
-    <div class="group-add-row">
+    <div class="group-add-row" style="align-items:center;">
       <input type="text" id="groupMemberName" placeholder="Member name" />
       <input type="number" id="groupMemberAmt" placeholder="USDC" />
+      <button id="groupAddBtn" title="Add contribution" style="flex:0 0 auto; width:40px; height:40px; border-radius:50%; background:var(--green); color:#fff; border:none; font-size:20px; cursor:pointer; display:flex; align-items:center; justify-content:center;">+</button>
     </div>
-    <button class="primary" id="groupAddBtn" style="margin-top:10px;" data-i18n="groupAdd">Add Contribution</button>
   </div>
 
   <div class="card tab-panel" data-tab="pay">
     <h2 data-i18n="qrTitle">Pay / Receive via QR</h2>
-    <div class="hint" data-i18n="qrHint">Scan to send USDC directly to another Save in Dollars user.</div>
+    <div class="hint" data-i18n="qrHint">Scan to send USDC directly to another ArcPay user.</div>
     <div class="qr-box">
       <img id="qrImage" src="https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=save-in-dollars-demo" width="180" height="180" alt="QR code" />
       <div class="rate-note" id="qrAddressLine" data-i18n="qrConnectFirst">Connect your wallet to generate your receive code</div>
@@ -812,10 +821,12 @@
   <div class="card tab-panel" data-tab="savings">
     <h2 data-i18n="goalsTitle">Saving Goals</h2>
     <div class="hint" data-i18n="goalsHint">Split your USDC savings into goals — track progress toward each one.</div>
+    <div class="rate-note" id="goalsBalanceNote" style="margin-bottom:10px;">Connect your wallet to see how close you are.</div>
     <div id="goalsList" style="display:flex; flex-direction:column; gap:14px;"></div>
-    <div style="display:flex; gap:10px; margin-top:16px;">
+    <div style="display:flex; gap:10px; margin-top:16px; flex-wrap:wrap;">
       <input type="text" id="goalNameInput" placeholder="Goal name (e.g. Emergency Fund)" style="flex:1.4; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; background:var(--bg); color:var(--ink);" />
       <input type="number" id="goalTargetInput" placeholder="Target USDC" style="flex:1; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:'IBM Plex Mono',monospace; font-size:13px; background:var(--bg); color:var(--ink);" />
+      <input type="month" id="goalDeadlineInput" style="flex:1; border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:'IBM Plex Sans',sans-serif; font-size:13px; background:var(--bg); color:var(--ink);" />
     </div>
     <button class="primary" id="addGoalBtn" style="margin-top:10px;" data-i18n="addGoal">Add Goal</button>
   </div>
@@ -875,7 +886,8 @@
       <label data-i18n="topupNumber">Mobile Number</label>
       <input type="text" id="topupNumberInput" placeholder="03xx-xxxxxxx" />
     </div>
-    <div style="display:flex; gap:8px; margin-bottom:16px;" id="topupAmounts">
+    <div class="rate-note" id="topupBalanceNote" style="margin-bottom:10px;">Connect your wallet to see your available balance.</div>
+    <div style="display:flex; gap:8px; margin-bottom:16px; flex-wrap:wrap;" id="topupAmounts">
       <button class="method-btn" data-amt="100">Rs 100</button>
       <button class="method-btn" data-amt="300">Rs 300</button>
       <button class="method-btn" data-amt="500">Rs 500</button>
@@ -1016,7 +1028,7 @@
     <button class="secondary" id="exportCsvBtn" style="margin-top:16px;" data-i18n="exportCsv">Export Statement (CSV)</button>
   </div>
 
-  <footer data-i18n="footerTxt">Save in Dollars — prototype UI, connected to Arc testnet</footer>
+  <footer data-i18n="footerTxt">ArcPay — prototype UI, connected to Arc testnet</footer>
 
   <div id="toast" style="
     position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px);
@@ -1028,7 +1040,7 @@
 
 <!-- PIN Lock -->
 <div class="pin-overlay" id="pinOverlay">
-  <div class="brand-mark">$</div>
+  <div class="brand-mark">A</div>
   <h2 id="pinTitle" data-i18n="pinSetTitle">Set a PIN to protect your savings</h2>
   <p id="pinSubtitle" data-i18n="pinSetSubtitle">4-digit PIN, used only on this device</p>
   <div class="pin-dots" id="pinDots">
@@ -1089,7 +1101,7 @@
   /* ---------------- i18n ---------------- */
   const translations = {
     en: {
-      brandName: "Save in Dollars", devalMsg: "⚠️ Rupee has weakened today — good time to convert.",
+      brandName: "ArcPay", devalMsg: "⚠️ Rupee has weakened today — good time to convert.",
       devalCta: "Convert now", notConnected: "Not connected", connectWallet: "Connect Wallet",
       usdcBalance: "USDC Balance", equivTo: "Equivalent to", atRate: "at today's rate",
       trustTitle: "Your money is safe", trustHint: "A simple explanation of where your savings actually go.",
@@ -1117,14 +1129,14 @@
       electricityTab: "Electricity", gasTab: "Gas", waterTab: "Water", providerLabel: "Provider",
       consumerLabel: "Consumer / Reference Number", fetchBill: "Fetch Bill", payBill: "Pay Bill",
       billDemoNote: "Demo data for now — live billing integration with real providers is coming.",
-      profileNoName: "Add your name", profileNameLabel: "Your Name", profilePhoneLabel: "Phone (optional)", profileSaveBtn: "Save Profile",
+      profileNoName: "Add your name", profileFirstNameLabel: "First Name", profileLastNameLabel: "Last Name", profilePhoneLabel: "Phone Number", profileCnicLabel: "CNIC / Passport Number", profileSaveBtn: "Save Profile",
       selectWallet: "Select a wallet", phantomNote: "Note: Phantom is a Solana wallet by default — enable its Ethereum/EVM mode in Phantom settings to use it here.",
       billsPaidTitle: "Bills Paid This Month", billsPaidHint: "A running record of your utility payments, saved on this device.",
       chartTitle: "Rupee vs. Digital Dollar", chartHint: "What Rs 100,000 would be worth today if saved a year ago",
       legendUsdc: "USDC — holds value", legendPkr: "PKR — loses value to inflation",
       historyTitle: "Transaction History", historyHint: "Every conversion you've made, saved on this device.",
       historyEmptyTxt: "No conversions yet — try one above.",
-      footerTxt: "Save in Dollars — prototype UI, connected to Arc testnet",
+      footerTxt: "ArcPay — prototype UI, connected to Arc testnet",
       kycModalTitle: "Quick Identity Check", kycModalHint: "Just 3 details — required by regulation to keep your money safe. Takes 30 seconds.",
       kycNameLabel: "Full Name", kycCnicLabel: "CNIC Number", kycPhoneLabel: "Mobile Number",
       kycSkip: "Later", kycSubmit: "Verify Me",
@@ -1139,7 +1151,7 @@
       roundupSaved: "Saved from round-ups so far", simulatePurchase: "Simulate a Purchase (Demo)",
       groupTitle: "Family / Group Savings", groupHint: "Like a digital committee (BC) — everyone contributes toward one shared goal.",
       groupTotal: "Total contributed", groupAdd: "Add Contribution",
-      qrTitle: "Pay / Receive via QR", qrHint: "Scan to send USDC directly to another Save in Dollars user.",
+      qrTitle: "Pay / Receive via QR", qrHint: "Scan to send USDC directly to another ArcPay user.",
       qrConnectFirst: "Connect your wallet to generate your receive code",
       badgesTitle: "Milestones", badgesHint: "Little wins along the way to your first $100 saved.",
       exportCsv: "Export Statement (CSV)",
@@ -1151,7 +1163,7 @@
       networkLabel: "Network", networkVal: "Arc Testnet", contractLabel: "USDC Contract",
       explorerLink: "View on Block Explorer ↗", statusLabel: "System Status", statusVal: "All systems operational",
       custodyTitle: "Non-Custodial by Design", custodyHint: "We never hold your funds — here's exactly what that means.",
-      custody1: "<b>Only you</b> control the private keys to your wallet. Save in Dollars cannot move your funds without your approval.",
+      custody1: "<b>Only you</b> control the private keys to your wallet. ArcPay cannot move your funds without your approval.",
       custody2: "Smart contracts are used <b>as-is</b> on Arc Testnet — this is a demo environment for testing, not audited for mainnet.",
       legalTitle: "Terms & Risk Disclosure", legalHint: "Please read before using real funds.",
       legalPoint1: "🧪 <b>Testnet only</b> — nothing here uses real money. Balances reset and carry no value.",
@@ -1166,7 +1178,7 @@
       freelanceSimulate: "Simulate Client Payment (Demo)", freelanceReceivedTitle: "Received from clients"
     },
     ur: {
-      brandName: "سیو اِن ڈالرز", devalMsg: "⚠️ روپے کی قدر آج کم ہوئی ہے — ابھی کنورٹ کرنے کا اچھا وقت ہے۔",
+      brandName: "ArcPay", devalMsg: "⚠️ روپے کی قدر آج کم ہوئی ہے — ابھی کنورٹ کرنے کا اچھا وقت ہے۔",
       devalCta: "ابھی کنورٹ کریں", notConnected: "منسلک نہیں", connectWallet: "والیٹ جوڑیں",
       usdcBalance: "یو ایس ڈی سی بیلنس", equivTo: "برابر ہے", atRate: "آج کی شرح پر",
       trustTitle: "آپ کا پیسہ محفوظ ہے", trustHint: "سادہ الفاظ میں سمجھیں کہ آپ کی بچت کہاں جاتی ہے۔",
@@ -1194,14 +1206,14 @@
       electricityTab: "بجلی", gasTab: "گیس", waterTab: "پانی", providerLabel: "فراہم کنندہ",
       consumerLabel: "کنزیومر / حوالہ نمبر", fetchBill: "بل حاصل کریں", payBill: "بل ادا کریں",
       billDemoNote: "ابھی یہ ڈیمو ڈیٹا ہے — حقیقی فراہم کنندگان کے ساتھ لائیو انٹیگریشن جلد آ رہا ہے۔",
-      profileNoName: "اپنا نام شامل کریں", profileNameLabel: "آپ کا نام", profilePhoneLabel: "فون (اختیاری)", profileSaveBtn: "پروفائل محفوظ کریں",
+      profileNoName: "اپنا نام شامل کریں", profileFirstNameLabel: "پہلا نام", profileLastNameLabel: "آخری نام", profilePhoneLabel: "فون نمبر", profileCnicLabel: "شناختی کارڈ / پاسپورٹ نمبر", profileSaveBtn: "پروفائل محفوظ کریں",
       selectWallet: "والیٹ منتخب کریں", phantomNote: "نوٹ: Phantom بنیادی طور پر Solana والیٹ ہے — یہاں استعمال کے لیے اس کی Ethereum/EVM موڈ آن کریں۔",
       billsPaidTitle: "اس مہینے ادا شدہ بل", billsPaidHint: "آپ کی یوٹیلیٹی ادائیگیوں کا ریکارڈ، اسی ڈیوائس پر محفوظ۔",
       chartTitle: "روپیہ بمقابلہ ڈیجیٹل ڈالر", chartHint: "اگر ایک سال پہلے Rs 100,000 بچائے ہوتے تو آج کتنے ہوتے",
       legendUsdc: "یو ایس ڈی سی — قدر برقرار", legendPkr: "پی کے آر — افراط زر سے قدر میں کمی",
       historyTitle: "لین دین کی تاریخ", historyHint: "آپ کی ہر کنورژن، اسی ڈیوائس پر محفوظ۔",
       historyEmptyTxt: "ابھی کوئی کنورژن نہیں — اوپر آزمائیں۔",
-      footerTxt: "سیو اِن ڈالرز — پروٹوٹائپ یو آئی، آرک ٹیسٹ نیٹ سے منسلک",
+      footerTxt: "ArcPay — پروٹوٹائپ یو آئی، آرک ٹیسٹ نیٹ سے منسلک",
       kycModalTitle: "فوری شناختی چیک", kycModalHint: "بس 3 تفصیلات — آپ کے پیسے کی حفاظت کے لیے ضابطے کے تحت لازمی۔ 30 سیکنڈ لگیں گے۔",
       kycNameLabel: "پورا نام", kycCnicLabel: "شناختی کارڈ نمبر", kycPhoneLabel: "موبائل نمبر",
       kycSkip: "بعد میں", kycSubmit: "میری تصدیق کریں",
@@ -1228,7 +1240,7 @@
       networkLabel: "نیٹ ورک", networkVal: "آرک ٹیسٹ نیٹ", contractLabel: "یو ایس ڈی سی کنٹریکٹ",
       explorerLink: "بلاک ایکسپلورر پر دیکھیں ↗", statusLabel: "سسٹم اسٹیٹس", statusVal: "تمام سسٹمز فعال ہیں",
       custodyTitle: "غیر امانتی ڈیزائن", custodyHint: "ہم کبھی آپ کا پیسہ نہیں رکھتے — یہاں اس کی مکمل وضاحت ہے۔",
-      custody1: "<b>صرف آپ</b> اپنے والیٹ کی پرائیویٹ کیز کو کنٹرول کرتے ہیں۔ Save in Dollars آپ کی اجازت کے بغیر رقم منتقل نہیں کر سکتا۔",
+      custody1: "<b>صرف آپ</b> اپنے والیٹ کی پرائیویٹ کیز کو کنٹرول کرتے ہیں۔ ArcPay آپ کی اجازت کے بغیر رقم منتقل نہیں کر سکتا۔",
       custody2: "اسمارٹ کنٹریکٹس آرک ٹیسٹ نیٹ پر <b>جیسے ہیں ویسے</b> استعمال ہوتے ہیں — یہ ٹیسٹنگ کے لیے ایک ڈیمو ماحول ہے، مین نیٹ کے لیے آڈٹ شدہ نہیں۔",
       legalTitle: "شرائط اور خطرے کا اظہار", legalHint: "اصل رقم استعمال کرنے سے پہلے براہ کرم پڑھیں۔",
       legalPoint1: "🧪 <b>صرف ٹیسٹ نیٹ</b> — یہاں کوئی اصل رقم استعمال نہیں ہوتی۔ بیلنس ری سیٹ ہو سکتا ہے اور اس کی کوئی قیمت نہیں۔",
@@ -1429,6 +1441,9 @@
     const usdc = Number(wei) / 1e18;
     balanceAmount.textContent = formatUsd(usdc);
     pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
+    if (typeof updateTopupAvailability === 'function') updateTopupAvailability();
+    if (typeof renderGroup === 'function') renderGroup();
+    if (typeof renderGoals === 'function') renderGoals();
   }
 
   /* ---- EIP-6963 multi-wallet discovery ---- */
@@ -1562,6 +1577,9 @@
   function setDisplayedBalance(usdc) {
     balanceAmount.textContent = formatUsd(usdc);
     pkrEquivalent.textContent = 'Rs ' + Math.round(usdc * liveRate).toLocaleString('en-US');
+    if (typeof updateTopupAvailability === 'function') updateTopupAvailability();
+    if (typeof renderGroup === 'function') renderGroup();
+    if (typeof renderGoals === 'function') renderGoals();
   }
 
   dwSubmitBtn.addEventListener('click', () => {
@@ -1674,18 +1692,23 @@
   function getProfile() { try { return JSON.parse(localStorage.getItem(PROFILE_KEY)) || {}; } catch (e) { return {}; } }
   function renderProfile() {
     const p = getProfile();
-    document.getElementById('profileNameInput').value = p.name || '';
+    document.getElementById('profileFirstNameInput').value = p.firstName || '';
+    document.getElementById('profileLastNameInput').value = p.lastName || '';
     document.getElementById('profilePhoneInput').value = p.phone || '';
-    document.getElementById('profileNameDisplay').textContent = p.name || 'Add your name';
-    document.getElementById('profileAvatar').textContent = p.name ? p.name.trim()[0].toUpperCase() : '?';
+    document.getElementById('profileCnicInput').value = p.cnic || '';
+    const fullName = [p.firstName, p.lastName].filter(Boolean).join(' ');
+    document.getElementById('profileNameDisplay').textContent = fullName || 'Add your name';
+    document.getElementById('profileAvatar').textContent = fullName ? fullName.trim()[0].toUpperCase() : '?';
     document.getElementById('profileWalletDisplay').textContent = connectedAddress
       ? connectedAddress.slice(0, 6) + '…' + connectedAddress.slice(-4)
       : 'Not connected';
   }
   document.getElementById('profileSaveBtn').addEventListener('click', () => {
-    const name = document.getElementById('profileNameInput').value.trim();
+    const firstName = document.getElementById('profileFirstNameInput').value.trim();
+    const lastName = document.getElementById('profileLastNameInput').value.trim();
     const phone = document.getElementById('profilePhoneInput').value.trim();
-    localStorage.setItem(PROFILE_KEY, JSON.stringify({ name, phone }));
+    const cnic = document.getElementById('profileCnicInput').value.trim();
+    localStorage.setItem(PROFILE_KEY, JSON.stringify({ firstName, lastName, phone, cnic }));
     renderProfile();
     showToast('✅ Profile saved');
   });
@@ -1791,13 +1814,38 @@
 
   /* ---------------- Mobile Top-Up ---------------- */
   let topupSelectedAmt = null;
-  document.querySelectorAll('#topupAmounts .method-btn').forEach(btn => {
+  const topupAmountBtns = document.querySelectorAll('#topupAmounts .method-btn');
+  const topupBalanceNote = document.getElementById('topupBalanceNote');
+
+  function updateTopupAvailability() {
+    if (!connectedAddress) {
+      topupBalanceNote.textContent = 'Connect your wallet to see your available balance.';
+      topupAmountBtns.forEach(b => { b.disabled = false; b.title = ''; });
+      return;
+    }
+    const bal = getCurrentBalance();
+    topupBalanceNote.textContent = 'Available: ' + bal.toFixed(2) + ' USDC (Rs ' + Math.round(bal * liveRate).toLocaleString('en-US') + ') — max you can top up right now.';
+    topupAmountBtns.forEach(btn => {
+      const amt = parseFloat(btn.dataset.amt);
+      const usdcCost = amt / liveRate;
+      const affordable = usdcCost <= bal;
+      btn.innerHTML = 'Rs ' + amt + '<br><span style="font-size:10px; opacity:0.75;">≈ ' + usdcCost.toFixed(2) + ' USDC</span>';
+      btn.disabled = !affordable;
+      btn.style.opacity = affordable ? '1' : '0.4';
+      btn.title = affordable ? '' : 'Not enough testnet USDC for this amount';
+      if (!affordable && btn.classList.contains('active')) { btn.classList.remove('active'); topupSelectedAmt = null; }
+    });
+  }
+
+  topupAmountBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      document.querySelectorAll('#topupAmounts .method-btn').forEach(b => b.classList.remove('active'));
+      if (btn.disabled) { showToast('Not enough USDC balance for this amount', true); return; }
+      topupAmountBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       topupSelectedAmt = parseFloat(btn.dataset.amt);
     });
   });
+  updateTopupAvailability();
   document.getElementById('topupBtn').addEventListener('click', () => {
     if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
     const number = document.getElementById('topupNumberInput').value.trim();
@@ -1909,12 +1957,36 @@
   function renderGoals() {
     const goals = getGoals();
     const list = document.getElementById('goalsList');
+    const goalsBalanceNote = document.getElementById('goalsBalanceNote');
+    const bal = connectedAddress ? getCurrentBalance() : 0;
+    goalsBalanceNote.textContent = connectedAddress
+      ? 'Your wallet right now: ' + bal.toFixed(2) + ' USDC (Rs ' + Math.round(bal * liveRate).toLocaleString('en-US') + ')'
+      : 'Connect your wallet to see how close you are.';
     if (goals.length === 0) {
       list.innerHTML = '<div style="font-size:13px; color:var(--muted); text-align:center; padding:12px 0;">No goals yet — add one below.</div>';
       return;
     }
+    const cfg = (function () { try { return JSON.parse(localStorage.getItem(AUTOSAVE_KEY)); } catch (e) { return null; } })();
+    const monthlyUsdc = (cfg && cfg.enabled) ? cfg.amount / liveRate : 0;
     list.innerHTML = goals.map((g, i) => {
       const pct = Math.min(100, (g.saved / g.target) * 100).toFixed(0);
+      const remaining = Math.max(0, g.target - g.saved);
+      let timelineNote;
+      if (remaining === 0) {
+        timelineNote = '🎉 Goal reached!';
+      } else if (monthlyUsdc > 0) {
+        const monthsNeeded = Math.ceil(remaining / monthlyUsdc);
+        timelineNote = 'At your current auto-save rate, about ' + monthsNeeded + ' month' + (monthsNeeded === 1 ? '' : 's') + ' to reach this.';
+      } else {
+        timelineNote = remaining.toFixed(2) + ' USDC left — set up auto-save to estimate a timeline.';
+      }
+      let deadlineNote = '';
+      if (g.deadline) {
+        const [y, m] = g.deadline.split('-').map(Number);
+        const deadlineDate = new Date(y, m - 1, 1);
+        const monthsLeft = Math.max(0, (deadlineDate.getFullYear() - new Date().getFullYear()) * 12 + (deadlineDate.getMonth() - new Date().getMonth()));
+        deadlineNote = ' · Target: ' + deadlineDate.toLocaleDateString('en-US', { month: 'short', year: 'numeric' }) + ' (' + monthsLeft + ' mo left)';
+      }
       return `
         <div>
           <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:6px;">
@@ -1924,6 +1996,7 @@
           <div style="background:var(--bg); border:1px solid var(--line); border-radius:20px; height:10px; overflow:hidden;">
             <div style="width:${pct}%; height:100%; background:var(--teal);"></div>
           </div>
+          <div style="font-size:11px; color:var(--muted); margin-top:5px;">${timelineNote}${deadlineNote}</div>
         </div>
       `;
     }).join('');
@@ -1931,13 +2004,15 @@
   document.getElementById('addGoalBtn').addEventListener('click', () => {
     const name = document.getElementById('goalNameInput').value.trim();
     const target = parseFloat(document.getElementById('goalTargetInput').value) || 0;
+    const deadline = document.getElementById('goalDeadlineInput').value || null;
     if (!name || target <= 0) { showToast('Enter a goal name and target', true); return; }
     const goals = getGoals();
-    goals.push({ name, target, saved: 0 });
+    goals.push({ name, target, saved: 0, deadline });
     saveGoals(goals);
     renderGoals();
     document.getElementById('goalNameInput').value = '';
     document.getElementById('goalTargetInput').value = '';
+    document.getElementById('goalDeadlineInput').value = '';
     showToast('🎯 Goal added: ' + name);
   });
   renderGoals();
@@ -2115,18 +2190,7 @@
     }
   }
   document.getElementById('pinSkipBtn').addEventListener('click', () => pinOverlay.classList.remove('show'));
-  startPinFlow();
-
-  /* ---------------- Yield display ---------------- */
-  function updateYieldBadge() {
-    const bal = getCurrentBalance();
-    const est = bal * 0.04 / 12; // rough monthly estimate at 4% APY
-    document.getElementById('yieldBadge').innerHTML = '📈 <span>' +
-      (currentLang === 'ur' ? 'تقریباً 4% سالانہ منافع' : 'Earning ~4% APY') +
-      ' · +$' + est.toFixed(2) + (currentLang === 'ur' ? ' اس مہینے' : ' this month') + '</span>';
-  }
-  setInterval(updateYieldBadge, 5000);
-  updateYieldBadge();
+  // PIN setup popup disabled — startPinFlow() intentionally not called on load.
 
   /* ---------------- Round-up savings ---------------- */
   const ROUNDUP_KEY = 'saveInDollars_roundup';
@@ -2160,27 +2224,41 @@
 
   /* ---------------- Family / Group savings ---------------- */
   const GROUP_KEY = 'saveInDollars_group';
+  const groupBalanceNote = document.getElementById('groupBalanceNote');
   function getGroupMembers() { try { return JSON.parse(localStorage.getItem(GROUP_KEY)) || []; } catch (e) { return []; } }
   function renderGroup() {
     const members = getGroupMembers();
     const list = document.getElementById('groupMembersList');
     const total = members.reduce((s, m) => s + m.amt, 0);
     document.getElementById('groupTotalAmt').textContent = total.toFixed(2) + ' USDC';
+    groupBalanceNote.textContent = connectedAddress
+      ? 'Your wallet: ' + getCurrentBalance().toFixed(2) + ' USDC — contributions are deducted from this.'
+      : 'Connect your wallet to contribute from your USDC balance.';
     if (members.length === 0) {
       list.innerHTML = '<div style="font-size:13px; color:var(--muted); text-align:center; padding:10px 0;">No contributions yet.</div>';
       return;
     }
+    const maxAmt = Math.max(...members.map(m => m.amt), 0.01);
     list.innerHTML = members.map(m => `
-      <div class="group-member-row">
-        <span>${m.name}</span>
-        <span class="gm-amt">${m.amt.toFixed(2)} USDC</span>
+      <div style="margin-bottom:10px;">
+        <div style="display:flex; justify-content:space-between; font-size:13px; margin-bottom:4px;">
+          <span>${m.name}</span>
+          <span class="gm-amt">${m.amt.toFixed(2)} USDC</span>
+        </div>
+        <div style="background:var(--bg); border:1px solid var(--line); border-radius:8px; height:10px; overflow:hidden;">
+          <div style="width:${(m.amt / maxAmt * 100).toFixed(0)}%; height:100%; background:var(--teal);"></div>
+        </div>
       </div>
     `).join('');
   }
   document.getElementById('groupAddBtn').addEventListener('click', () => {
+    if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
     const name = document.getElementById('groupMemberName').value.trim();
     const amt = parseFloat(document.getElementById('groupMemberAmt').value) || 0;
     if (!name || amt <= 0) { showToast('Enter member name and amount', true); return; }
+    if (amt > getCurrentBalance()) { showToast('Not enough USDC balance to contribute this much', true); return; }
+    setDisplayedBalance(getCurrentBalance() - amt);
+    addHistoryEntry(amt * liveRate, amt, 'Group Savings — ' + name);
     const members = getGroupMembers();
     members.push({ name, amt });
     localStorage.setItem(GROUP_KEY, JSON.stringify(members));
