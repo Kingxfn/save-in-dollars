@@ -1453,7 +1453,7 @@
       // Real PKR leg: actually moves real tokens on-chain (verifiable on ArcScan) —
       // this replaces the old fake localStorage decrement.
       await sendPkrTransfer(TREASURY_ADDRESS, pkr);
-      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e6)).toString(16);
+      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e18)).toString(16);
       await activeProvider.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
@@ -1479,7 +1479,7 @@
   /* ---------------- Wallet connect ---------------- */
   const ARC_TESTNET = {
     chainId: '0x4CEF52', chainName: 'Arc Testnet',
-    nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 6 },
+    nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
     rpcUrls: ['https://rpc.testnet.arc.network'], blockExplorerUrls: []
   };
 
@@ -1554,7 +1554,7 @@
     try {
       const balHex = await activeProvider.request({ method: 'eth_getBalance', params: [address, 'latest'] });
       const wei = BigInt(balHex);
-      const usdc = Number(wei) / 1e6;
+      const usdc = Number(wei) / 1e18;
       onchainUsdc = usdc;
       setUsdcBalance(getUsdcBalance()); // re-render main balance now that it includes the wallet's real funds
       const info = document.getElementById('onchainInfoLine');
@@ -1725,7 +1725,7 @@
     try {
       if (dwTab === 'deposit') {
         const usdcGained = amount / swapRate;
-        const valueWei = '0x' + BigInt(Math.round(usdcGained * 1e6)).toString(16);
+        const valueWei = '0x' + BigInt(Math.round(usdcGained * 1e18)).toString(16);
         showToast('Confirm the swap in your wallet…');
         await sendPkrTransfer(TREASURY_ADDRESS, amount); // real PKR leg, on-chain
         await activeProvider.request({
@@ -1740,7 +1740,7 @@
         showToast('✅ Swapped Rs ' + amount.toLocaleString('en-US') + ' → ' + usdcGained.toFixed(2) + ' USDC');
         setTimeout(() => refreshBalance(connectedAddress), 2500);
       } else {
-        const valueWei = '0x' + BigInt(Math.round(amount * 1e6)).toString(16);
+        const valueWei = '0x' + BigInt(Math.round(amount * 1e18)).toString(16);
         showToast('Confirm the swap in your wallet…');
         await activeProvider.request({
           method: 'eth_sendTransaction',
@@ -1968,7 +1968,7 @@
     btn.disabled = true; btn.textContent = 'Confirm in wallet…';
     try {
       const usdcAmount = usd - 1;
-      const valueWei = '0x' + BigInt(Math.round(usd * 1e6)).toString(16);
+      const valueWei = '0x' + BigInt(Math.round(usd * 1e18)).toString(16);
       await activeProvider.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: recipient, value: valueWei }]
@@ -2034,7 +2034,7 @@
     const original = btn.textContent;
     btn.disabled = true; btn.textContent = 'Confirm in wallet…';
     try {
-      const valueWei = '0x' + BigInt(Math.round(usdcCost * 1e6)).toString(16);
+      const valueWei = '0x' + BigInt(Math.round(usdcCost * 1e18)).toString(16);
       await activeProvider.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
@@ -2250,7 +2250,7 @@
     billPayBtn.disabled = true;
     billPayBtn.textContent = 'Confirm in wallet…';
     try {
-      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e6)).toString(16);
+      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e18)).toString(16);
       await activeProvider.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
@@ -2408,7 +2408,7 @@
     addBtn.disabled = true;
     addBtn.textContent = translations[currentLang].txPending + '… ⏳';
     try {
-      const valueWei = '0x' + BigInt(Math.round(amt * 1e6)).toString(16);
+      const valueWei = '0x' + BigInt(Math.round(amt * 1e18)).toString(16);
       showToast('Confirm the contribution in your wallet…');
       await activeProvider.request({
         method: 'eth_sendTransaction',
