@@ -568,7 +568,9 @@
       <div class="label" data-i18n="usdcBalance">USDC Balance</div>
     </div>
     <div class="sub-value"><span data-i18n="equivTo">Equivalent to</span> <b id="pkrEquivalent">Rs 0</b> <span data-i18n="atRate">at today's rate</span></div>
-    <div class="sub-value" style="margin-top:4px;"><span data-i18n="pkrWalletLabel">Your PKR wallet</span>: <b id="pkrWalletBalance">Rs 0</b></div>
+    <div class="sub-value" style="margin-top:4px;"><span data-i18n="pkrWalletLabel">Your PKR wallet</span>: <b id="pkrWalletBalance">Rs 0</b>
+      <button id="pkrFaucetBtn" class="secondary" style="margin-left:8px; padding:4px 10px; font-size:11px; border-radius:14px; cursor:pointer;">Get free test-PKR</button>
+    </div>
     <div class="rate-ticker">
       <span class="rt-dot"></span>
       <span id="rateTickerText">1 USD ≈ Rs 280.00</span>
@@ -1226,8 +1228,14 @@
   });
 
   /* ---------------- Rate / conversion ---------------- */
-  let RATE = 280; // mock PKR per USD baseline
+  // Real USD→PKR rate from a free, no-key FX API (open.er-api.com, updated ~daily).
+  // We cache the last real rate in localStorage so there's never a "0" or fake
+  // number on screen while the first fetch is in flight or if it ever fails.
+  const RATE_API_URL = 'https://open.er-api.com/v6/latest/USD';
+  const RATE_CACHE_KEY = 'saveInDollars_last_real_rate';
+  let RATE = parseFloat(localStorage.getItem(RATE_CACHE_KEY)) || 280; // session-start baseline (for the devaluation alert), overwritten by first real fetch
   let liveRate = RATE;
+  let rateIsLive = false; // becomes true once a real API value has landed
   const pkrInput = document.getElementById('pkrInput');
   const usdcOutput = document.getElementById('usdcOutput');
   const feeAmount = document.getElementById('feeAmount');
@@ -1244,14 +1252,21 @@
   const pkrWalletEl = document.getElementById('pkrWalletBalance');
 
   function getPkrBalance() {
-    const v = parseFloat(localStorage.getItem(PKR_BAL_KEY));
-    return isNaN(v) ? 100000 : v; // demo starting balance so there's something to convert
+    return getAppLedgerPkr() + onchainPkr;
   }
   function setPkrBalance(v) {
-    const clamped = Math.max(0, v);
-    localStorage.setItem(PKR_BAL_KEY, clamped);
-    if (pkrWalletEl) pkrWalletEl.textContent = 'Rs ' + Math.round(clamped).toLocaleString('en-US');
-    return clamped;
+    // v is the desired TOTAL (real on-chain PKR + app ledger); the on-chain portion
+    // isn't ours to overwrite locally — it only changes via a real transfer() on-chain.
+    const clampedTotal = Math.max(0, v);
+    const appPortion = Math.max(0, clampedTotal - onchainPkr);
+    localStorage.setItem(PKR_BAL_KEY, appPortion);
+    if (pkrWalletEl) pkrWalletEl.textContent = 'Rs ' + Math.round(clampedTotal).toLocaleString('en-US');
+    return clampedTotal;
+  }
+  let onchainPkr = 0;
+  function getAppLedgerPkr() {
+    const v = parseFloat(localStorage.getItem(PKR_BAL_KEY));
+    return isNaN(v) ? 0 : v;
   }
   // Real on-chain balance (read from the connected wallet — this is what the faucet fills up).
   // The app-tracked ledger above (USDC_BAL_KEY) only ever recorded swaps done inside the app,
@@ -1302,27 +1317,46 @@
     document.getElementById('rateTickerText').textContent = '1 USD ≈ Rs ' + liveRate.toFixed(2);
   }
 
-  // Simulate a slowly drifting live rate + occasional devaluation alert
+  // Pull the real USD→PKR rate + occasional devaluation alert
   let prevRate = RATE;
-  setInterval(() => {
-    prevRate = liveRate;
-    const drift = (Math.random() - 0.42) * 0.6; // slight upward (devaluation) bias
-    liveRate = Math.max(270, Math.min(295, liveRate + drift));
-    const delta = liveRate - prevRate;
-    const deltaEl = document.getElementById('rateDelta');
-    if (Math.abs(delta) > 0.02) {
-      deltaEl.textContent = (delta > 0 ? '▲ ' : '▼ ') + Math.abs(delta).toFixed(2);
-      deltaEl.className = 'rt-delta ' + (delta > 0 ? 'rt-up' : 'rt-down');
+  async function fetchRealRate() {
+    try {
+      const res = await fetch(RATE_API_URL);
+      if (!res.ok) throw new Error('FX API HTTP ' + res.status);
+      const data = await res.json();
+      const pkrRate = data && data.rates && data.rates.PKR;
+      if (!pkrRate || isNaN(pkrRate)) throw new Error('No PKR rate in FX API response');
+
+      prevRate = liveRate;
+      liveRate = pkrRate;
+      localStorage.setItem(RATE_CACHE_KEY, pkrRate);
+      if (!rateIsLive) {
+        // First real value that lands becomes the session baseline for the devaluation alert
+        RATE = pkrRate;
+        rateIsLive = true;
+      }
+
+      const delta = liveRate - prevRate;
+      const deltaEl = document.getElementById('rateDelta');
+      if (Math.abs(delta) > 0.005) {
+        deltaEl.textContent = (delta > 0 ? '▲ ' : '▼ ') + Math.abs(delta).toFixed(2);
+        deltaEl.className = 'rt-delta ' + (delta > 0 ? 'rt-up' : 'rt-down');
+      }
+      updateRateDisplays();
+      updateConversion();
+      updateRemitConversion();
+      pkrEquivalent.textContent = 'Rs ' + Math.round(getCurrentBalance() * liveRate).toLocaleString('en-US');
+      // Devaluation alert if rate has risen notably vs session start
+      if (liveRate - RATE > 3 && document.getElementById('devalAlert').dataset.dismissed !== 'true') {
+        document.getElementById('devalAlert').style.display = 'flex';
+      }
+    } catch (e) {
+      // Fetch failed (offline, API down) — keep showing the last real cached rate, never fall back to a fake number
+      console.warn('Live PKR rate fetch failed, keeping last known real rate:', e);
     }
-    updateRateDisplays();
-    updateConversion();
-    updateRemitConversion();
-    pkrEquivalent.textContent = 'Rs ' + Math.round(getCurrentBalance() * liveRate).toLocaleString('en-US');
-    // Devaluation alert if rate has risen notably vs session start
-    if (liveRate - RATE > 3 && document.getElementById('devalAlert').dataset.dismissed !== 'true') {
-      document.getElementById('devalAlert').style.display = 'flex';
-    }
-  }, 4000);
+  }
+  fetchRealRate();
+  setInterval(fetchRealRate, 60 * 60 * 1000); // open.er-api.com refreshes ~daily, so hourly polling is plenty
 
   updateRateDisplays();
   updateConversion();
@@ -1416,12 +1450,14 @@
     btn.disabled = true;
 
     try {
-      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e18)).toString(16);
+      // Real PKR leg: actually moves real tokens on-chain (verifiable on ArcScan) —
+      // this replaces the old fake localStorage decrement.
+      await sendPkrTransfer(TREASURY_ADDRESS, pkr);
+      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e6)).toString(16);
       await activeProvider.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
       });
-      setPkrBalance(getPkrBalance() - pkr);
       setUsdcBalance(getUsdcBalance() + usdcAmount);
       addHistoryEntry(pkr, usdcAmount);
       const goalMsg = allocateToGoal(usdcAmount);
@@ -1430,6 +1466,7 @@
       // should go back to empty/0 once the PKR has actually been spent.
       pkrInput.value = '';
       updateConversion();
+      setTimeout(() => refreshBalance(connectedAddress), 2500); // pull the real post-transfer PKR balance
     } catch (err) {
       console.error(err);
       showToast('Transaction cancelled or failed', true);
@@ -1442,9 +1479,56 @@
   /* ---------------- Wallet connect ---------------- */
   const ARC_TESTNET = {
     chainId: '0x4CEF52', chainName: 'Arc Testnet',
-    nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 18 },
+    nativeCurrency: { name: 'USDC', symbol: 'USDC', decimals: 6 },
     rpcUrls: ['https://rpc.testnet.arc.network'], blockExplorerUrls: []
   };
+
+  // Real PKR ERC-20 token, deployed on Arc Testnet — replaces the old fake
+  // localStorage-only PKR balance with actual on-chain balanceOf()/transfer() calls.
+  const PKR_TOKEN_ADDRESS = '0x723827Aa908318d792B68ABd001Ae45d0fc3652D';
+  const PKR_DECIMALS = 6; // matches the contract's decimals() override
+
+  // Minimal hand-rolled ABI encoding (no ethers.js needed) for the 3 calls we use.
+  function encAddress(addr) { return addr.toLowerCase().replace('0x', '').padStart(64, '0'); }
+  function encUint(n) { return BigInt(n).toString(16).padStart(64, '0'); }
+  function pkrToUnits(pkrAmount) { return BigInt(Math.round(pkrAmount * 10 ** PKR_DECIMALS)); }
+  const SELECTOR = { balanceOf: '0x70a08231', transfer: '0xa9059cbb', faucet: '0xde5f72fd' };
+
+  async function readPkrBalance(address) {
+    const data = SELECTOR.balanceOf + encAddress(address);
+    const result = await activeProvider.request({
+      method: 'eth_call',
+      params: [{ to: PKR_TOKEN_ADDRESS, data }, 'latest']
+    });
+    return Number(BigInt(result)) / 10 ** PKR_DECIMALS;
+  }
+
+  async function sendPkrTransfer(to, pkrAmount) {
+    const data = SELECTOR.transfer + encAddress(to) + encUint(pkrToUnits(pkrAmount));
+    return activeProvider.request({
+      method: 'eth_sendTransaction',
+      params: [{ from: connectedAddress, to: PKR_TOKEN_ADDRESS, data }]
+    });
+  }
+
+  async function claimPkrFaucet() {
+    if (!connectedAddress) { showToast('Connect your wallet first', true); return; }
+    try {
+      showToast('⏳ Confirm the faucet claim in your wallet…');
+      await activeProvider.request({
+        method: 'eth_sendTransaction',
+        params: [{ from: connectedAddress, to: PKR_TOKEN_ADDRESS, data: SELECTOR.faucet }]
+      });
+      showToast('✅ Claiming 100,000 test-PKR — updating balance…');
+      setTimeout(() => refreshBalance(connectedAddress), 3000);
+    } catch (e) {
+      const msg = (e && e.message || '').toLowerCase().includes('wait')
+        ? 'Faucet: you can only claim once every 24h'
+        : 'Faucet claim failed or was cancelled';
+      showToast(msg, true);
+    }
+  }
+  document.getElementById('pkrFaucetBtn').addEventListener('click', claimPkrFaucet);
 
   // Used for actions that genuinely spend USDC (Swap → PKR, Group contributions) so the
   // wallet's real on-chain balance actually decreases — not just a self-send that costs gas
@@ -1470,7 +1554,7 @@
     try {
       const balHex = await activeProvider.request({ method: 'eth_getBalance', params: [address, 'latest'] });
       const wei = BigInt(balHex);
-      const usdc = Number(wei) / 1e18;
+      const usdc = Number(wei) / 1e6;
       onchainUsdc = usdc;
       setUsdcBalance(getUsdcBalance()); // re-render main balance now that it includes the wallet's real funds
       const info = document.getElementById('onchainInfoLine');
@@ -1480,6 +1564,12 @@
       }
     } catch (e) {
       console.error(e);
+    }
+    try {
+      onchainPkr = await readPkrBalance(address);
+      setPkrBalance(getPkrBalance());
+    } catch (e) {
+      console.error('PKR balance read failed:', e);
     }
   }
 
@@ -1635,21 +1725,22 @@
     try {
       if (dwTab === 'deposit') {
         const usdcGained = amount / swapRate;
-        const valueWei = '0x' + BigInt(Math.round(usdcGained * 1e18)).toString(16);
+        const valueWei = '0x' + BigInt(Math.round(usdcGained * 1e6)).toString(16);
         showToast('Confirm the swap in your wallet…');
+        await sendPkrTransfer(TREASURY_ADDRESS, amount); // real PKR leg, on-chain
         await activeProvider.request({
           method: 'eth_sendTransaction',
           params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
         });
         dwSubmitBtn.textContent = translations[currentLang].txConfirming + '… 🔄';
-        setPkrBalance(getPkrBalance() - amount);
         setUsdcBalance(getUsdcBalance() + usdcGained);
         addHistoryEntry(amount, usdcGained, 'Swap PKR → USDC');
         dwAmountInput.value = '';
         dwSubmitBtn.textContent = translations[currentLang].txConfirmed + ' ✓';
         showToast('✅ Swapped Rs ' + amount.toLocaleString('en-US') + ' → ' + usdcGained.toFixed(2) + ' USDC');
+        setTimeout(() => refreshBalance(connectedAddress), 2500);
       } else {
-        const valueWei = '0x' + BigInt(Math.round(amount * 1e18)).toString(16);
+        const valueWei = '0x' + BigInt(Math.round(amount * 1e6)).toString(16);
         showToast('Confirm the swap in your wallet…');
         await activeProvider.request({
           method: 'eth_sendTransaction',
@@ -1877,7 +1968,7 @@
     btn.disabled = true; btn.textContent = 'Confirm in wallet…';
     try {
       const usdcAmount = usd - 1;
-      const valueWei = '0x' + BigInt(Math.round(usd * 1e18)).toString(16);
+      const valueWei = '0x' + BigInt(Math.round(usd * 1e6)).toString(16);
       await activeProvider.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: recipient, value: valueWei }]
@@ -1943,7 +2034,7 @@
     const original = btn.textContent;
     btn.disabled = true; btn.textContent = 'Confirm in wallet…';
     try {
-      const valueWei = '0x' + BigInt(Math.round(usdcCost * 1e18)).toString(16);
+      const valueWei = '0x' + BigInt(Math.round(usdcCost * 1e6)).toString(16);
       await activeProvider.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
@@ -2159,7 +2250,7 @@
     billPayBtn.disabled = true;
     billPayBtn.textContent = 'Confirm in wallet…';
     try {
-      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e18)).toString(16);
+      const valueWei = '0x' + BigInt(Math.round(usdcAmount * 1e6)).toString(16);
       await activeProvider.request({
         method: 'eth_sendTransaction',
         params: [{ from: connectedAddress, to: connectedAddress, value: valueWei }]
@@ -2317,7 +2408,7 @@
     addBtn.disabled = true;
     addBtn.textContent = translations[currentLang].txPending + '… ⏳';
     try {
-      const valueWei = '0x' + BigInt(Math.round(amt * 1e18)).toString(16);
+      const valueWei = '0x' + BigInt(Math.round(amt * 1e6)).toString(16);
       showToast('Confirm the contribution in your wallet…');
       await activeProvider.request({
         method: 'eth_sendTransaction',
